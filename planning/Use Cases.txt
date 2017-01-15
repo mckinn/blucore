@@ -1,0 +1,28 @@
+Use Cases
+
+* user signs in 
+* administrator validates
+* user updates profile data except email or student ID
+* user deletes self
+* administrator deletes user
+* administrator activates user
+* administrator deactivates user
+* user becomes active and able to do things to events
+* user lists all events
+** past
+** future
+** linked to user
+** not linked to user
+* user filters all events
+* user signs up for event
+* user completes event
+* user cancels event
+* user edits event
+* user checks event history and time summary
+
+
+* user can be administrator, advisor, parent, student, or teacher.
+
+* things can have pictures:
+** user
+** event
