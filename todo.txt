@@ -1,0 +1,32 @@
+Overall flow
+* last stage - getting different types of users to behave differently
+
+
+
+
+
+* create a users list component
+* create an events list component
+** searchable by teacher, student, past, future
+* extend the event scope
+* keep users from accessing system until approved
+* fix the issue with persistent sign-up page
+* respond with better errors
+* edit user - if you fill in your student id or email you will get the entire record
+** all that you can do if you have not been validated.  You can't do anything with events until validated.
+* send an email
+
+
+
+----
+* note - the student list needs to keep the status of the events in the list [ planned, attended, not-attended ]
+
+
+
+
+
+
+---------------
+* change the database target
+* change all messages to events
+* extend the user scope

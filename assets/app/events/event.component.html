@@ -1,0 +1,14 @@
+<article class = "panel panel-default">
+	<div class = "panel-body">
+		{{event.content}}
+	</div>
+	<footer class= "panel-footer">
+		<div class= "author">
+			{{ event.username}}
+		</div>
+		<div class="config">
+			<a (click)="onEdit()" *ngIf="belongsToUser()">Edit</a>
+			<a (click)="onDelete()" *ngIf="belongsToUser()">Delete</a>
+		</div>
+	</footer>
+</article>

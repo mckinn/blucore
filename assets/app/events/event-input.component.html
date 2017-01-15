@@ -1,0 +1,17 @@
+<div class = "col-md-8 col-md-offset-2" >
+	<form (ngSubmit)="onSubmit(localRef)" #localRef="ngForm">
+		<div class = "form-group">
+			<label for="content">Content</label>
+			<!-- [] data binding that allows the data to be injected if events is not undefined -->
+			<input 
+				type="text" 
+				id="content" 
+				class="form-control"
+				[ngModel] = "event?.content" 
+				name=myContent
+				required> <!-- name appears to be the name given to the value -->
+		</div>
+		<button class="btn btn-danger" type="button" (click) = "onClear(localRef)">Clear</button>
+		<button class="btn btn-primary" type="submit">Save</button>
+	</form>
+</div>
