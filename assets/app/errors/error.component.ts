@@ -7,7 +7,7 @@ import { ErrorService } from "./error.service";
 	templateUrl: './error.component.html',
 	styles: [`
 		.backdrop {
-			background-color: rgba(0,0,0,0.6);
+			background-color: rgba(0,100,100,0.6);
 			position: fixed;
 			top: 0;
 			left: 0;
@@ -31,6 +31,7 @@ export class ErrorComponent implements OnInit {
 	ngOnInit() {
 		this.errorService.errorHappened.subscribe(
 			(error: Error) => {
+				console.log(error);
 				this.error = error;
 				this.display = 'block';
 			}

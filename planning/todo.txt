@@ -1,5 +1,6 @@
 Overall flow
 * last stage - getting different types of users to behave differently
+* validators on the values for event and user.
 
 
 

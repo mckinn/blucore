@@ -1,15 +1,21 @@
 // events.component.ts
 import { Component } from "@angular/core";
 
+import {AuthService} from "../auth/auth.service";
+
 @Component({
 	selector: 'app-events', 
 	template: `
-		<div class="row">
-			<app-event-input></app-event-input>
-		</div>
-		<hr>
-		<div class="row">
-			<app-event-list></app-event-list>
+		<header class="row spacing">
+			<nav class="col-md-8 col-md-offset-2">
+				<ul class="nav nav-tabs"> 
+					<li routerLinkActive="active" *ngIf= "isLoggedIn()"><a [routerLink]="['input' ]">Enter event data</a></li>
+					<li routerLinkActive="active" *ngIf= "isLoggedIn()"><a [routerLink]="['list']">List events   </a></li>
+				</ul>
+			</nav>
+		</header>
+		<div class="row spacing">
+			<router-outlet></router-outlet>
 		</div>
 	`
 
@@ -17,4 +23,10 @@ import { Component } from "@angular/core";
 })
 export class EventsComponent {
 
+
+	constructor (private authService: AuthService) {}
+
+	isLoggedIn () {
+		return this.authService.isLoggedIn();
+	}
 }

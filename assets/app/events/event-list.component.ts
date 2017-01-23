@@ -9,14 +9,25 @@ import { Event } from "./event.model";
 	selector: 'app-event-list',
 	template: `
 		<div class = "col-md-8 col-md-offset-2">
-			<!-- msgs is defined as a Event in mesage=-list.component.ts -->
-			<!-- eventClicked is defined in EventListComponent, as is msgalias -->
-			<app-event 
-				[event]="event" 
-				*ngFor="let event of events" 
-			>
-			</app-event>
+			<table class="table table-hover">
+			    <thead>
+					<tr>
+						<th>Name:id</th>
+						<th>Date</th>
+						<th>Time</th>
+						<th>Duration</th>
+						<th>School</th>
+						<th>Teacher</th>
+						<th>Actions</th>
+					</tr>
+			    </thead>
+			    <tbody>
+					<tr *ngFor="let evt of events" app-event [event]="evt">
+					</tr>
+				</tbody>
+			</table>
 		</div>
+
 	`
 })
 
@@ -29,6 +40,8 @@ export class EventListComponent implements OnInit {
     	this.eventService.getEvents()
     		.subscribe(
     			(events: Event[]) => {
+    				console.log('* * * * eventlist on nginit * * * *');
+    				console.log(events);
     				this.events = events;
     			}
     		);

@@ -28,7 +28,7 @@ router.post('/', function (req, res, next) {
 	});
 });
 
-router.get('/userlist', function( req, res, next) {
+router.get('/users', function( req, res, next) {
 	User.find({},function(err,users){
 		if (err) {
 			return res.status(500).json({
@@ -45,6 +45,28 @@ router.get('/userlist', function( req, res, next) {
 		res.status(200).json({
 			message: 'here are the users',
 			obj: users
+		});
+	})
+
+});
+
+router.get('/users/:uid', function( req, res, next) {
+	User.findOne({_id:uid},function(err,user){
+		if (err) {
+			return res.status(500).json({
+				title:'An Error Occurred in finding a user',
+				error: err
+			});
+		};
+		if (!user) {
+			return res.status(401).json({
+				title:'gasp ! user cannot be found',
+				error: err
+			});
+		};
+		res.status(200).json({
+			message: 'here is the user',
+			obj: user
 		});
 	})
 

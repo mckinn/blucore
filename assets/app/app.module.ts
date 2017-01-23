@@ -6,7 +6,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { AppComponent } from "./app.component";
 import { EventComponent } from "./events/event.component";
 import { EventListComponent } from "./events/event-list.component";
-import { eventInputComponent } from "./events/event-input.component";
+import { EventInputComponent } from "./events/event-input.component";
 import { EventsComponent } from "./events/events.component";
 
 import { AuthenticationComponent } from "./auth/authentication.component";
@@ -17,6 +17,8 @@ import { UserListComponent } from "./auth/userlist.component";
 
 
 import { AuthService } from "./auth/auth.service";
+import { AuthLandingComponent } from "./auth/auth.landing.component";
+import { EventLandingComponent } from "./events/event-landing.component";
 import { ErrorService } from "./errors/error.service";
 
 import { HeaderComponent } from "./header.component";
@@ -29,7 +31,7 @@ import { ErrorComponent } from "./errors/error.component";
         AppComponent,
         EventComponent,
         EventListComponent, 
-        eventInputComponent,
+        EventInputComponent,
         EventsComponent,
         AuthenticationComponent, 
         HeaderComponent,
@@ -37,7 +39,9 @@ import { ErrorComponent } from "./errors/error.component";
         SignUpComponent, 
         SignInComponent,
         UserListComponent,
-        ErrorComponent
+        ErrorComponent,
+        AuthLandingComponent,
+        EventLandingComponent
     ],
     providers: [AuthService, ErrorService],
     imports: [BrowserModule, FormsModule, routing, ReactiveFormsModule, HttpModule],

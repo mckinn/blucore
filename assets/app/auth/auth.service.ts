@@ -52,7 +52,7 @@ export class AuthService {
 
 	getUsers () {
 
-		return this.http.get('http://localhost:3000/user/userlist')
+		return this.http.get('http://localhost:3000/user/users')
 			.map((response:Response) => {
 				console.log(response);
 				const users = response.json().obj;
@@ -62,6 +62,24 @@ export class AuthService {
 				}
 				this.users = transformedUsers;
 				return transformedUsers;
+			})
+			.catch((error: Response) => {
+				console.log(error);
+				this.errorService.handleError(error.json())
+				return Observable.throw(error.json());
+			});
+		
+	}
+	// get a user object from a user id.
+	getUser (uid: String) {
+		return this.http.get('http://localhost:3000/user/users/'+uid)
+			.map((response:Response) => {
+				console.log(response);
+				const user = response.json().obj;
+				const userObj = new User(user.email, '', user.firstName, user.lastName, user.wcpssId, user.school );
+				console.log("* * * * userObj * * * *");
+				console.log(userObj);
+				return userObj;
 			})
 			.catch((error: Response) => {
 				console.log(error);

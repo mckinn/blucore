@@ -16,9 +16,10 @@ export class EventService {
 
 	constructor(private http: Http, private errorService: ErrorService) {}
 
-	addEvent (msg:Event) {
-	
-		const body = JSON.stringify(msg);
+	addEvent (evt:Event) {
+		console.log("* * * * add event * * * *");
+		console.log(evt);
+		const body = JSON.stringify(evt);
 		const headers = new Headers({'Content-Type': 'application/json'});
 		const token = localStorage.getItem('token') 
 			? '?token='+ localStorage.getItem('token') 
@@ -30,15 +31,21 @@ export class EventService {
 			// of the just added event
 			.map((response: Response) => {
 				const result = response.json();
-				// const msg = new Event (result.obj.content, 'dummy', result.obj._id, null);
-				const msg = new Event (
-						result.obj.content, 
-						result.obj.user.firstName, 
-						result.obj._id, 
-						result.obj.user._id
+				console.log(result);
+				const evt = new Event (
+						result.obj.name, 
+						result.obj.description,
+						result.obj.date,
+						0,   // eventNumber - we'sort this out later.
+						result.obj._id, // the internal ID.
+						result.obj.time, 
+						result.obj.duration,
+						result.obj.school,
+						result.obj.ownerId.firstName + " " + result.obj.ownerId.lastName,
+						result.obj.ownerId._id
 					);
-				this.events.push(msg);
-				return msg;
+				this.events.push(evt);
+				return evt;
 			})
 			.catch((error: Response) => {
 				console.log(error);
@@ -53,9 +60,23 @@ export class EventService {
 			.map((response:Response) => {
 				const events = response.json().obj;
 				let transformedEvents: Event[] = [];
-				for (let msg of events) {
-					transformedEvents.push(new Event(msg.content, msg.user.firstName, msg._id, msg.user._id));
-				}
+				for (let evt of events) {
+					console.log(evt);
+					const newEvt = new Event (
+						evt.name, 
+						evt.description,
+						evt.date, 
+						evt.eventNumber,
+						evt._id, 
+						evt.time,
+						evt.duration,
+						evt.school,
+						evt.ownerId.firstName + " " + evt.ownerId.lastName,
+						evt.ownerId._id
+					);
+					console.log(newEvt);
+					transformedEvents.push(newEvt);
+				};
 				this.events = transformedEvents;
 				return transformedEvents;
 			})
@@ -72,15 +93,17 @@ export class EventService {
 		this.eventEditHappened.emit(event);
 	}
 
-	updateEvent (msg: Event) {
+	updateEvent (evt: Event) {
 		// update the server.
-		const body = JSON.stringify(msg);
+		const body = JSON.stringify(evt);
 		const headers = new Headers({'Content-Type': 'application/json'});
 		const token = localStorage.getItem('token') 
 			? '?token='+ localStorage.getItem('token') 
 			: '';
 		// creates an observable and returns it
-		return this.http.patch( 'http://localhost:3000/event/'+ msg.eventId + token, body, {headers: headers})
+		console.log("* * * * in updateEvent * * * *");
+		console.log(event);
+		return this.http.patch( 'http://localhost:3000/event/'+ evt.eventId + token, body, {headers: headers})
 			// this is an anonymous function that takes a Response and yields a response.json ????
 			.map((response: Response) => response.json())
 			.catch((error: Response) => {
@@ -90,15 +113,15 @@ export class EventService {
 			});
 	}
 
-	deleteEvent (msg:Event) {
+	deleteEvent (evt:Event) {
 
-		this.events.splice(this.events.indexOf(msg), 1);
+		this.events.splice(this.events.indexOf(evt), 1);
 		// update the server.
 		// creates an observable and returns it
 		const token = localStorage.getItem('token') 
 			? '?token='+ localStorage.getItem('token') 
 			: '';
-		return this.http.delete( 'http://localhost:3000/event/'+ msg.eventId + token)
+		return this.http.delete( 'http://localhost:3000/event/'+ evt.eventId + token)
 			// this is an anonymous function that takes a Response and yields a response.json ????
 			.map((response: Response) => response.json())
 			.catch((error: Response) => {

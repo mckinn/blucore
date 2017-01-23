@@ -7,7 +7,7 @@ var User = require('../models/user');
 
 router.get('/', function(req,res,next){
 	Event.find()
-		.populate('user', 'firstName')
+		.populate('ownerId')
 		.exec(function(err,events){
 			if (err) {
 				return res.status(500).json({
@@ -22,6 +22,7 @@ router.get('/', function(req,res,next){
 		});
 });
 
+// check for logged in user
 router.use('/',function(req,res,next){
 	jwt.verify(req.query.token, 'secretkey', function (err, decoded) {
 		if (err) {
@@ -34,7 +35,9 @@ router.use('/',function(req,res,next){
 	})
 });
 
+// create an event
 router.post('/', function (req, res, next) {
+	console.log(req);
 	var decoded = jwt.decode(req.query.token); 
 	User.findById(decoded.user._id, function(err, user){
 		if (err) {
@@ -43,11 +46,20 @@ router.post('/', function (req, res, next) {
 				error: err
 			});
 		};
+		
 		var event = new Event({
-			content: req.body.content,
-			user: user
-		});
-	
+			name: req.body.name,
+			description: req.body.description,
+			date: req.body.date,
+			eventNumber: req.body.eventNumber,
+			time: req.body.time,
+			duration: req.body.duration,
+			school: req.body.school,
+			ownerId: user
+			// _id is auto-populated.
+		}); 
+		console.log("* * * * new event * * * *");
+		console.log(event);
 		event.save( function (err, result) {
 			if (err) {
 				return res.status(500).json({
@@ -55,7 +67,9 @@ router.post('/', function (req, res, next) {
 					error: err
 				});
 			};
-			user.events.push(result);
+			// this should be the user that created the event, and thus it should be in the 
+			// user's events list.
+			user.events.push(result); 
 			user.save();
 			res.status(201).json({
 				message: 'Saved Event',
@@ -65,8 +79,9 @@ router.post('/', function (req, res, next) {
 	});
 });
 
-router.patch('/:msgId', function (req, res, next) {
-	Event.findById(req.params.msgId, function( err , event ){
+router.patch('/:evtId', function (req, res, next) {
+	console.log(req.params.evtId);
+	Event.findById(req.params.evtId, function( err , event ){
 		if (err) {
 			return res.status(500).json({
 			title: 'an error occurred in findById',
@@ -95,8 +110,8 @@ router.patch('/:msgId', function (req, res, next) {
 	}); 
 });
 
-router.delete('/:msgId', function (req, res, next) {
-	Event.findById(req.params.msgId, function( err , event ){
+router.delete('/:evtId', function (req, res, next) {
+	Event.findById(req.params.evtId, function( err , event ){
 		if (err) {
 			return res.status(500).json({
 			title: 'an error occurred in findById',

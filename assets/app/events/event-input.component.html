@@ -1,17 +1,51 @@
-<div class = "col-md-8 col-md-offset-2" >
-	<form (ngSubmit)="onSubmit(localRef)" #localRef="ngForm">
-		<div class = "form-group">
-			<label for="content">Content</label>
-			<!-- [] data binding that allows the data to be injected if events is not undefined -->
-			<input 
+<div class = "col-md-8 col-md-offset-2">
+	<form [formGroup]="myForm" (ngSubmit)="onSubmit()" #localRef="ngForm">
+		<div class="form-group">
+			<label  for="eventName">Event Name</label>
+			<input  class="form-control"
 				type="text" 
-				id="content" 
-				class="form-control"
-				[ngModel] = "event?.content" 
-				name=myContent
-				required> <!-- name appears to be the name given to the value -->
+				id="eventName" 
+				formControlName = "eventName" >
 		</div>
-		<button class="btn btn-danger" type="button" (click) = "onClear(localRef)">Clear</button>
-		<button class="btn btn-primary" type="submit">Save</button>
+		<div class="form-group">
+			<label  for="eventDescription">Event Description</label>
+			<textarea  class="form-control"
+				type="text" 
+				id="eventDescription" 
+				formControlName =  "eventDescription"   
+				rows="3">
+			</textarea>
+		</div>
+		<div  class="form-group">
+			<label for="eventDate">Date</label>
+			<input class = "form-control" 
+				type="date" 
+				id="eventDate" 
+				formControlName =  "eventDate" >
+		</div>
+		<div  class="form-group">
+			<label for="eventTime">Time</label>
+			<input class = "form-control" 
+				type="time" 
+				id="eventTime" 
+				formControlName =  "eventTime">
+		</div>
+		<div  class="form-group">
+			<label for="eventDuration">Duration</label>
+			<input class = "form-control" 
+				type="number" 
+				id="eventDuration" 
+				formControlName =  "eventDuration" >
+		</div>
+		<div  class="form-group">
+			<label for="eventSchool">School</label>
+			<input class = "form-control" 
+				type="string" 
+				id="eventSchool" 
+				formControlName =  "eventSchool">
+		</div>
+		<button class="btn btn-danger" type="button" (click) = "onClear(localRef)">Clear
+		</button>
+		<button class="btn btn-primary" type="submit" [disabled]="!myForm.valid">Save</button>
 	</form>
 </div>

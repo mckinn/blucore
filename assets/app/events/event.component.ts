@@ -4,7 +4,7 @@ import { Event } from "./event.model";
 import { EventService } from "./event.service";
 
 @Component ({
-	selector: 'app-event', 
+	selector: '[app-event]', 
 	templateUrl: './event.component.html',
 	styles: [`
     	.author {
@@ -40,6 +40,6 @@ export class EventComponent {
     }
 
     belongsToUser() {
-        return localStorage.getItem('userId') == this.event.userId;
+        return localStorage.getItem('userId') == this.event.ownerId;
     }
 }
