@@ -3,6 +3,7 @@
 import { Component, OnInit } from "@angular/core";
 
 import { FormGroup, FormControl, Validators, NgForm } from "@angular/forms";
+import { Router } from "@angular/router";
 import { EventService } from "./event.service";
 import { Event } from "./event.model";
 
@@ -18,7 +19,7 @@ export class EventInputComponent implements OnInit {
 	event:Event; 
 	myForm: FormGroup;
 
-	constructor(private eventService: EventService){}
+	constructor(private eventService: EventService, private router: Router){}
 
 	onSubmit(){
 		console.log("* * * * onSubmit * * * *");
@@ -76,17 +77,21 @@ export class EventInputComponent implements OnInit {
 	}
 
 	ngOnInit() {
-		this.myForm = new FormGroup({
-			eventName: new FormControl(null, Validators.required),
-			eventDescription: new FormControl(null, Validators.required),
-			eventDate: new FormControl(null, Validators.required),
-			eventTime: new FormControl(null, Validators.required),
-			eventDuration: new FormControl(null, Validators.required),
-			eventSchool: new FormControl(null, Validators.required)
-		});
-		console.log("* * * * ngOnInit * * * *");
+		console.log("* * * * ngOnInit - input start * * * *");
 		console.log(this.myForm);
-		console.log("* * * * ngOnInit * * * *");
+		if (!this.myForm) {
+			console.log("* * * creating a formgroup * * *");
+			this.myForm = new FormGroup({
+				eventName: new FormControl(null, Validators.required),
+				eventDescription: new FormControl(null, Validators.required),
+				eventDate: new FormControl(null, Validators.required),
+				eventTime: new FormControl(null, Validators.required),
+				eventDuration: new FormControl(null, Validators.required),
+				eventSchool: new FormControl(null, Validators.required)
+			});
+		};
+		console.log("* * * * ngOnInit - input * * * *");
+		console.log(this.myForm);
 		this.eventService.eventEditHappened.subscribe(
 				(event:Event) => {
 					console.log("* * * * eventEditHappened * * * *");
@@ -101,6 +106,7 @@ export class EventInputComponent implements OnInit {
 						eventSchool: event.school
 					});
 					console.log(this.myForm);
+					this.router.navigate(['/events/input']);
 				}
 			);
 	}

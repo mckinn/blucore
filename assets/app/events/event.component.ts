@@ -7,12 +7,6 @@ import { EventService } from "./event.service";
 	selector: '[app-event]', 
 	templateUrl: './event.component.html',
 	styles: [`
-    	.author {
-    		display: inline-block;
-    		font-style: italic;
-    		font-size: 12px;
-    		width: 80%;
-    	}
     	.config {
     		display: inline-block;
     		text-align: right;
