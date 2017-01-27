@@ -9,8 +9,9 @@ import {AuthService} from "../auth/auth.service";
 		<header class="row spacing">
 			<nav class="col-md-8 col-md-offset-2">
 				<ul class="nav nav-tabs"> 
-					<li routerLinkActive="active" *ngIf= "isLoggedIn()"><a [routerLink]="['input' ]">Enter event data</a></li>
-					<li routerLinkActive="active" *ngIf= "isLoggedIn()"><a [routerLink]="['list']">List events   </a></li>
+					<li routerLinkActive="active" *ngIf= "isLoggedIn()"><a [routerLink]="['input']">Event Details</a></li>
+					<li routerLinkActive="active" *ngIf= "isLoggedIn()"><a [routerLink]="['list']">All Events</a></li>
+					<li routerLinkActive="active" *ngIf= "isLoggedIn()"><a [routerLink]="['list']">My Events</a></li>
 				</ul>
 			</nav>
 		</header>

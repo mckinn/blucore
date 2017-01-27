@@ -79,7 +79,7 @@ router.post('/', function (req, res, next) {
 	});
 });
 
-router.patch('/:evtId', function (req, res, next) {
+router.get('/:evtId', function (req, res, next) {
 	console.log(req.params.evtId);
 	Event.findById(req.params.evtId, function( err , event ){
 		if (err) {
@@ -94,14 +94,49 @@ router.patch('/:evtId', function (req, res, next) {
 			error: { message: 'NOT FOUND'}
 			});
 		}
-		event.content = req.body.content;
-		event.save( function (err, result) {
+		console.log(req.params.evtId);
+		res.status(200).json({
+			message: 'Updated Event',
+			obj: event
+		});
+	}); 
+});
+
+router.patch('/:evtId', function (req, res, next) {
+	console.log(" ----------------------------------------------------------------- ");
+	Event.findById(req.params.evtId, function( err , evt ){
+		if (err) {
+			return res.status(500).json({
+			title: 'an error occurred in findById',
+			error: err
+			});
+		}
+		if (!evt) { //no event returned
+			return res.status(404).json({
+			title: 'cannot find the event',
+			error: { message: 'NOT FOUND'}
+			});
+		}
+		console.log(req.body);
+		console.log(evt);
+
+		if( req.body.name ) evt.name = req.body.name;
+		if( req.body.description ) evt.description = req.body.description;
+		if( req.body.date ) evt.date = req.body.date;
+		if( req.body.eventNumber ) evt.eventNumber = req.body.eventNumber;
+		if( req.body.time ) evt.time = req.body.time;
+		if( req.body.duration ) evt.duration = req.body.duration;
+		if( req.body.school ) evt.school = req.body.school;
+
+		console.log(evt);
+		evt.save( function (err, result) {
 			if (err) {
 				return res.status(500).json({
 					title:'An Error Occurred',
 					error: err
 				});
 			};
+			console.log(result);
 			res.status(200).json({
 				message: 'Updated Event',
 				obj: result

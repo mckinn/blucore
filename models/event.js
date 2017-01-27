@@ -15,6 +15,7 @@ var schema = new Schema({
 	time: {type: String, required: false},
 	duration: {type: String, required: false},
 	school: {type: String, required: false},
+	ownerName: {type: String, required: false},
 	ownerId: {type: Schema.Types.ObjectId, ref: 'User'},
 	participants: [ {type: Schema.Types.ObjectId, ref: 'User'} ]
 });

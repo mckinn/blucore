@@ -3,9 +3,11 @@
 import { Component, OnInit } from "@angular/core";
 
 import { FormGroup, FormControl, Validators, NgForm } from "@angular/forms";
-import { Router } from "@angular/router";
+import { Router, ActivatedRoute, Params } from "@angular/router";
 import { EventService } from "./event.service";
 import { Event } from "./event.model";
+
+import 'rxjs/add/operator/switchMap';
 
 
 @Component ({
@@ -19,7 +21,10 @@ export class EventInputComponent implements OnInit {
 	event:Event; 
 	myForm: FormGroup;
 
-	constructor(private eventService: EventService, private router: Router){}
+	constructor(
+		private eventService: EventService, 
+		private router: Router,
+		private route: ActivatedRoute){}
 
 	onSubmit(){
 		console.log("* * * * onSubmit * * * *");
@@ -76,9 +81,17 @@ export class EventInputComponent implements OnInit {
 		this.event = null;
 	}
 
+	isEmpty(obj) {
+    for(var prop in obj) {
+        if(obj.hasOwnProperty(prop))
+            return false;
+    	}
+
+    	return true;
+	}
+
 	ngOnInit() {
-		console.log("* * * * ngOnInit - input start * * * *");
-		console.log(this.myForm);
+		console.log("* * * * IC - ngOnInit - input start * * * *");
 		if (!this.myForm) {
 			console.log("* * * creating a formgroup * * *");
 			this.myForm = new FormGroup({
@@ -90,12 +103,22 @@ export class EventInputComponent implements OnInit {
 				eventSchool: new FormControl(null, Validators.required)
 			});
 		};
-		console.log("* * * * ngOnInit - input * * * *");
-		console.log(this.myForm);
-		this.eventService.eventEditHappened.subscribe(
-				(event:Event) => {
-					console.log("* * * * eventEditHappened * * * *");
-					console.log(event);
+		console.log(this.route.params);
+		if (!(Object.keys(this.route.snapshot.params).length === 0 && this.route.snapshot.params.constructor === Object)) {
+			console.log("present");
+			console.log(this.route.snapshot.params); 
+		}
+		console.log(this.route.url);
+		if (!(Object.keys(this.route.snapshot.params).length === 0 && this.route.snapshot.params.constructor === Object)) {
+			console.log("* * * * IC - params * * * *");
+			this.route.params.switchMap( (params: Params) => {
+				return this.eventService.getEvent(params['eventId'])
+			})
+			.subscribe( (event: Event) => {
+				console.log("* * * * IC - subscription activation * * * *");
+				console.log(this.myForm);
+				console.log(event);
+				if (event) {   // if there actually was a parameter...
 					this.event = event;
 					this.myForm.setValue({
 						eventName: event.name,
@@ -105,9 +128,10 @@ export class EventInputComponent implements OnInit {
 						eventDuration: event.duration,
 						eventSchool: event.school
 					});
-					console.log(this.myForm);
-					this.router.navigate(['/events/input']);
 				}
-			);
+				console.log("* * * * ngOnInit - end * * * *");
+				console.log(this.myForm);
+			});
+		}
 	}
 }
