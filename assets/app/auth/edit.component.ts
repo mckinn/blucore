@@ -74,6 +74,9 @@ export class EditComponent implements OnInit {
 	}
 
 	ngOnInit() {
+
+		let userId: string;
+
 		console.log("* * * * editing user * * * * ");
 		if (!this.myForm){
 			this.myForm = new FormGroup({
@@ -95,9 +98,15 @@ export class EditComponent implements OnInit {
 
 		if (!(Object.keys(this.route.snapshot.params).length === 0 && this.route.snapshot.params.constructor === Object)) {
 			console.log("* * * * parsing parameters * * * *");
-			this.route.params.switchMap( (params: Params) => {
-				return this.authService.getUser(params['userId'])
-			})
+			userId = this.route.snapshot.params['userId'];
+		} else {
+			if (this.authService.isLoggedIn) {
+				userId = this.authService.whoIsLoggedIn().userId;
+			}
+		}
+		console.log("User ID in edit",userId);
+		if (userId) {
+			return this.authService.getUser(userId)
 			.subscribe( (user: User) => { 
 				console.log("* * * * User Edit - subscription activation * * * *");
 				console.log(this.myForm);
