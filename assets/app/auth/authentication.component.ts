@@ -10,9 +10,9 @@ import { AuthService } from "./auth.service";
 			<nav class="col-md-8 col-md-offset-2">
 				<ul class="nav nav-tabs"> 
 					<li routerLinkActive="active" *ngIf="!isLoggedIn()"><a [routerLink]="['edit']">Sign Up  </a></li>
-					<li routerLinkActive="active" *ngIf="isLoggedIn()"> <a [routerLink]="['edit']"  >Edit  </a></li>
+					<li routerLinkActive="active" *ngIf="isLoggedIn()"> <a [routerLink]="['edit']">User Details</a></li>
 					<li routerLinkActive="active" *ngIf="!isLoggedIn()"><a [routerLink]="['signin']">Sign In  </a></li>
-					<li routerLinkActive="active" *ngIf= "isLoggedIn()"><a [routerLink]="['users' ]">User List</a></li>
+					<li routerLinkActive="active" *ngIf= "isLoggedInAdmin()"><a [routerLink]="['users' ]">User List</a></li>
 					<li routerLinkActive="active" *ngIf= "isLoggedIn()"><a [routerLink]="['logout']">Logout   </a></li>
 				</ul>
 			</nav>
@@ -29,6 +29,11 @@ export class AuthenticationComponent {
 
 	isLoggedIn () {
 		return this.authService.isLoggedIn();
+	}
+
+	isLoggedInAdmin () {
+		return this.authService.isLoggedIn()
+		&& this.authService.loggedInRole() == 'admin';
 	}
 
 }

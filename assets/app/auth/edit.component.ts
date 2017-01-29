@@ -93,7 +93,7 @@ export class EditComponent implements OnInit {
 		console.log(this.route.params);
 		console.log(this.route.url);
 
-		if (!(Object.keys(this.route.snapshot.params).length === 0 && 			this.route.snapshot.params.constructor === Object)) {
+		if (!(Object.keys(this.route.snapshot.params).length === 0 && this.route.snapshot.params.constructor === Object)) {
 			console.log("* * * * parsing parameters * * * *");
 			this.route.params.switchMap( (params: Params) => {
 				return this.authService.getUser(params['userId'])

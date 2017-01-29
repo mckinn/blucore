@@ -8,7 +8,6 @@ import { Observable } from "rxjs";
 
 import { User } from './user.model';
 import { Event } from '../events/event.model';
-
 import { ErrorService } from '../errors/error.service';
 
 @Injectable()
@@ -34,7 +33,7 @@ export class AuthService {
 				this.errorService.handleError(error.json())
 				return Observable.throw(error.json());
 			});
-	}
+		}
 
 	updateUser(user: User) {
 		const body = JSON.stringify(user);
@@ -51,8 +50,46 @@ export class AuthService {
 				this.errorService.handleError(error.json())
 				return Observable.throw(error.json());
 			});
-	}
-
+		}
+	getUsers () {
+		return this.http.get('http://localhost:3000/user/users')
+			.map((response:Response) => {
+				console.log(response);
+				const users = response.json().obj;
+				let transformedUsers: User[] = [];
+				for (let user of users) {
+					transformedUsers.push(new User(user.email, '', user.firstName, user.lastName, user.wcpssId, user.school, user.kind, user._id ));
+				}
+				this.users = transformedUsers;
+				return transformedUsers;
+			})
+			.catch((error: Response) => {
+				console.log(error);
+				this.errorService.handleError(error.json())
+				return Observable.throw(error.json());
+			});	
+		};
+	// get a user object from a user id.
+	getUser (uid: String) {
+		console.log(uid);
+		return this.http.get('http://localhost:3000/user/users/'+uid)
+			.map((response:Response) => {
+				console.log("in the users get response");
+				console.log(response);
+				const user = response.json().obj;
+				console.log(user);
+				const userObj = new User(user.email, '', user.firstName, user.lastName, user.wcpssId, user.school, user.kind, user._id, user.events );
+				console.log("* * * * userObj * * * *");
+				console.log(userObj);
+				return userObj;
+			})
+			.catch((error: Response) => {
+				console.log(error);
+				this.errorService.handleError(error.json())
+				return Observable.throw(error.json());
+			});
+		
+		}
 	signin(user: User) {
 		const body = JSON.stringify(user);
 		const headers = new Headers({'Content-Type': 'application/json'});
@@ -66,11 +103,11 @@ export class AuthService {
 				this.errorService.handleError(error.json())
 				return Observable.throw(error.json());
 			});
-	}
+		}
 
 	logout() {
 		localStorage.clear();
-	}
+		}
 
 	// ToDo - does this really belong here ?  
 	// It does not really touch the single instance of a user
@@ -79,15 +116,15 @@ export class AuthService {
 		console.log("user edit triggered in service");
 		console.log(user,user.userId);
 		this.router.navigate(['/authentication/edit',user.userId]);
-	}
+		}
 
 	isLoggedIn () {
 		return localStorage.getItem('token') !== null;
-	}
+		}
 
 	whoIsLoggedIn () {
 		return this.loggedInUser;
-	}
+		}
 
 	setWhoIsLoggedIn ( user: User, userId: string) {
 		console.log ("setWhoIsLoggedIn");
@@ -113,12 +150,15 @@ export class AuthService {
 				}
 			);
 		// return this.loggedInUser;
-	}
+		}
 
-	unSetWhoIsLoggedIn () {
+	clearWhoIsLoggedIn () {
 		this.loggedInUser = null;
-	}
+		}
 
+	loggedInRole() {
+		return this.loggedInUser.kind;
+		}
 	claimEvent ( event: Event ) { // add the specified event to the user's list of events.
 		
 		console.log ("claimEvent");
@@ -158,45 +198,5 @@ export class AuthService {
 			return Observable.throw(error);
 		};
 
-	getUsers () {
 
-		return this.http.get('http://localhost:3000/user/users')
-			.map((response:Response) => {
-				console.log(response);
-				const users = response.json().obj;
-				let transformedUsers: User[] = [];
-				for (let user of users) {
-					transformedUsers.push(new User(user.email, '', user.firstName, user.lastName, user.wcpssId, user.school, user.kind, user._id ));
-				}
-				this.users = transformedUsers;
-				return transformedUsers;
-			})
-			.catch((error: Response) => {
-				console.log(error);
-				this.errorService.handleError(error.json())
-				return Observable.throw(error.json());
-			});
-		
 	}
-	// get a user object from a user id.
-	getUser (uid: String) {
-		console.log(uid);
-		return this.http.get('http://localhost:3000/user/users/'+uid)
-			.map((response:Response) => {
-				console.log("in the users get response");
-				console.log(response);
-				const user = response.json().obj;
-				console.log(user);
-				const userObj = new User(user.email, '', user.firstName, user.lastName, user.wcpssId, user.school, user.kind, user._id, user.events );
-				console.log("* * * * userObj * * * *");
-				console.log(userObj);
-				return userObj;
-			})
-			.catch((error: Response) => {
-				console.log(error);
-				this.errorService.handleError(error.json())
-				return Observable.throw(error.json());
-			});
-		
-	}
-}
