@@ -10,21 +10,25 @@ export class ErrorService {
 
 	handleError(oops: any){
 
+		console.log("* * * * handling an error * * * *");
 		console.log(oops);
 		console.log(oops.error);
 
-		var errorMessage: string = oops.error.message;
-		console.log("0-> " + errorMessage);
+		var errorMessage: string = "";
 
-		for (let key in oops.error.errors) {
-			if (oops.error.errors.hasOwnProperty(key)) {
-				console.log(key + " -> " + oops.error.errors[key].message);
-				errorMessage += (" : " + oops.error.errors[key].path + " - " + oops.error.errors[key].message);
-				console.log("1-> " + errorMessage);
-			}
+		if (oops.error) {
+			console.log("0-> " + errorMessage);
+				for (let key in oops.error.errors) {
+					if (oops.error.errors.hasOwnProperty(key)) {
+						console.log(key + " -> " + oops.error.errors[key].message);
+						errorMessage += (" : " + oops.error.errors[key].path + " - " + oops.error.errors[key].message);
+						console.log("1-> " + errorMessage);
+					}
+				}
 		}
-		console.log("2-> " + errorMessage);
+		console.log("2-> ",oops.title, errorMessage);
 		const errorData = new Error (oops.title, errorMessage);
+		console.log(errorData);
 		this.errorHappened.emit(errorData);
 	}
 

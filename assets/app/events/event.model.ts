@@ -9,13 +9,14 @@ export class Event {
 	time?: string;
 	duration?: number; // minutes
 	school?: string;
+	kind?: string;
 	ownerName?: string;
 	ownerId?: string;
 
 
 
 	constructor(name:string, description: string, date:string, eventNumber: number, eventId: string, time?:string, duration?:number, 
-				school?: string, ownerName?:string, ownerId?:string) 
+				school?: string, kind?: string, ownerName?:string, ownerId?:string) 
 	{
 		this.name = name;
 		this.description = description;
@@ -25,6 +26,7 @@ export class Event {
 		this.time = time;
 		this.duration = duration;
 		this.school = school;
+		this.kind = kind;
 		this.ownerName = ownerName;
 		this.ownerId = ownerId;
 	} ;

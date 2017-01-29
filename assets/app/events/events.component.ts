@@ -11,7 +11,7 @@ import {AuthService} from "../auth/auth.service";
 				<ul class="nav nav-tabs"> 
 					<li routerLinkActive="active" *ngIf= "isLoggedIn()"><a [routerLink]="['input']">Event Details</a></li>
 					<li routerLinkActive="active" *ngIf= "isLoggedIn()"><a [routerLink]="['list']">All Events</a></li>
-					<li routerLinkActive="active" *ngIf= "isLoggedIn()"><a [routerLink]="['list']">My Events</a></li>
+					<li routerLinkActive="active" *ngIf= "isLoggedIn()"><a [routerLink]="['mylist']">My Events</a></li>
 				</ul>
 			</nav>
 		</header>

@@ -26,9 +26,13 @@ export class SignInComponent {
 				data => {
 					localStorage.setItem('token',data.token);
 					localStorage.setItem('userId',data.userId);
+					this.authService.setWhoIsLoggedIn(user, data.userId);
 					this.router.navigateByUrl('/');
 				},
-				error => console.error(error)
+				error => {
+					console.log("* * * * bad password error * * * ");
+					console.error(error);
+				}
 			);
 
 		this.myForm.reset();

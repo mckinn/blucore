@@ -1,4 +1,6 @@
-// user.model.ts
+
+import { Event } from '../events/event.model';
+
 export class User { 
 	// typescript provides the short form that results 
 	// from declaring the data elements in the constructor as 'public'
@@ -9,6 +11,8 @@ export class User {
 		public lastName?: string,
 		public wcpssId?: string,
 		public school?: string,  // wcpss student or teacher ID
-		public kind?: string // A, S, T, P, null
+		public kind?: string, // Admin, Student, Teacher, Parent
+		public userId?: string,
+		public myEvents?: string[]
 		) {}
 }

@@ -55,6 +55,7 @@ router.post('/', function (req, res, next) {
 			time: req.body.time,
 			duration: req.body.duration,
 			school: req.body.school,
+			kind: req.body.kind,
 			ownerId: user
 			// _id is auto-populated.
 		}); 
@@ -81,25 +82,27 @@ router.post('/', function (req, res, next) {
 
 router.get('/:evtId', function (req, res, next) {
 	console.log(req.params.evtId);
-	Event.findById(req.params.evtId, function( err , event ){
-		if (err) {
-			return res.status(500).json({
-			title: 'an error occurred in findById',
-			error: err
+	Event.findById(req.params.evtId)
+		.populate('ownerId')
+		.exec( function( err , event ){
+			if (err) {
+				return res.status(500).json({
+				title: 'an error occurred in findById',
+				error: err
+				});
+			}
+			if (!event) { //no event returned
+				return res.status(404).json({
+				title: 'cannot find the event',
+				error: { message: 'NOT FOUND'}
+				});
+			}
+			console.log(req.params.evtId);
+			res.status(200).json({
+				message: 'Updated Event',
+				obj: event
 			});
-		}
-		if (!event) { //no event returned
-			return res.status(404).json({
-			title: 'cannot find the event',
-			error: { message: 'NOT FOUND'}
-			});
-		}
-		console.log(req.params.evtId);
-		res.status(200).json({
-			message: 'Updated Event',
-			obj: event
-		});
-	}); 
+		}); 
 });
 
 router.patch('/:evtId', function (req, res, next) {
@@ -127,6 +130,7 @@ router.patch('/:evtId', function (req, res, next) {
 		if( req.body.time ) evt.time = req.body.time;
 		if( req.body.duration ) evt.duration = req.body.duration;
 		if( req.body.school ) evt.school = req.body.school;
+		if( req.body.kind ) evt.kind = req.body.kind;
 
 		console.log(evt);
 		evt.save( function (err, result) {

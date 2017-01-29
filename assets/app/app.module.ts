@@ -8,10 +8,11 @@ import { EventComponent } from "./events/event.component";
 import { EventListComponent } from "./events/event-list.component";
 import { EventInputComponent } from "./events/event-input.component";
 import { EventsComponent } from "./events/events.component";
+import { MyEventListComponent } from "./events/myevent-list.component";
 
 import { AuthenticationComponent } from "./auth/authentication.component";
 import { LogoutComponent } from "./auth/logout.component";
-import { SignUpComponent } from "./auth/signup.component";
+import { EditComponent } from "./auth/edit.component";
 import { SignInComponent } from "./auth/signin.component";
 import { UserListComponent } from "./auth/userlist.component";
 
@@ -24,6 +25,7 @@ import { ErrorService } from "./errors/error.service";
 import { HeaderComponent } from "./header.component";
 import { routing } from "./app.routing";
 import { ErrorComponent } from "./errors/error.component";
+import { UserComponent } from "./auth/user.component";
 
 
 @NgModule({
@@ -36,12 +38,14 @@ import { ErrorComponent } from "./errors/error.component";
         AuthenticationComponent, 
         HeaderComponent,
         LogoutComponent,
-        SignUpComponent, 
+        EditComponent, 
         SignInComponent,
         UserListComponent,
         ErrorComponent,
         AuthLandingComponent,
-        EventLandingComponent
+        EventLandingComponent,
+        MyEventListComponent,
+        UserComponent
     ],
     providers: [AuthService, ErrorService],
     imports: [BrowserModule, FormsModule, routing, ReactiveFormsModule, HttpModule],

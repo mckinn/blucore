@@ -2,9 +2,10 @@
 
 import { Component, OnInit } from "@angular/core";
 
-import { FormGroup, FormControl, Validators, NgForm } from "@angular/forms";
+import { FormGroup, FormControl, Validators, NgForm, AbstractControl } from "@angular/forms";
 import { Router, ActivatedRoute, Params } from "@angular/router";
 import { EventService } from "./event.service";
+import { AuthService } from "../auth/auth.service";
 import { Event } from "./event.model";
 
 import 'rxjs/add/operator/switchMap';
@@ -20,9 +21,11 @@ export class EventInputComponent implements OnInit {
 
 	event:Event; 
 	myForm: FormGroup;
+	isLocked: boolean;
 
 	constructor(
 		private eventService: EventService, 
+		private authService: AuthService,
 		private router: Router,
 		private route: ActivatedRoute){}
 
@@ -57,8 +60,8 @@ export class EventInputComponent implements OnInit {
 	 			this.myForm.value.eventName, 
 	 			this.myForm.value.eventDescription, 
 				this.myForm.value.eventDate,
-				0,
-				" 0 ", // does not matter because we don't fill it
+				0,     // event number - todo later.
+				" 0 ", // eventId does not matter because server fills it
 				this.myForm.value.eventTime,
 				this.myForm.value.eventDuration,
 				this.myForm.value.eventSchool
@@ -74,10 +77,19 @@ export class EventInputComponent implements OnInit {
 		}
 
  		this.myForm.reset();
+		this.myForm.enable();
+	}
+
+
+	onJoin(){
+		// basically - add the current event to the user's queue, and 
+		// add the user to the list of users for the event.
+		// this needs to wait until we have the roles stuff sorted out.
 	}
 
 	onClear(form: NgForm){
 		this.myForm.reset();
+		this.myForm.enable();
 		this.event = null;
 	}
 
@@ -88,6 +100,10 @@ export class EventInputComponent implements OnInit {
     	}
 
     	return true;
+	}
+
+	isNotMine(event: Event) {
+		return (this.authService.whoIsLoggedIn().userId != event.ownerId);
 	}
 
 	ngOnInit() {
@@ -102,19 +118,16 @@ export class EventInputComponent implements OnInit {
 				eventDuration: new FormControl(null, Validators.required),
 				eventSchool: new FormControl(null, Validators.required)
 			});
+
 		};
 		console.log(this.route.params);
-		if (!(Object.keys(this.route.snapshot.params).length === 0 && this.route.snapshot.params.constructor === Object)) {
-			console.log("present");
-			console.log(this.route.snapshot.params); 
-		}
 		console.log(this.route.url);
 		if (!(Object.keys(this.route.snapshot.params).length === 0 && this.route.snapshot.params.constructor === Object)) {
 			console.log("* * * * IC - params * * * *");
 			this.route.params.switchMap( (params: Params) => {
 				return this.eventService.getEvent(params['eventId'])
 			})
-			.subscribe( (event: Event) => {
+			.subscribe( (event: Event) => { 
 				console.log("* * * * IC - subscription activation * * * *");
 				console.log(this.myForm);
 				console.log(event);
@@ -129,6 +142,12 @@ export class EventInputComponent implements OnInit {
 						eventSchool: event.school
 					});
 				}
+				// the form is diabled if it is filled with data and not owned by me.
+				if (this.isNotMine(this.event)) {
+					console.log("disable");
+					this.myForm.disable();
+				}
+
 				console.log("* * * * ngOnInit - end * * * *");
 				console.log(this.myForm);
 			});

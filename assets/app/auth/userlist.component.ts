@@ -16,15 +16,11 @@ import { User } from "./user.model";
 						<th>Email</th>
 						<th>WCPSS ID</th>
 						<th>School</th>
+						<th>Kind</th>
 					</tr>
 			    </thead>
 			    <tbody>
-					<tr *ngFor="let oneuser of users">
-						<td> {{ oneuser.firstName }} </td>
-						<td> {{ oneuser.lastName }}  </td>
-						<td> {{ oneuser.email }} </td>
-						<td> {{ oneuser.wcpssId }} </td>
-						<td> {{ oneuser.school }} </td>
+					<tr *ngFor="let usr of users" app-user [user]="usr">
 					</tr>
 				</tbody>
 			</table>
@@ -43,6 +39,7 @@ export class UserListComponent implements OnInit {
     	this.authService.getUsers()
     		.subscribe(
     			(users: User[]) => {
+					console.log("* * * * getusers * * * *");
     				console.log(users);
     				this.users = users;
     				console.log(this.users);

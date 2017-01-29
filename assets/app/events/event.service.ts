@@ -13,7 +13,6 @@ import { ErrorService } from "../errors/error.service";
 export class EventService {
 
 	private events: Event[] = [];
-	eventEditHappened = new EventEmitter<Event>();
 
 	constructor(private http: Http, private errorService: ErrorService, private router: Router) {}
 
@@ -76,6 +75,7 @@ export class EventService {
 					evt.time,
 					evt.duration,
 					evt.school,
+					evt.kind,
 					evt.ownerId.firstName + " " + evt.ownerId.lastName,
 					evt.ownerId._id
 				);
@@ -89,9 +89,7 @@ export class EventService {
 		});
 	}
 
-
 	getEvents () {
-
 		return this.http.get('http://localhost:3000/event')
 			.map((response:Response) => {
 				const events = response.json().obj;
@@ -107,6 +105,7 @@ export class EventService {
 						evt.time,
 						evt.duration,
 						evt.school,
+						evt.kind,
 						evt.ownerId.firstName + " " + evt.ownerId.lastName,
 						evt.ownerId._id
 					);
@@ -128,7 +127,6 @@ export class EventService {
 		// prompt the loading of the event
 		console.log("edit triggered in service");
 		this.router.navigate(['/events/input',event.eventId]);
-		this.eventEditHappened.emit(event);
 	}
 
 	updateEvent (evt: Event) {

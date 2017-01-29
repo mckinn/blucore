@@ -5,7 +5,8 @@
 			<input  class="form-control"
 				type="text" 
 				id="eventName" 
-				formControlName = "eventName" >
+				formControlName = "eventName"
+				 >
 		</div>
 		<div class="form-group">
 			<label  for="eventDescription">Event Description</label>
@@ -44,8 +45,9 @@
 				id="eventSchool" 
 				formControlName =  "eventSchool">
 		</div>
-		<button class="btn btn-danger" type="button" (click) = "onClear(localRef)">Clear
+		<button class="btn btn-danger" type="button" (click) = "onClear(localRef)" [disabled]="myForm.disabled">Clear
 		</button>
 		<button class="btn btn-primary" type="submit" [disabled]="!myForm.valid">Save</button>
+		<button class="btn btn-primary" type="button" (click) = "onJoin(localRef)" [disabled]="!myForm.disabled && myForm.valid">signup</button>
 	</form>
 </div>

@@ -1,5 +1,7 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { EventService } from './events/event.service';
+import { AuthService } from './auth/auth.service';
+import { User } from './auth/user.model';
 
 // decorators - not sure about this.
 
@@ -9,6 +11,17 @@ import { EventService } from './events/event.service';
 	providers: [EventService]
 })
 
-export class AppComponent {
+export class AppComponent implements OnInit{
+
+    constructor(private authService: AuthService, private eventService: EventService){}
+
+    ngOnInit() {
+
+        if (this.authService.isLoggedIn()) {
+            const userId: string = localStorage.getItem('userId');  // should not be null at this point
+            this.authService.setWhoIsLoggedIn ( new User(null,null), userId); // recover the user
+        }
+
+    }
 
 }

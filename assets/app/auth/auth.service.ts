@@ -1,25 +1,50 @@
 
-import { Http, Response, Headers } from "@angular/http";
+import { Http, Response, ResponseOptions, Headers } from "@angular/http";
 import { Injectable, EventEmitter } from "@angular/core";
+import { Router } from "@angular/router";
 
 import "rxjs/Rx";
 import { Observable } from "rxjs";
 
 import { User } from './user.model';
+import { Event } from '../events/event.model';
+
 import { ErrorService } from '../errors/error.service';
 
 @Injectable()
 export class AuthService {
 
 	private users: User[] = [];
-	constructor (private http: Http, private errorService: ErrorService){}
+	private loggedInUser: User;
 
-	signup(user: User) {
+	constructor (private http: Http, 
+				private errorService: ErrorService, 
+				private router: Router,
+				private responseOptions: ResponseOptions){}
+
+	addUser(user: User) {
 		const body = JSON.stringify(user);
 		const headers = new Headers({'Content-Type': 'application/json'});
 		console.log(user);
 		console.log(body);
 		return this.http.post('http://localhost:3000/user',body,{headers: headers})
+			.map((response: Response) => response.json())
+			.catch((error: Response) => {
+				console.log(error);
+				this.errorService.handleError(error.json())
+				return Observable.throw(error.json());
+			});
+	}
+
+	updateUser(user: User) {
+		const body = JSON.stringify(user);
+		const headers = new Headers({'Content-Type': 'application/json'});
+		console.log(user);
+		console.log(body);
+		return this.http.patch(
+				'http://localhost:3000/user/users/'+user.userId,
+				body,
+				{headers: headers})
 			.map((response: Response) => response.json())
 			.catch((error: Response) => {
 				console.log(error);
@@ -36,6 +61,7 @@ export class AuthService {
 		return this.http.post('http://localhost:3000/user/signin',body,{headers: headers})
 			.map((response: Response) => response.json())
 			.catch((error: Response) => {
+				console.log("* * * * signin error handler * * * *");
 				console.log(error);
 				this.errorService.handleError(error.json())
 				return Observable.throw(error.json());
@@ -46,9 +72,91 @@ export class AuthService {
 		localStorage.clear();
 	}
 
+	// ToDo - does this really belong here ?  
+	// It does not really touch the single instance of a user
+	editUser (user: User) {
+		// prompt the loading of the event
+		console.log("user edit triggered in service");
+		console.log(user,user.userId);
+		this.router.navigate(['/authentication/edit',user.userId]);
+	}
+
 	isLoggedIn () {
 		return localStorage.getItem('token') !== null;
 	}
+
+	whoIsLoggedIn () {
+		return this.loggedInUser;
+	}
+
+	setWhoIsLoggedIn ( user: User, userId: string) {
+		console.log ("setWhoIsLoggedIn");
+		console.log (user);
+		this.loggedInUser = user;
+		this.loggedInUser.userId = userId;
+		console.log (this.loggedInUser);
+		this.getUser( this.loggedInUser.userId)
+			.subscribe(
+				data => {
+					console.log("data from getUser");
+					console.log(data);
+					if (!this.loggedInUser.firstName) this.loggedInUser.firstName = data.firstName;
+					if (!this.loggedInUser.lastName) this.loggedInUser.lastName = data.lastName;
+					if (!this.loggedInUser.email) this.loggedInUser.email = data.email;
+					if (!this.loggedInUser.school) this.loggedInUser.school = data.school;
+					if (!this.loggedInUser.wcpssId) this.loggedInUser.wcpssId = data.wcpssId;
+					if (!this.loggedInUser.kind) this.loggedInUser.kind = data.kind;
+					if (!this.loggedInUser.userId) this.loggedInUser.userId = data.UserId;
+					if (!this.loggedInUser.myEvents) this.loggedInUser.myEvents = data.myEvents;
+					console.log (this.loggedInUser);
+					
+				}
+			);
+		// return this.loggedInUser;
+	}
+
+	unSetWhoIsLoggedIn () {
+		this.loggedInUser = null;
+	}
+
+	claimEvent ( event: Event ) { // add the specified event to the user's list of events.
+		
+		console.log ("claimEvent");
+		console.log (event);
+
+		let error: Object;
+		
+		if ((this.loggedInUser) && (event) && (event.eventId)) {
+
+			// I have to update the user.
+			if (this.loggedInUser.myEvents.find(
+				function(current: string){
+					return ( current == event.eventId )}))	
+				{
+					error = {
+						title:"The event is already there",
+						error: {
+							errors: [{message:"this is a secondary message"}]
+						}
+					};
+				} else {
+					console.log("Adding the selected item: ",this.loggedInUser.myEvents);
+					this.loggedInUser.myEvents.push(event.eventId);
+					console.log(this.loggedInUser.myEvents);
+					return this.updateUser(this.loggedInUser);
+				}
+			} else {
+				error = {
+					title:"User cannot claim event",
+					error: {
+						errors: [{message:"this is a secondary message"}]
+					}
+				};
+			}
+			console.log("the error I created", error);
+			this.errorService.handleError(error);
+			return Observable.throw(error);
+		};
 
 	getUsers () {
 
@@ -58,7 +166,7 @@ export class AuthService {
 				const users = response.json().obj;
 				let transformedUsers: User[] = [];
 				for (let user of users) {
-					transformedUsers.push(new User(user.email, '', user.firstName, user.lastName, user.wcpssId, user.school ));
+					transformedUsers.push(new User(user.email, '', user.firstName, user.lastName, user.wcpssId, user.school, user.kind, user._id ));
 				}
 				this.users = transformedUsers;
 				return transformedUsers;
@@ -72,11 +180,14 @@ export class AuthService {
 	}
 	// get a user object from a user id.
 	getUser (uid: String) {
+		console.log(uid);
 		return this.http.get('http://localhost:3000/user/users/'+uid)
 			.map((response:Response) => {
+				console.log("in the users get response");
 				console.log(response);
 				const user = response.json().obj;
-				const userObj = new User(user.email, '', user.firstName, user.lastName, user.wcpssId, user.school );
+				console.log(user);
+				const userObj = new User(user.email, '', user.firstName, user.lastName, user.wcpssId, user.school, user.kind, user._id, user.events );
 				console.log("* * * * userObj * * * *");
 				console.log(userObj);
 				return userObj;

@@ -21,6 +21,7 @@ export class LogoutComponent {
 	onLogout() {
 		this.authService.logout();
 		console.log("this.router.navigate(['/authentication', 'signin']);");
+		this.authService.unSetWhoIsLoggedIn();
 		this.router.navigate(['/authentication', 'signin']);
 	}
 }

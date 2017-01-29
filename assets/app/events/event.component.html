@@ -7,9 +7,10 @@
 <td>
 	<!-- <footer class= "panel-footer"> -->
 		<div>
-			<a (click)="onEdit()" *ngIf="belongsToUser()">Edit</a>
-			<a (click)="onDelete()" *ngIf="belongsToUser()">Delete</a>
-			<a (click)="onEdit()" *ngIf="belongsToUser()">View</a>
+			<a (click)="onEdit()" *ngIf="showEdit()">Edit</a>
+			<a (click)="onDelete()" *ngIf="showEdit()">Delete</a>
+			<a (click)="onEdit()" *ngIf="showView() && !showEdit()">View</a>
+			<a (click)="onSelect()" *ngIf="showView() && !showEdit()">Select</a>
 		</div>
 	<!-- </footer> -->
 </td>
