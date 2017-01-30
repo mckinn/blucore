@@ -27,13 +27,13 @@ export class UserComponent {
     } */
 	
 	showView() {
-		return (true) // somebody has to be logged on
+		return (false) // somebody has to be logged on
 	}
 
 	showEdit() {
 		return ((localStorage.getItem('userId') != null) // somebody has to be logged on
 			// ToDo - remove this once we have some admin users
-			// &&	(this.authService.whoIsLoggedIn().kind == "admin" )
+			&&	(this.authService.whoIsLoggedIn().kind == "admin" )
 			)  // and we need to be an admin
 	}
 

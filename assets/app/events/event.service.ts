@@ -57,8 +57,7 @@ export class EventService {
 	}
 
 	getEvent (eventId : string) {
-		console.log("* * * * in getevent - eventId= * * * *");
-		console.log(eventId);
+		console.log("* * * * in getevent - eventId= * * * *", eventId);
 		const token = localStorage.getItem('token') 
 			? '?token='+ localStorage.getItem('token') 
 			: '';

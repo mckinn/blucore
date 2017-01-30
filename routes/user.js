@@ -46,6 +46,7 @@ router.patch('/users/:uid', function( req, res, next) {
 				error: err
 			});
 		};
+		console.log("---------------------- Updating user -------------------")
 		console.log(req.body);
 		console.log(user);
 
@@ -55,7 +56,8 @@ router.patch('/users/:uid', function( req, res, next) {
 		if( req.body.wcpssId ) user.wcpssId = req.body.wcpssId;
 		if( req.body.school ) user.school = req.body.school;
 		if( req.body.kind ) user.kind = req.body.kind;
-		// don't touch the list of events, or the _id
+		if( req.body.myEvents ) user.events = req.body.myEvents;
+		// don't touch the _id
 		// only touch the password if it is not null
 		if( req.body.password ) {
 			console.log("* * * * password change request * * * * ");

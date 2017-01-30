@@ -16,6 +16,7 @@ export class EditComponent implements OnInit {
 
 	myForm: FormGroup;
 	user: User;
+	userId: string;
 
 	constructor( private authService: AuthService,
 				private router: Router,
@@ -46,7 +47,7 @@ export class EditComponent implements OnInit {
 				);
 			// allow the form to be re-submitted with updates so leave it populated
 		} else { // create a new user
-			const user = new User(
+			this.user = new User(
 				this.myForm.value.email, 
 				this.myForm.value.password, 
 				this.myForm.value.firstName, 
@@ -55,7 +56,7 @@ export class EditComponent implements OnInit {
 				this.myForm.value.school,
 				this.myForm.value.kind
 				);
-
+			console.log("in submit", this.myForm, this.user);
 			this.authService.addUser( this.user )
 				.subscribe(
 					data => console.log(data),
@@ -73,11 +74,35 @@ export class EditComponent implements OnInit {
 	
 	}
 
+	buttonIsPresent() {
+		/* The ability to submit  something in the user view ( the criteria for the button existence) is…
+		• It is me.
+		• I am an admin and it is anybody including me (note that admins cannot add users)
+		• Nobody is logged in, so it is a signup
+		Otherwise there is just no button. */
+
+		// console.log("* * * * checking submit button * * * *")
+		// console.log("logged in: ",this.authService.isLoggedIn());
+		if (this.authService.isLoggedIn()) {
+			console.log(
+					this.authService.whoIsLoggedIn().userId,
+					this.userId,this.authService.whoIsLoggedIn().kind);
+		}
+		
+		// return early to avoid NPE
+		if	( !this.authService.isLoggedIn()) return true; // nobody is logged in
+		return (( this.authService.whoIsLoggedIn().userId == this.userId ) || // it is me
+				( this.authService.whoIsLoggedIn().kind == "admin") // or I'm an admin
+		);
+
+	}
+
 	ngOnInit() {
 
-		let userId: string;
+		console.log("* * * * in edit component * * * *");
+		this.userId = null;
 
-		console.log("* * * * editing user * * * * ");
+		// console.log("* * * * editing user * * * * ");
 		if (!this.myForm){
 			this.myForm = new FormGroup({
 				firstName: new FormControl(null, Validators.required),
@@ -95,18 +120,21 @@ export class EditComponent implements OnInit {
 		console.log(this.myForm);
 		console.log(this.route.params);
 		console.log(this.route.url);
+		console.log("* * * * in edit component (2) * * * *");
 
 		if (!(Object.keys(this.route.snapshot.params).length === 0 && this.route.snapshot.params.constructor === Object)) {
 			console.log("* * * * parsing parameters * * * *");
-			userId = this.route.snapshot.params['userId'];
+			this.userId = this.route.snapshot.params['userId'];
 		} else {
-			if (this.authService.isLoggedIn) {
-				userId = this.authService.whoIsLoggedIn().userId;
+			if (this.authService.isLoggedIn()) {
+				console.log("passed the logged in test");
+				this.userId = this.authService.whoIsLoggedIn().userId;
 			}
 		}
-		console.log("User ID in edit",userId);
-		if (userId) {
-			return this.authService.getUser(userId)
+		console.log("before checking this.userId");
+		if (this.userId) {
+			console.log("User ID in edit",this.userId);
+			return this.authService.getUser(this.userId)
 			.subscribe( (user: User) => { 
 				console.log("* * * * User Edit - subscription activation * * * *");
 				console.log(this.myForm);

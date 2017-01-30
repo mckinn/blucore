@@ -1,5 +1,7 @@
 // event.component.ts
 import { Component, Input } from "@angular/core";
+import { Router } from "@angular/router";
+
 import { Event } from "./event.model";
 import { User } from "../auth/user.model";
 import { EventService } from "./event.service";
@@ -23,7 +25,9 @@ export class EventComponent {
 	@Input() 
     event: Event; 
 
-    constructor(private eventService: EventService, private authService: AuthService){}
+    constructor(private eventService: EventService, 
+			private authService: AuthService,
+			private router: Router){}
 
 	onEdit() {
 		this.eventService.editEvent(this.event);
@@ -43,17 +47,34 @@ export class EventComponent {
 				error => console.error("error in subscription in claimEvent",error)
 			);
     }
+
+	onShowTeacher(){
+		this.router.navigate(['/authentication/edit',this.event.ownerId]);
+	}
 	
-	showView() {
+	eventIsNotMine() {
 		return ((localStorage.getItem('userId') != this.event.ownerId) &&
 				(localStorage.getItem('userId') != null)
 		) // somebody ELSE has to be logged on
 	}
 
+	iHaveNotSelectedThis() {
+		// the eventId is not in my list.
+		// replicated in the list and in edit component - need to refactor ToDo
+		return this.authService.notInMyList(this.event.eventId);
+	}
+
+
 	showEdit() {
 		return ((localStorage.getItem('userId') == this.event.ownerId) // It must be mine and I must be allowed to edit
 			&&	( (this.authService.whoIsLoggedIn().kind == "admin") ||  
 				(this.authService.whoIsLoggedIn().kind == "teacher") ))
+	}
+
+
+	iAmAStudent() {
+		// console.log("* * * * I am a teacher * * * *",this.authService.whoIsLoggedIn().kind);
+		return (this.authService.whoIsLoggedIn().kind == 'student');
 	}
 
 }

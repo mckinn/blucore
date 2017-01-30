@@ -3,14 +3,14 @@
 <td> {{ event.time }} </td>
 <td> {{ event.duration }} </td>
 <td> {{ event.school }} </td>
-<td> {{ event.ownerName }} </td>
+<td><a (click)="onShowTeacher()"> {{ event.ownerName }}</a> </td>
 <td>
 	<!-- <footer class= "panel-footer"> -->
 		<div>
 			<a (click)="onEdit()" *ngIf="showEdit()">Edit</a>
 			<a (click)="onDelete()" *ngIf="showEdit()">Delete</a>
-			<a (click)="onEdit()" *ngIf="showView() && !showEdit()">View</a>
-			<a (click)="onSelect()" *ngIf="showView() && !showEdit()">Select</a>
+			<a (click)="onEdit()" *ngIf="eventIsNotMine() && !showEdit()">View</a>
+			<a (click)="onSelect()" *ngIf="eventIsNotMine() && iAmAStudent() && iHaveNotSelectedThis()">Select</a>
 		</div>
 	<!-- </footer> -->
 </td>

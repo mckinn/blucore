@@ -120,6 +120,7 @@ router.patch('/:evtId', function (req, res, next) {
 			error: { message: 'NOT FOUND'}
 			});
 		}
+		console.log("------------------ in patch ------------------");
 		console.log(req.body);
 		console.log(evt);
 

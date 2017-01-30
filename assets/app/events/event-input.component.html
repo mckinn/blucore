@@ -45,9 +45,14 @@
 				id="eventSchool" 
 				formControlName =  "eventSchool">
 		</div>
-		<button class="btn btn-danger" type="button" (click) = "onClear(localRef)" [disabled]="myForm.disabled">Clear
+		<button class="btn btn-danger" type="button" (click) = "onClear(localRef)" [disabled]="myForm.disabled" *ngIf="iAmATeacher()">Clear
 		</button>
-		<button class="btn btn-primary" type="submit" [disabled]="!myForm.valid">Save</button>
-		<button class="btn btn-primary" type="button" (click) = "onJoin(localRef)" [disabled]="!myForm.disabled && myForm.valid">signup</button>
+		<button class="btn btn-primary" type="submit" [disabled]="!myForm.valid"  *ngIf= "iAmATeacher()">Save</button>
+		<button class="btn btn-primary" 
+				type="button" 
+				(click) = "onJoin(localRef)" 
+				[disabled]="!myForm.disabled && myForm.valid" 
+				*ngIf= "iHaveNotSelectedThis() && iAmAStudent()"
+				>Signup</button>
 	</form>
 </div>

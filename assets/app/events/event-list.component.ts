@@ -3,6 +3,7 @@
 import { Component, OnInit } from "@angular/core";
 
 import { EventService } from "./event.service";
+import { AuthService } from "../auth/auth.service";
 import { Event } from "./event.model";
 
 @Component ({
@@ -34,7 +35,7 @@ import { Event } from "./event.model";
 export class EventListComponent implements OnInit {
 
 	events: Event[];
-    constructor( private eventService: EventService ) {}
+    constructor( private eventService: EventService, private authService: AuthService ) {}
 
     ngOnInit () {
     	this.eventService.getEvents()
