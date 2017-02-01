@@ -9,8 +9,8 @@ import { Event } from "./event.model";
 @Component ({
 	selector: 'app-event-list',
 	template: `
-		<div class = "col-md-8 col-md-offset-2">
-			<table class="table table-hover">
+		<div class = "col-md-8 col-md-offset-2 panel panel-primary panel-transparent">  <!-- ToDo --> 
+			<table class="table table-hover panel-heading">
 			    <thead>
 					<tr>
 						<th>Name:id</th>
