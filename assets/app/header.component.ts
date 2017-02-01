@@ -7,13 +7,24 @@ import { AuthService } from "./auth/auth.service";
 	selector: 'app-header',
 	template: `
 		<header class="row">
-		<nav class="col-md-6 col-md-offset-2">
-			<ul class = "nav nav-pills">
-				<li routerLinkActive="active"><a [routerLink]="['/authentication']">User Manager</a></li>
-				<li routerLinkActive="active"><a [routerLink]="['/events']">Event Manager</a></li>
-			</ul>
-		</nav>
-		<span class="col-md-2">{{whoIsLoggedIn()}}</span>
+			<nav class="col-md-6 col-md-offset-2">
+				<ul class = "nav nav-pills">
+					<li routerLinkActive="active"><a [routerLink]="['/authentication']">User Manager</a></li>
+					<li routerLinkActive="active"><a [routerLink]="['/events']">Event Manager</a></li>
+					<li>
+						<div class="dropdown">
+							<button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+								Dropdown button
+							</button>
+							<div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+								<a class="dropdown-item" href="#">Action</a>
+								<a class="dropdown-item" href="#">Another action</a>
+								<a class="dropdown-item" href="#">Something else here</a>
+							</div>
+						</div>
+					</li>
+				</ul>
+			</nav>
 		</header>
 	`
 })
