@@ -48,3 +48,4 @@ node_modules
 .apdisk
 public/js/app/bundle.js
 npm-debug.log
+public/js/app/bundle.js

@@ -10,13 +10,13 @@ import {AuthService} from "../auth/auth.service";
 		<header class="row spacing">
 			<nav class="col-md-6 col-md-offset-2">
 				<ul class="nav nav-tabs"> 
-					<li routerLinkActive="active" *ngIf= "activeForTeachers()"><a [routerLink]="['input']">Event Details</a></li>
-					<li routerLinkActive="active" class="disabled" *ngIf= "!activeForTeachers()"><a>Event Details</a></li>
+					<li routerLinkActive="active" *ngIf= "activeForTeachers() && isLoggedIn()"><a [routerLink]="['input']">Event Details</a></li>
+					<li routerLinkActive="active" class="disabled" *ngIf= "!activeForTeachers() && isLoggedIn()"><a>Event Details</a></li>
 					<li routerLinkActive="active" *ngIf= "isLoggedIn()"><a [routerLink]="['list']">All Events</a></li>
 					<li routerLinkActive="active" *ngIf= "isLoggedIn() && !isAdmin()"><a [routerLink]="['mylist']">My Events</a></li>
+					<li routerLinkActive="active" *ngIf="!isLoggedIn()"><a [routerLink]="['signin']">Sign In  </a></li>
 					<li routerLinkActive="active" *ngIf="!isLoggedIn()"><a [routerLink]="['edit']">Sign Up  </a></li>
 					<li routerLinkActive="active" *ngIf="isLoggedIn()"> <a [routerLink]="['edit']">User Details</a></li>
-					<li routerLinkActive="active" *ngIf="!isLoggedIn()"><a [routerLink]="['signin']">Sign In  </a></li>
 					<li routerLinkActive="active" *ngIf= "isLoggedInAdmin()"><a [routerLink]="['users' ]">User List</a></li>
 				</ul>
 			</nav>
@@ -27,9 +27,9 @@ import {AuthService} from "../auth/auth.service";
 						{{nameIsLoggedIn()}}<span class="caret"></span>
 						</a>
 						<ul class="dropdown-menu">
-							<li class="text-center">{{roleIsLoggedIn()}}</li>
-							<li><a class="text-center" [routerLink]="['edit']">User Details</a></li>
-							<li class="text-center"><a [routerLink]="['logout']">Logout</a></li>
+							<li> <a class="text-right" >{{roleIsLoggedIn()}}</a></li>
+							<li> <a class="text-right" [routerLink]="['edit']">User Details</a></li>
+							<li (click)="onLogout()"> <a href=#  class="text-right">Logout</a></li>
 						</ul>
 					</li>
 				</ul>

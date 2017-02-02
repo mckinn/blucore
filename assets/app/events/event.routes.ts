@@ -5,6 +5,7 @@ import { EventListComponent } from "./event-list.component";
 import { MyEventListComponent } from "./myevent-list.component";
 import { EventLandingComponent} from "./event-landing.component";
 import { EditComponent } from "../auth/edit.component";
+import { SignInComponent } from "../auth/signin.component";
 import { UserListComponent } from "../auth/userlist.component";
 import { LogoutComponent } from "../auth/logout.component";
 
@@ -18,6 +19,7 @@ export const EVENT_ROUTES: Routes = [
 	{ path: 'edit', component: EditComponent },
 	{ path: 'edit/:userId', component: EditComponent },
 	{ path: 'users', component: UserListComponent },
-	{ path: 'logout', component: LogoutComponent }
+	{ path: 'logout', component: LogoutComponent },
+	{ path: 'signin', component: SignInComponent },
 
 ];

@@ -10,7 +10,7 @@ import { Event } from "./event.model";
 	selector: 'app-event-list',
 	template: `
 		<div class = "col-md-8 col-md-offset-2 panel panel-primary panel-transparent">  <!-- ToDo --> 
-			<table class="table table-hover panel-heading">
+			<table class="table table-hover panel-body">
 			    <thead>
 					<tr>
 						<th>Name:id</th>
