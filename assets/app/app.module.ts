@@ -18,6 +18,7 @@ import { UserListComponent } from "./auth/userlist.component";
 
 
 import { AuthService } from "./auth/auth.service";
+import { EventService } from "./events/event.service";
 import { AuthLandingComponent } from "./auth/auth.landing.component";
 import { EventLandingComponent } from "./events/event-landing.component";
 import { ErrorService } from "./errors/error.service";
@@ -47,7 +48,7 @@ import { UserComponent } from "./auth/user.component";
         MyEventListComponent,
         UserComponent
     ],
-    providers: [AuthService, ErrorService],
+    providers: [AuthService, ErrorService, EventService],
     imports: [BrowserModule, FormsModule, routing, ReactiveFormsModule, HttpModule],
     bootstrap: [AppComponent]
 })

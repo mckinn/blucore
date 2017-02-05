@@ -7,8 +7,7 @@ import { User } from './auth/user.model';
 
 @Component({
     selector: 'my-app',
-    templateUrl: './app.component.html', 
-	providers: [EventService]
+    templateUrl: './app.component.html'  // , providers: [EventService]
 })
 
 export class AppComponent implements OnInit{

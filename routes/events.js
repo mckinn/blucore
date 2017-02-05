@@ -106,7 +106,7 @@ router.get('/:evtId', function (req, res, next) {
 });
 
 router.patch('/:evtId', function (req, res, next) {
-	console.log(" ----------------------------------------------------------------- ");
+	console.log(" ------------------------PATCH Event Start------------------------------- ");
 	Event.findById(req.params.evtId, function( err , evt ){
 		if (err) {
 			return res.status(500).json({
@@ -131,7 +131,8 @@ router.patch('/:evtId', function (req, res, next) {
 		if( req.body.time ) evt.time = req.body.time;
 		if( req.body.duration ) evt.duration = req.body.duration;
 		if( req.body.school ) evt.school = req.body.school;
-		if( req.body.kind ) evt.kind = req.body.kind;
+		if( req.body.ownerId ) evt.ownerId = req.body.ownerId;    // never changes
+		if( req.body.participants ) evt.participants = req.body.participants;
 
 		console.log(evt);
 		evt.save( function (err, result) {

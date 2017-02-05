@@ -7,6 +7,7 @@ import { Router, ActivatedRoute, Params } from "@angular/router";
 import { EventService } from "./event.service";
 import { AuthService } from "../auth/auth.service";
 import { Event } from "./event.model";
+import { User } from "../auth/user.model";
 
 import 'rxjs/add/operator/switchMap';
 
@@ -22,6 +23,8 @@ export class EventInputComponent implements OnInit {
 	event: Event;
 	myForm: FormGroup;
 	isLocked: boolean;
+	private initComplete: Boolean;
+	eventParticipants: string[];
 
 	constructor(
 		private eventService: EventService,
@@ -136,7 +139,33 @@ export class EventInputComponent implements OnInit {
 		return false;
 	}
 
+	populateParticipants() {
+
+		if(this.event) {
+			this.authService.getUsers()
+				.subscribe( (users :User[]) => {
+					for (let user of users) {
+						console.log("scanning users for participants", user.userId, this.event.participants);
+						if (this.event.participants.find(
+							function(userId: string) {
+								console.log("participant: ",userId,"user of total user list: ",user.userId)
+								return userId == user.userId;
+							}
+						)){
+							this.eventParticipants.push(user.firstName+" "+user.lastName);
+							console.log("adding user",user.userId, user.firstName, user.lastName);
+						}
+					}
+					console.log("participants: ",this.eventParticipants);
+					this.initComplete = true;
+				})
+			}
+		
+	}
+
 	ngOnInit() {
+		this.initComplete = false;
+		this.eventParticipants = [];
 		console.log("* * * * IC - ngOnInit - input start * * * *");
 		if (!this.myForm) {
 			console.log("* * * creating a formgroup * * *");
@@ -171,6 +200,7 @@ export class EventInputComponent implements OnInit {
 							eventDuration: event.duration,
 							eventSchool: event.school
 						});
+						this.populateParticipants();
 					}
 					// the form is diabled if it is filled with data and not owned by me.
 					if (this.isNotMine(this.event)) {

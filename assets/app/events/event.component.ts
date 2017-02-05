@@ -34,18 +34,15 @@ export class EventComponent {
 	}
 
     onDelete() {
-        this.eventService.deleteEvent(this.event)
-            .subscribe(
-                result => console.log(result)
-            );
+        this.eventService.deleteEvent(this.event);
     }
 
-	 onSelect() {
-        this.authService.claimEvent(this.event)
-			.subscribe(
-                result => console.log("subscription in claimEvent",result),
-				error => console.error("error in subscription in claimEvent",error)
-			);
+	onSelect() {
+		this.authService.claimEvent(this.event); // it handles its own errors.
+    }
+
+	 onDecline() {
+        this.authService.declineEvent(this.event);
     }
 
 	onShowTeacher(){

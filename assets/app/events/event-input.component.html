@@ -45,6 +45,14 @@
 				id="eventSchool" 
 				formControlName =  "eventSchool">
 		</div>
+			
+		<div *ngIf="initComplete">
+			<span><strong>Current Participant List</strong></span>
+			<ul>
+				<li *ngFor="let participant of eventParticipants">{{participant}}</li>
+			</ul>
+		</div> 
+		
 		<button class="btn btn-danger" type="button" (click) = "onClear(localRef)" [disabled]="myForm.disabled" *ngIf="iAmATeacher()">Clear
 		</button>
 		<button class="btn btn-primary" type="submit" [disabled]="!myForm.valid"  *ngIf= "iAmATeacher()">Save</button>
@@ -55,4 +63,5 @@
 				*ngIf= "iHaveNotSelectedThis() && iAmAStudent()"
 				>Signup</button>
 	</form>
+
 </div>

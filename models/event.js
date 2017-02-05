@@ -36,6 +36,16 @@ schema.post('remove', function (event){
 		user.events.pull(event);
 		user.save();
 	})
+
+	for (let partId of event.participants ) {
+		console.log("in participants", partId);
+		User.findById(partId,function( err, user) {
+			console.log("removing participant", user, event);
+			user.events.pull(event);
+			user.save();
+		})
+	}
+
 })
 
 module.exports = mongoose.model('Event',  // creates a collection in the database called 'events'

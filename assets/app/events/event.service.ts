@@ -19,7 +19,7 @@ export class EventService {
 	addEvent (evt:Event) {
 		console.log("* * * * add event * * * *");
 		console.log(evt);
-		delete evt.ownerName;  // get rid of derived items
+		// delete evt.ownerName;  // get rid of derived items
 		delete evt.eventId;
 		const body = JSON.stringify(evt);
 		const headers = new Headers({'Content-Type': 'application/json'});
@@ -64,7 +64,7 @@ export class EventService {
 		return this.http.get('http://localhost:3000/event/'+eventId + token)
 			.map((response:Response) => {
 				const evt = response.json().obj;
-				console.log(evt);
+				console.log("event in getEvent: ",evt);
 				const newEvt = new Event (
 					evt.name, 
 					evt.description,
@@ -76,7 +76,8 @@ export class EventService {
 					evt.school,
 					evt.kind,
 					evt.ownerId.firstName + " " + evt.ownerId.lastName,
-					evt.ownerId._id
+					evt.ownerId._id,
+					evt.participants
 				);
 				console.log(newEvt);
 				return newEvt;
@@ -106,7 +107,8 @@ export class EventService {
 						evt.school,
 						evt.kind,
 						evt.ownerId.firstName + " " + evt.ownerId.lastName,
-						evt.ownerId._id
+						evt.ownerId._id,
+						evt.participants
 					);
 					console.log(newEvt);
 					transformedEvents.push(newEvt);
@@ -131,8 +133,8 @@ export class EventService {
 	updateEvent (evt: Event) {
 		// update the server.
 		const tempEventId: string = evt.eventId;
-		console.log(evt);
-		delete evt.ownerName;
+		console.log("Updating Event: ",evt);
+		// delete evt.ownerName;
 		delete evt.eventId;
 		console.log(evt);
 		const body = JSON.stringify(evt);
@@ -141,14 +143,15 @@ export class EventService {
 			? '?token='+ localStorage.getItem('token') 
 			: '';
 		// creates an observable and returns it
-		console.log("* * * * in updateEvent * * * *");
-		console.log(event);
-		return this.http.patch( 'http://localhost:3000/event/'+ tempEventId + token, body, {headers: headers})
+		console.log("* * * * in updateEvent - sending patch * * * *",tempEventId,body);
+		const url = 'http://localhost:3000/event/'+ tempEventId + token;
+		console.log(url);
+		return this.http.patch( url, body, {headers: headers})
 			// this is an anonymous function that takes a Response and yields a response.json ????
 			.map((response: Response) => response.json())
 			.catch((error: Response) => {
-				console.log(error);
-				this.errorService.handleError(error.json())
+				console.log("Patch Error Response: ",error);
+				this.errorService.handleError(error.json());
 				return Observable.throw(error.json());
 			});
 	}

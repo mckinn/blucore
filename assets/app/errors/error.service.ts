@@ -12,11 +12,11 @@ export class ErrorService {
 
 		console.log("* * * * handling an error * * * *");
 		console.log(oops);
-		console.log(oops.error);
 
 		var errorMessage: string = "";
 
 		if (oops.error) {
+			console.log(oops.error);
 			console.log("0-> " + errorMessage);
 				for (let key in oops.error.errors) {
 					if (oops.error.errors.hasOwnProperty(key)) {
@@ -25,11 +25,12 @@ export class ErrorService {
 						console.log("1-> " + errorMessage);
 					}
 				}
+		
+			console.log("2-> ",oops.title, errorMessage);
+			const errorData = new Error (oops.title, errorMessage);
+			console.log(errorData);
+			this.errorHappened.emit(errorData);
 		}
-		console.log("2-> ",oops.title, errorMessage);
-		const errorData = new Error (oops.title, errorMessage);
-		console.log(errorData);
-		this.errorHappened.emit(errorData);
 	}
 
 }
