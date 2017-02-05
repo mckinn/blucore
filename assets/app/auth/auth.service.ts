@@ -9,6 +9,7 @@ import { Observable } from "rxjs";
 import { User } from './user.model';
 import { Event } from '../events/event.model';
 import { ErrorService } from '../errors/error.service';
+import { EventService } from '../events/event.service';
 
 @Injectable()
 export class AuthService {
@@ -19,7 +20,9 @@ export class AuthService {
 	constructor (private http: Http, 
 				private errorService: ErrorService, 
 				private router: Router,
-				private responseOptions: ResponseOptions){}
+				private responseOptions: ResponseOptions, 
+				private eventService: EventService
+				){}
 
 	addUser(user: User) {
 		const body = JSON.stringify(user);
@@ -197,11 +200,19 @@ export class AuthService {
 						}
 					};
 				} else {
-					console.log("Adding the selected event: ",this.loggedInUser.myEvents);
+					console.log("******************** Claiming the selected event: ",this.loggedInUser.myEvents);
 					this.loggedInUser.myEvents.push(event.eventId);
-					// console.log(this.loggedInUser.myEvents);
-					return this.updateUser(this.loggedInUser);
-				}
+					console.log("User with events", this.loggedInUser.myEvents);
+					event.participants.push(this.loggedInUser.userId);
+					console.log("event and user should be linked: ", event, this.loggedInUser);
+					// update the event, and the user, on the server to preserve the linkages
+
+					Observable.forkJoin([this.eventService.updateEvent(event),this.updateUser(this.loggedInUser)])
+						.subscribe(results => {
+							console.log("results are...",results[0],results[1]);
+						});
+					return;
+					};
 			} else {
 				error = {
 					title:"User cannot claim event",
@@ -211,6 +222,56 @@ export class AuthService {
 				};
 			}
 			// console.log("the error I created", error);
+			this.errorService.handleError(error);
+			return Observable.throw(error);
+		};
+
+	declineEvent ( event: Event ) { // remove the specified event from the user's list of events, and the user from the event's particpant list.
+		
+		console.log ("* * * * declineEvent * * * *",event);
+
+		let error: Object;
+		
+		if ((this.loggedInUser) && (event) && (event.eventId)) {
+
+			if (!this.loggedInUser.myEvents.find(
+				function(current: string){
+					return ( current == event.eventId )}))
+				{
+					error = {
+						title:"The event is not there",
+						error: {
+							errors: [{message:"this is a secondary message"}]
+						}
+					};
+				} else {
+					console.log("******************** disconnect the selected event: ",this.loggedInUser.myEvents);
+
+					// taking away the event from the user's list of events
+					console.log("User Events before removal", this.loggedInUser.myEvents);
+					this.loggedInUser.myEvents.splice(this.loggedInUser.myEvents.indexOf(event.eventId,1));
+					console.log("User Events after removal", this.loggedInUser.myEvents);
+
+					// taking away the user from the event's list of participants
+					console.log("Event before/after removal",event);
+					event.participants.splice(event.participants.indexOf(this.loggedInUser.userId,1));
+					console.log("Event before/after removal",event);
+					console.log("event and user should not be linked: ", event, this.loggedInUser);
+					// update the event, and the user, on the server to preserve the linkages
+					Observable.forkJoin([this.eventService.updateEvent(event),this.updateUser(this.loggedInUser)])
+						.subscribe(results => {
+							console.log("results are...",results[0],results[1]);
+						});
+					return;
+				}
+			} else {
+				error = {
+					title:"User cannot decline event",
+					error: {
+						errors: [{message:"this is a secondary message"}]
+					}
+				};
+			}
 			this.errorService.handleError(error);
 			return Observable.throw(error);
 		};
