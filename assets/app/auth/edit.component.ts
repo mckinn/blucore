@@ -36,6 +36,8 @@ export class EditComponent implements OnInit {
 			this.user.password = this.myForm.value.password;
 			this.user.firstName = this.myForm.value.firstName; 
 			this.user.lastName = this.myForm.value.lastName;
+			this.user.userName = this.myForm.value.firstName + " " +
+								 this.myForm.value.lastName;
 			this.user.wcpssId = this.myForm.value.wcpssId;
 			this.user.school = this.myForm.value.school;
 			this.user.kind = this.myForm.value.kind;
@@ -56,6 +58,7 @@ export class EditComponent implements OnInit {
 				this.myForm.value.school,
 				this.myForm.value.kind
 				);
+			this.user.userName = this.myForm.value.firstName + " " + this.myForm.value.lastName;
 			console.log("in submit", this.myForm, this.user);
 			this.authService.addUser( this.user )
 				.subscribe(

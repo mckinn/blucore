@@ -1,0 +1,40 @@
+<div class = "col-md-8 col-md-offset-2 panel panel-primary panel-transparent">  <!-- ToDo --> 
+    <div style="margin-bottom: 6px; margin-top: 6px">
+        <form class="form-inline" [formGroup]="searchForm">
+            <div class="form-group col-md-8">
+                <label class="sr-only" for="textSearch"></label>
+                <input  class="form-control form-control-inline" placeholder="search text"
+                    type="text" 
+                    id="textSearch" 
+                    formControlName = "textSearch"
+                    >
+            </div>
+            <div class="form-group">
+                <label  class="sr-only" for="teacherSearch"></label>
+                <input  class="form-control form-control-inline" placeholder="search teachers"
+                    type="text" 
+                    id="teacherSearch" 
+                    formControlName = "teacherSearch"
+                    >
+            </div>
+        </form>
+    </div>
+    <div></div>
+    <table class="table table-hover panel-body">
+        <thead>
+            <tr>
+                <th>Name:id</th>
+                <th>Date</th>
+                <th>Time</th>
+                <th>Duration</th>
+                <th>School</th>
+                <th>Teacher</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr *ngFor="let evt of events" app-event [event]="evt">
+            </tr>
+        </tbody>
+    </table>
+</div>

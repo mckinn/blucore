@@ -10,10 +10,10 @@ import { User } from "../auth/user.model";
 	selector: 'app-event-list',
 	template: `
 		<div class = "col-md-8 col-md-offset-2">
-			<table class="table table-hover">
+			<table class="table table-hover panel-body">
 			    <thead>
 					<tr>
-						<th>Name:id</th>
+						<th>Event</th>
 						<th>Date</th>
 						<th>Time</th>
 						<th>Duration</th>

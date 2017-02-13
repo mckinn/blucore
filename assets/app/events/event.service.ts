@@ -158,19 +158,46 @@ export class EventService {
 
 	deleteEvent (evt:Event) {
 
-		this.events.splice(this.events.indexOf(evt), 1);
+		console.log("in delete event: ",evt, this.events);
+		// todo - there is an issue in that the event that I am attempting to 
+		// delete is not in the list of events.
+		// I believe that this is because I created a new list out of the
+		// users list.  I have to find the list with the same ID and delete it.
+		let indexOfEvent = this.events.indexOf(evt);
+		console.log("index: ",indexOfEvent);
+		if (indexOfEvent < 0) {
+			for (let i=0; i<this.events.length;i++){
+				console.log("scanning:", i, this.events[i]);
+				if (evt.ownerId == this.events[i].ownerId) {
+					console.log("found it: ", this.events[i] );
+					indexOfEvent = i;
+				}
+			}
+		}
+		console.log("before splice attempt", this.events);
+		this.events.splice(indexOfEvent, 1);
+		console.log("after splice attempt", this.events);
 		// update the server.
 		// creates an observable and returns it
 		const token = localStorage.getItem('token') 
 			? '?token='+ localStorage.getItem('token') 
 			: '';
-		return this.http.delete( 'http://localhost:3000/event/'+ evt.eventId + token)
+		console.log("just before DELETE call to /event/"+ evt.eventId + token);
+
+		return this.http.delete( 'http://localhost:3000/event/'+ evt.eventId + token )
+
 			// this is an anonymous function that takes a Response and yields a response.json ????
-			.map((response: Response) => response.json())
+			
+			.map((response: Response) => {
+				console.log("In the response: ",response);
+				response.json()
+			})
 			.catch((error: Response) => {
 				console.log(error);
 				this.errorService.handleError(error.json())
 				return Observable.throw(error.json());
-			});
+			})
+			.subscribe((res)=> {});
+			
 	}
 }

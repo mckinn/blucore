@@ -13,6 +13,7 @@ export class User {
 		public school?: string,  // wcpss student or teacher ID
 		public kind?: string, // Admin, Student, Teacher, Parent
 		public userId?: string,
+		public userName?: string, // the aggregate user name
 		public myEvents?: string[]
 		) {}
 }

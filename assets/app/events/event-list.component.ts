@@ -1,6 +1,7 @@
 // event-list.component.ts
 
 import { Component, OnInit } from "@angular/core";
+import { FormGroup, FormControl } from "@angular/forms";
 
 import { EventService } from "./event.service";
 import { AuthService } from "../auth/auth.service";
@@ -8,36 +9,24 @@ import { Event } from "./event.model";
 
 @Component ({
 	selector: 'app-event-list',
-	template: `
-		<div class = "col-md-8 col-md-offset-2 panel panel-primary panel-transparent">  <!-- ToDo --> 
-			<table class="table table-hover panel-body">
-			    <thead>
-					<tr>
-						<th>Name:id</th>
-						<th>Date</th>
-						<th>Time</th>
-						<th>Duration</th>
-						<th>School</th>
-						<th>Teacher</th>
-						<th>Actions</th>
-					</tr>
-			    </thead>
-			    <tbody>
-					<tr *ngFor="let evt of events" app-event [event]="evt">
-					</tr>
-				</tbody>
-			</table>
-		</div>
-
-	`
+	templateUrl: './event-list.component.html'
 })
 
 export class EventListComponent implements OnInit {
 
 	events: Event[];
+	searchForm: FormGroup;
     constructor( private eventService: EventService, private authService: AuthService ) {}
 
     ngOnInit () {
+
+		if (!this.searchForm) {
+			this.searchForm = new FormGroup({
+				textSearch: new FormControl(null, null),
+				teacherSearch: new FormControl(null, null)
+			})
+		}
+		console.log("calling geteventS");
     	this.eventService.getEvents()
     		.subscribe(
     			(events: Event[]) => {

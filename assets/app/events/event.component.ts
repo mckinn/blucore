@@ -22,8 +22,8 @@ import { AuthService } from "../auth/auth.service";
 })
 
 export class EventComponent {
-	@Input() 
-    event: Event; 
+	
+	@Input() event: Event; 
 
     constructor(private eventService: EventService, 
 			private authService: AuthService,
@@ -34,6 +34,7 @@ export class EventComponent {
 	}
 
     onDelete() {
+		console.log("Deletion attempt");
         this.eventService.deleteEvent(this.event);
     }
 

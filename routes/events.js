@@ -5,8 +5,39 @@ var jwt = require('jsonwebtoken');
 var Event = require('../models/event');
 var User = require('../models/user');
 
+
+
 router.get('/', function(req,res,next){
-	Event.find()
+
+	var qparms = req.query;
+	var mongooseQuery = {};
+	var mongooseQueryList = [];
+	console.log("queryparms",qparms);
+	if (qparms) {
+		console.log("qparms",qparms);
+		for (var qparm in qparms){
+			console.log("qparm",qparm, qparms[qparm]);
+			switch(qparm) {
+				case "text":
+					// mongooseQuery.description = { $regex: qparms[qparm] }
+					mongooseQueryList.push( 
+					{description: { $regex: qparms[qparm], $options: "i" }} );
+					mongooseQueryList.push( 
+							{name: { $regex: qparms[qparm], $options: "i" }} );
+					console.log("mgql1 ",mongooseQueryList);
+					break;
+				case "teacher":
+					mongooseQueryList.push( 
+							{ownerName: { $regex: qparms[qparm], $options: "i" }} );
+					console.log("mgql2 ",mongooseQueryList);
+					break;
+			}
+		}
+		if (mongooseQueryList.length != 0) mongooseQuery = {$or: mongooseQueryList};
+		console.log("aggregate",mongooseQuery);
+	}
+
+	Event.find(mongooseQuery)
 		.populate('ownerId')
 		.exec(function(err,events){
 			if (err) {
@@ -46,6 +77,8 @@ router.post('/', function (req, res, next) {
 				error: err
 			});
 		};
+
+		console.log(" after FindById: - user is: ",user);
 		
 		var event = new Event({
 			name: req.body.name,
@@ -56,7 +89,8 @@ router.post('/', function (req, res, next) {
 			duration: req.body.duration,
 			school: req.body.school,
 			kind: req.body.kind,
-			ownerId: user
+			ownerName: user.firstName + " " + user.lastName,  // only set once
+			ownerId: user._id  // only set once
 			// _id is auto-populated.
 		}); 
 		console.log("* * * * new event * * * *");
@@ -133,6 +167,7 @@ router.patch('/:evtId', function (req, res, next) {
 		if( req.body.school ) evt.school = req.body.school;
 		if( req.body.ownerId ) evt.ownerId = req.body.ownerId;    // never changes
 		if( req.body.participants ) evt.participants = req.body.participants;
+		if( req.body.ownerName ) evt.ownerName = req.body.ownerName;
 
 		console.log(evt);
 		evt.save( function (err, result) {

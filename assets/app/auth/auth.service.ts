@@ -81,7 +81,7 @@ export class AuthService {
 				// console.log(response);
 				const user = response.json().obj;
 				// console.log(user);
-				const userObj = new User(user.email, '', user.firstName, user.lastName, user.wcpssId, user.school, user.kind, user._id, user.events );
+				const userObj = new User(user.email, '', user.firstName, user.lastName, user.wcpssId, user.school, user.kind, user._id, user.userName, user.events );
 				// console.log("* * * * userObj * * * *");
 				// console.log(userObj);
 				return userObj;
@@ -147,6 +147,7 @@ export class AuthService {
 					if (!this.loggedInUser.school) this.loggedInUser.school = data.school;
 					if (!this.loggedInUser.wcpssId) this.loggedInUser.wcpssId = data.wcpssId;
 					if (!this.loggedInUser.kind) this.loggedInUser.kind = data.kind;
+					if (!this.loggedInUser.userName) this.loggedInUser.userName = data.UserName;
 					if (!this.loggedInUser.userId) this.loggedInUser.userId = data.UserId;
 					if (!this.loggedInUser.myEvents) this.loggedInUser.myEvents = data.myEvents;
 					// console.log (this.loggedInUser);
