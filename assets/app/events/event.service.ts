@@ -89,8 +89,19 @@ export class EventService {
 		});
 	}
 
-	getEvents () {
-		return this.http.get('http://localhost:3000/event')
+	getEvents (parms?:string[]) {
+		console.log("in getEvents: ", parms);
+		let parmString: string = "";
+		if (parms) {
+			for (let parmIdx = 0; parmIdx < parms.length; parmIdx++) {
+				console.log("in loop: ", parmIdx, parms[parmIdx]);
+				if (parmIdx == 0) parmString = '?' + parms[parmIdx];
+				else parmString = '&' + parms[parmIdx];
+			}
+		}
+
+		console.log("parmString: ",parmString);
+		return this.http.get('http://localhost:3000/event'+ parmString)
 			.map((response:Response) => {
 				const events = response.json().obj;
 				let transformedEvents: Event[] = [];

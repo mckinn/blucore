@@ -1,7 +1,7 @@
 // event-list.component.ts
 
 import { Component, OnInit } from "@angular/core";
-import { FormGroup, FormControl } from "@angular/forms";
+import { FormGroup, FormControl,NgForm, FormsModule } from "@angular/forms";
 
 import { EventService } from "./event.service";
 import { AuthService } from "../auth/auth.service";
@@ -15,8 +15,28 @@ import { Event } from "./event.model";
 export class EventListComponent implements OnInit {
 
 	events: Event[];
+	
 	searchForm: FormGroup;
     constructor( private eventService: EventService, private authService: AuthService ) {}
+
+
+	onSearch () {
+		let queryParms: string[] = [];
+		if (this.searchForm.get("textSearch").value) queryParms.push('text='+
+			this.searchForm.get("textSearch").value);
+		if (this.searchForm.get("teacherSearch").value) queryParms.push('teacher='+
+			this.searchForm.get("teacherSearch").value);
+		this.eventService.getEvents(queryParms)
+    		.subscribe(
+    			(events: Event[]) => {
+    				console.log('* * * * eventlist on search * * * *');
+    				console.log(events);
+    				this.events = events;
+    			}
+    		);
+		this.searchForm.reset();
+	}
+
 
     ngOnInit () {
 
