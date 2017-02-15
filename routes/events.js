@@ -38,6 +38,7 @@ router.get('/', function(req,res,next){
 	}
 
 	Event.find(mongooseQuery)
+		.sort({date:1})
 		.populate('ownerId')
 		.exec(function(err,events){
 			if (err) {

@@ -55,7 +55,7 @@
 
 		<button class="btn btn-danger" type="button" (click) = "onClear(localRef)" [disabled]="myForm.disabled" *ngIf="iAmATeacher()">Clear
 		</button>
-		<button class="btn btn-primary" type="submit" [disabled]="!myForm.valid"  *ngIf= "iAmATeacher()">Save</button>
+		<button class="btn btn-primary" type="submit" [disabled]="!myForm.valid"  *ngIf= "iAmATeacher()">Post</button>
 		<button class="btn btn-primary" 
 				type="button" 
 				(click) = "onJoin(localRef)" 

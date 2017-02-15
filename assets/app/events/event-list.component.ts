@@ -37,6 +37,18 @@ export class EventListComponent implements OnInit {
 		this.searchForm.reset();
 	}
 
+	onClear () {
+		this.eventService.getEvents()
+    		.subscribe(
+    			(events: Event[]) => {
+    				console.log('* * * * eventlist on clear * * * *');
+    				console.log(events);
+    				this.events = events;
+    			}
+    		);
+		this.searchForm.reset();
+	}
+
 
     ngOnInit () {
 

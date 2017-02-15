@@ -26,7 +26,13 @@
                 [disabled]="!teacherSearch.value && !textSearch.value"
                 (click)="onSearch(searchFormRef)"
                 > 
-                Search</button>
+                Filter</button>
+            <button 
+                class="btn btn-secondary" 
+                type="button"
+                (click)="onClear(searchFormRef)"
+                > 
+                Reset</button>
         </form>
     </div>
     <div></div>

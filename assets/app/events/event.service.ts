@@ -99,6 +99,17 @@ export class EventService {
 				else parmString = '&' + parms[parmIdx];
 			}
 		}
+		/* console.log(this.events);
+		if ((!parms) && (this.events) && this.events.length != 0) {
+			console.log("returning quickly",this.events,Observable.of(this.events));
+			return  Observable.of(this.events);
+			 	.map(o => {
+					console.log("O is...",o);
+					console.log("JSON...",JSON.stringify(o));
+					return JSON.stringify(o);
+					}
+				);
+		} */
 
 		console.log("parmString: ",parmString);
 		return this.http.get('http://localhost:3000/event'+ parmString)
@@ -125,7 +136,7 @@ export class EventService {
 					transformedEvents.push(newEvt);
 				};
 				this.events = transformedEvents;
-				return transformedEvents;
+				return transformedEvents; // delivered to the subscribe.
 			})
 			.catch((error: Response) => {
 				console.log(error);
