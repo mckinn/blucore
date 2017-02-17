@@ -11,7 +11,8 @@ var eventRoutes = require('./routes/events');
 var userRoutes = require('./routes/user');
 
 var app = express();
-mongoose.connect('localhost:27017/blucore');
+// mongoose.connect('localhost:27017/blucore');
+mongoose.connect('mongodb://blucoreUser:subbylou@ds153689.mlab.com:53689/blucore');
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
