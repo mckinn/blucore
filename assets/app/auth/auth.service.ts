@@ -29,7 +29,7 @@ export class AuthService {
 		const headers = new Headers({'Content-Type': 'application/json'});
 		// console.log(user);
 		// console.log(body);
-		return this.http.post('http://localhost:3000/user',body,{headers: headers})
+		return this.http.post('https://blucore.herokuapp.com/user',body,{headers: headers})
 			.map((response: Response) => response.json())
 			.catch((error: Response) => {
 				// console.log(error);
@@ -43,7 +43,7 @@ export class AuthService {
 		const headers = new Headers({'Content-Type': 'application/json'});
 		console.log("* * * * Update User * * * *",user,body);
 		return this.http.patch(
-				'http://localhost:3000/user/users/'+user.userId,
+				'https://blucore.herokuapp.com/user/users/'+user.userId,
 				body,
 				{headers: headers})
 			.map((response: Response) => response.json())
@@ -55,7 +55,7 @@ export class AuthService {
 		}
 		
 	getUsers () {
-		return this.http.get('http://localhost:3000/user/users')
+		return this.http.get('https://blucore.herokuapp.com/user/users')
 			.map((response:Response) => {
 				// console.log(response);
 				const users = response.json().obj;
@@ -75,7 +75,7 @@ export class AuthService {
 	// get a user object from a user id.
 	getUser (uid: String) {
 		// console.log(uid);
-		return this.http.get('http://localhost:3000/user/users/'+uid)
+		return this.http.get('https://blucore.herokuapp.com/user/users/'+uid)
 			.map((response:Response) => {
 				// console.log("in the users get response");
 				// console.log(response);
@@ -98,7 +98,7 @@ export class AuthService {
 		const headers = new Headers({'Content-Type': 'application/json'});
 		// console.log(user);
 		// console.log(body);
-		return this.http.post('http://localhost:3000/user/signin',body,{headers: headers})
+		return this.http.post('https://blucore.herokuapp.com/user/signin',body,{headers: headers})
 			.map((response: Response) => response.json())
 			.catch((error: Response) => {
 				// console.log("* * * * signin error handler * * * *");

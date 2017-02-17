@@ -27,7 +27,7 @@ export class EventService {
 			? '?token='+ localStorage.getItem('token') 
 			: '';
 		// creates an observable and returns it
-		return this.http.post( 'http://localhost:3000/event'+token,	body, {headers: headers})
+		return this.http.post( 'https://blucore.herokuapp.com/event'+token,	body, {headers: headers})
 			// this is an anonymous function that takes a Response and yields a response.json ????
 			// extract the complete response and save that returned result, so that we get the ID 
 			// of the just added event
@@ -61,7 +61,7 @@ export class EventService {
 		const token = localStorage.getItem('token') 
 			? '?token='+ localStorage.getItem('token') 
 			: '';
-		return this.http.get('http://localhost:3000/event/'+eventId + token)
+		return this.http.get('https://blucore.herokuapp.com/event/'+eventId + token)
 			.map((response:Response) => {
 				const evt = response.json().obj;
 				console.log("event in getEvent: ",evt);
@@ -112,7 +112,7 @@ export class EventService {
 		} */
 
 		console.log("parmString: ",parmString);
-		return this.http.get('http://localhost:3000/event'+ parmString)
+		return this.http.get('https://blucore.herokuapp.com/event'+ parmString)
 			.map((response:Response) => {
 				const events = response.json().obj;
 				let transformedEvents: Event[] = [];
@@ -166,7 +166,7 @@ export class EventService {
 			: '';
 		// creates an observable and returns it
 		console.log("* * * * in updateEvent - sending patch * * * *",tempEventId,body);
-		const url = 'http://localhost:3000/event/'+ tempEventId + token;
+		const url = 'https://blucore.herokuapp.com/event/'+ tempEventId + token;
 		console.log(url);
 		return this.http.patch( url, body, {headers: headers})
 			// this is an anonymous function that takes a Response and yields a response.json ????
@@ -206,7 +206,7 @@ export class EventService {
 			: '';
 		console.log("just before DELETE call to /event/"+ evt.eventId + token);
 
-		return this.http.delete( 'http://localhost:3000/event/'+ evt.eventId + token )
+		return this.http.delete( 'https://blucore.herokuapp.com/event/'+ evt.eventId + token )
 
 			// this is an anonymous function that takes a Response and yields a response.json ????
 			
