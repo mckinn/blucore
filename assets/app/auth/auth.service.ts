@@ -10,11 +10,13 @@ import { User } from './user.model';
 import { Event } from '../events/event.model';
 import { ErrorService } from '../errors/error.service';
 import { EventService } from '../events/event.service';
+import { AppSettings } from '../app.settings';
 
 @Injectable()
 export class AuthService {
 
 	private users: User[] = [];
+	private editingUser: User;
 	private loggedInUser: User;
 
 	constructor (private http: Http, 
@@ -29,7 +31,7 @@ export class AuthService {
 		const headers = new Headers({'Content-Type': 'application/json'});
 		// console.log(user);
 		// console.log(body);
-		return this.http.post('https://blucore.herokuapp.com/user',body,{headers: headers})
+		return this.http.post(AppSettings.API_ENDPOINT + 'user',body,{headers: headers})
 			.map((response: Response) => response.json())
 			.catch((error: Response) => {
 				// console.log(error);
@@ -43,7 +45,7 @@ export class AuthService {
 		const headers = new Headers({'Content-Type': 'application/json'});
 		console.log("* * * * Update User * * * *",user,body);
 		return this.http.patch(
-				'https://blucore.herokuapp.com/user/users/'+user.userId,
+				AppSettings.API_ENDPOINT + 'user/users/'+user.userId,
 				body,
 				{headers: headers})
 			.map((response: Response) => response.json())
@@ -55,7 +57,7 @@ export class AuthService {
 		}
 		
 	getUsers () {
-		return this.http.get('https://blucore.herokuapp.com/user/users')
+		return this.http.get(AppSettings.API_ENDPOINT + 'user/users')
 			.map((response:Response) => {
 				// console.log(response);
 				const users = response.json().obj;
@@ -75,7 +77,7 @@ export class AuthService {
 	// get a user object from a user id.
 	getUser (uid: String) {
 		// console.log(uid);
-		return this.http.get('https://blucore.herokuapp.com/user/users/'+uid)
+		return this.http.get(AppSettings.API_ENDPOINT + 'user/users/'+uid)
 			.map((response:Response) => {
 				// console.log("in the users get response");
 				// console.log(response);
@@ -91,14 +93,14 @@ export class AuthService {
 				this.errorService.handleError(error.json())
 				return Observable.throw(error.json());
 			});
-		
 		}
+
 	signin(user: User) {
 		const body = JSON.stringify(user);
 		const headers = new Headers({'Content-Type': 'application/json'});
 		// console.log(user);
 		// console.log(body);
-		return this.http.post('https://blucore.herokuapp.com/user/signin',body,{headers: headers})
+		return this.http.post(AppSettings.API_ENDPOINT + 'user/signin',body,{headers: headers})
 			.map((response: Response) => response.json())
 			.catch((error: Response) => {
 				// console.log("* * * * signin error handler * * * *");
@@ -156,6 +158,14 @@ export class AuthService {
 			);
 		// return this.loggedInUser;
 		}
+
+	setNamedUser (user: User) {
+		this.editingUser = user;
+	}
+
+	getNamedUser () {
+		return this.editingUser;
+	}
 
 	notInMyList(eventId: string) {
 		// the eventId is not in my list.

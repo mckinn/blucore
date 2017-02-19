@@ -30,9 +30,9 @@ router.post('/', function (req, res, next) {
 });
 
 router.patch('/users/:uid', function( req, res, next) {
-	console.log("--------------------------------------------");
+	// console.log("--------------------------------------------");
 	// Make sure that we don't change the [events] as the result of an update.
-	console.log(req.params.uid);
+	// console.log(req.params.uid);
 	User.findById(req.params.uid,function(err,user){
 		if (err) {
 			return res.status(500).json({
@@ -46,9 +46,9 @@ router.patch('/users/:uid', function( req, res, next) {
 				error: err
 			});
 		};
-		console.log("---------------------- Updating user -------------------")
-		console.log(req.body);
-		console.log(user);
+		// console.log("---------------------- Updating user -------------------")
+		// console.log(req.body);
+		// console.log(user);
 
 		if( req.body.email ) user.email = req.body.email;
 		if( req.body.firstName ) user.firstName = req.body.firstName;
@@ -60,12 +60,12 @@ router.patch('/users/:uid', function( req, res, next) {
 		// don't touch the _id
 		// only touch the password if it is not null
 		if( req.body.password ) {
-			console.log("* * * * password change request * * * * ");
-			console.log(req.body.password,bcrypt.hashSync(req.body.password, 10));
+			// console.log("* * * * password change request * * * * ");
+			// console.log(req.body.password,bcrypt.hashSync(req.body.password, 10));
 			user.password = bcrypt.hashSync(req.body.password, 10);
 		};
 
-		console.log(user);
+		// console.log(user);
 		user.save( function (err, result) {
 			if (err) {
 				return res.status(500).json({
@@ -73,7 +73,7 @@ router.patch('/users/:uid', function( req, res, next) {
 					error: err
 				});
 			};
-			console.log(result);
+			// console.log(result);
 			res.status(200).json({
 				message: 'Updated Event',
 				obj: result
@@ -106,7 +106,7 @@ router.get('/users', function( req, res, next) {
 });
 
 router.get('/users/:uid', function( req, res, next) {
-	console.log(req.params.uid);
+	// console.log(req.params.uid);
 	User.findById(req.params.uid,function(err,user){
 		if (err) {
 			return res.status(500).json({

@@ -39,10 +39,10 @@ export class UserListComponent implements OnInit {
     	this.authService.getUsers()
     		.subscribe(
     			(users: User[]) => {
-					console.log("* * * * getusers * * * *");
-    				console.log(users);
+					// console.log("* * * * getusers * * * *");
+    				// console.log(users);
     				this.users = users;
-    				console.log(this.users);
+    				// console.log(this.users);
     			}
     		);
     }

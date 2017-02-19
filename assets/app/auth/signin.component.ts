@@ -18,9 +18,9 @@ export class SignInComponent {
 	constructor (private authService: AuthService, private router: Router) {}
 
 	onSubmit() {
-		console.log(this.myForm);
+		// console.log(this.myForm);
 		const user = new User(this.myForm.value.email, this.myForm.value.password);
-		console.log(user);
+		// console.log(user);
 		this.authService.signin(user)
 			.subscribe(
 				data => {
@@ -30,7 +30,7 @@ export class SignInComponent {
 					this.router.navigateByUrl('/');
 				},
 				error => {
-					console.log("* * * * bad password error * * * ");
+					// console.log("* * * * bad password error * * * ");
 					console.error(error);
 				}
 			);

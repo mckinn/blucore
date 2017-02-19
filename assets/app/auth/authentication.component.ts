@@ -25,6 +25,7 @@ import { AuthService } from "./auth.service";
 						<ul class="dropdown-menu">
 							<li> <a class="text-right" >{{roleIsLoggedIn()}}</a></li>
 							<li> <a class="text-right" [routerLink]="['edit']">User Details</a></li>
+							<li> <a class="text-right" [routerLink]="['email']">email</a></li>
 							<li (click)="onLogout()"> <a href=#  class="text-right">Logout</a></li>
 						</ul>
 					</li>

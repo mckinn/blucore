@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 
 @Component({
     selector: 'app-eventlanding',
-    templateUrl: `
+    template: `
     <div class="container">
         <div class="jumbotron col-md-8 col-md-offset-2">
             <h1>Event Landing Page</h1>

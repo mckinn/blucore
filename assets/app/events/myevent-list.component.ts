@@ -40,22 +40,22 @@ export class MyEventListComponent implements OnInit {
     ngOnInit () {
         const user: User = this.authService.whoIsLoggedIn();
         if (user) {  // somebody is logged in...
-            console.log("somebody is logged in");
-            console.log( user );
+            // console.log("somebody is logged in");
+            // console.log( user );
         
 			this.events = [];
 			this.authService.getUser(user.userId)   // get the user data
 				.subscribe(
 					(user: User) => {
-						console.log('* * * * building user event list * * * *');
-						console.log(user);
+						// console.log('* * * * building user event list * * * *');
+						// console.log(user);
 						for (let evt of user.myEvents) {
-							console.log(evt);
+							// console.log(evt);
 							this.eventService.getEvent(evt).subscribe (
 								event => {
 									this.events.push(event);
-									console.log("current events");
-									console.log(this.events);
+									// console.log("current events");
+									// console.log(this.events);
 								}
 							)
 						}

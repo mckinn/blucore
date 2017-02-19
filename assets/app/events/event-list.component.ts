@@ -29,8 +29,8 @@ export class EventListComponent implements OnInit {
 		this.eventService.getEvents(queryParms)
     		.subscribe(
     			(events: Event[]) => {
-    				console.log('* * * * eventlist on search * * * *');
-    				console.log(events);
+    				// console.log('* * * * eventlist on search * * * *');
+    				// console.log(events);
     				this.events = events;
     			}
     		);
@@ -41,8 +41,8 @@ export class EventListComponent implements OnInit {
 		this.eventService.getEvents()
     		.subscribe(
     			(events: Event[]) => {
-    				console.log('* * * * eventlist on clear * * * *');
-    				console.log(events);
+    				// console.log('* * * * eventlist on clear * * * *');
+    				// console.log(events);
     				this.events = events;
     			}
     		);
@@ -58,12 +58,12 @@ export class EventListComponent implements OnInit {
 				teacherSearch: new FormControl(null, null)
 			})
 		}
-		console.log("calling geteventS");
+		// console.log("calling geteventS");
     	this.eventService.getEvents()
     		.subscribe(
     			(events: Event[]) => {
-    				console.log('* * * * eventlist on nginit * * * *');
-    				console.log(events);
+    				// console.log('* * * * eventlist on nginit * * * *');
+    				// console.log(events);
     				this.events = events;
     			}
     		);

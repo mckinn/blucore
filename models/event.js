@@ -30,17 +30,17 @@ var schema = new Schema({
 // which is the same behavior, but executed in a different place.
 
 schema.post('remove', function (event){
-	console.log("* * * * remove in model * * * *");
-	console.log(event);
+	// console.log("* * * * remove in model * * * *");
+	// console.log(event);
 	User.findById(event.ownerId, function( err, user) {
 		user.events.pull(event);
 		user.save();
 	})
 
 	for (let partId of event.participants ) {
-		console.log("in participants", partId);
+		// console.log("in participants", partId);
 		User.findById(partId,function( err, user) {
-			console.log("removing participant", user, event);
+			// console.log("removing participant", user, event);
 			user.events.pull(event);
 			user.save();
 		})

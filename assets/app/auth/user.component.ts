@@ -22,7 +22,7 @@ export class UserComponent {
     /* onDelete() {
         this.eventService.deleteEvent(this.event)
             .subscribe(
-                result => console.log(result)
+                result => // console.log(result)
             );
     } */
 	

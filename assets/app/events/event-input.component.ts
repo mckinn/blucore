@@ -33,13 +33,13 @@ export class EventInputComponent implements OnInit {
 		private route: ActivatedRoute) { }
 
 	onSubmit() {
-		console.log("* * * * onSubmit * * * *");
-		console.log(this.myForm);
-		console.log("* * * * onSubmit * * * *");
+		// console.log("* * * * onSubmit * * * *");
+		// console.log(this.myForm);
+		// console.log("* * * * onSubmit * * * *");
 		if (this.event) {
 			//edit
 			// updates the event pointed to by the this.event
-			console.log(this.event);
+			// console.log(this.event);
 			this.event.name = this.myForm.value.eventName;
 			// reset the reference, now that the content has changed
 			// update the event in the event service
@@ -53,8 +53,10 @@ export class EventInputComponent implements OnInit {
 
 			this.eventService.updateEvent(this.event)
 				.subscribe(
-				result => console.log(result)
-				);
+					result => {
+						result; 
+						// console.log(result)
+				});
 			this.event = null;
 		} else {
 			// new.  
@@ -70,11 +72,11 @@ export class EventInputComponent implements OnInit {
 				this.myForm.value.eventSchool
 				// need to find the user that is creating this
 			);
-			console.log("* * * * before addEvent * * * *");
-			console.log(event);
+			// console.log("* * * * before addEvent * * * *");
+			// console.log(event);
 			this.eventService.addEvent(event)
 				.subscribe(
-				data => console.log(data),
+				data => // console.log(data),
 				error => console.error(error)
 				);
 		}
@@ -91,7 +93,7 @@ export class EventInputComponent implements OnInit {
 
 		this.authService.claimEvent(this.event)
 			.subscribe(
-			result => console.log("* * * * subscription in claimEvent * * * *", result),
+			result => // console.log("* * * * subscription in claimEvent * * * *", result),
 			error => console.error("error in subscription in claimEvent", error)
 			);
 
@@ -116,12 +118,12 @@ export class EventInputComponent implements OnInit {
 	}
 
 	iAmATeacher() {
-		// console.log("* * * * I am a teacher * * * *",this.authService.whoIsLoggedIn().kind);
+		// // console.log("* * * * I am a teacher * * * *",this.authService.whoIsLoggedIn().kind);
 		return (this.authService.whoIsLoggedIn().kind == 'teacher');
 	}
 
 	iAmAStudent() {
-		console.log("* * * * I am a student * * * *",this.authService.whoIsLoggedIn().kind);
+		// console.log("* * * * I am a student * * * *",this.authService.whoIsLoggedIn().kind);
 		return (this.authService.whoIsLoggedIn().kind == 'student');
 	}
 
@@ -130,12 +132,12 @@ export class EventInputComponent implements OnInit {
 		// It is possible that the eventIs is not yet settled.
 		// we might have to change strategies to set something up explicitly
 		// as part of the OnInit.
-		// console.log("in iHaveNotSelectedThis ")
+		// // console.log("in iHaveNotSelectedThis ")
 		if (this.event) { 
-			// console.log("this.event exists",this.event.eventId); 
+			// // console.log("this.event exists",this.event.eventId); 
 			return this.authService.notInMyList(this.event.eventId);
 			}
-		// console.log("bailing because eventId is not stable");
+		// // console.log("bailing because eventId is not stable");
 		return false;
 	}
 
@@ -145,18 +147,18 @@ export class EventInputComponent implements OnInit {
 			this.authService.getUsers()
 				.subscribe( (users :User[]) => {
 					for (let user of users) {
-						console.log("scanning users for participants", user.userId, this.event.participants);
+						// console.log("scanning users for participants", user.userId, this.event.participants);
 						if (this.event.participants.find(
 							function(userId: string) {
-								console.log("participant: ",userId,"user of total user list: ",user.userId)
+								// console.log("participant: ",userId,"user of total user list: ",user.userId)
 								return userId == user.userId;
 							}
 						)){
 							this.eventParticipants.push(user.firstName+" "+user.lastName);
-							console.log("adding user",user.userId, user.firstName, user.lastName);
+							// console.log("adding user",user.userId, user.firstName, user.lastName);
 						}
 					}
-					console.log("participants: ",this.eventParticipants);
+					// console.log("participants: ",this.eventParticipants);
 					this.initComplete = true;
 				})
 			}
@@ -166,9 +168,9 @@ export class EventInputComponent implements OnInit {
 	ngOnInit() {
 		this.initComplete = false;
 		this.eventParticipants = [];
-		console.log("* * * * IC - ngOnInit - input start * * * *");
+		// console.log("* * * * IC - ngOnInit - input start * * * *");
 		if (!this.myForm) {
-			console.log("* * * creating a formgroup * * *");
+			// console.log("* * * creating a formgroup * * *");
 			this.myForm = new FormGroup({
 				eventName: new FormControl(null, Validators.required),
 				eventDescription: new FormControl(null, Validators.required),
@@ -179,17 +181,17 @@ export class EventInputComponent implements OnInit {
 			});
 
 		};
-		console.log(this.route.params);
-		console.log(this.route.url);
+		// console.log(this.route.params);
+		// console.log(this.route.url);
 		if (!(Object.keys(this.route.snapshot.params).length === 0 && this.route.snapshot.params.constructor === Object)) {
-			console.log("* * * * IC - params * * * *",this.route.snapshot.params['eventId']);
+			// console.log("* * * * IC - params * * * *",this.route.snapshot.params['eventId']);
 			// this.route.params.switchMap((params: Params) => {
 			return this.eventService.getEvent(this.route.snapshot.params['eventId'])
 			// })
 				.subscribe((event: Event) => {
-					console.log("* * * * IC - subscription activation * * * *");
-					console.log(this.myForm);
-					console.log(event);
+					// console.log("* * * * IC - subscription activation * * * *");
+					// console.log(this.myForm);
+					// console.log(event);
 					if (event) {   // if there actually was a parameter...
 						this.event = event;
 						this.myForm.setValue({
@@ -204,12 +206,12 @@ export class EventInputComponent implements OnInit {
 					}
 					// the form is diabled if it is filled with data and not owned by me.
 					if (this.isNotMine(this.event)) {
-						console.log("disable");
+						// console.log("disable");
 						this.myForm.disable();
 					}
 
-					console.log("* * * * ngOnInit - end * * * *");
-					console.log(this.myForm);
+					// console.log("* * * * ngOnInit - end * * * *");
+					// console.log(this.myForm);
 				});
 		}
 	}

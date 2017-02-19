@@ -8,6 +8,7 @@ import { Observable } from "rxjs";
 
 import { Event } from "./event.model";
 import { ErrorService } from "../errors/error.service";
+import { AppSettings } from '../app.settings';
 
 @Injectable()
 export class EventService {
@@ -17,8 +18,8 @@ export class EventService {
 	constructor(private http: Http, private errorService: ErrorService, private router: Router) {}
 
 	addEvent (evt:Event) {
-		console.log("* * * * add event * * * *");
-		console.log(evt);
+		// console.log("* * * * add event * * * *");
+		// console.log(evt);
 		// delete evt.ownerName;  // get rid of derived items
 		delete evt.eventId;
 		const body = JSON.stringify(evt);
@@ -27,13 +28,13 @@ export class EventService {
 			? '?token='+ localStorage.getItem('token') 
 			: '';
 		// creates an observable and returns it
-		return this.http.post( 'https://blucore.herokuapp.com/event'+token,	body, {headers: headers})
+		return this.http.post( AppSettings.API_ENDPOINT + 'event'+token,	body, {headers: headers})
 			// this is an anonymous function that takes a Response and yields a response.json ????
 			// extract the complete response and save that returned result, so that we get the ID 
 			// of the just added event
 			.map((response: Response) => {
 				const result = response.json();
-				console.log(result);
+				// console.log(result);
 				const evt = new Event (
 						result.obj.name, 
 						result.obj.description,
@@ -50,21 +51,21 @@ export class EventService {
 				return evt;
 			})
 			.catch((error: Response) => {
-				console.log(error);
+				// console.log(error);
 				this.errorService.handleError(error.json())
 				return Observable.throw(error.json());
 			});
 	}
 
 	getEvent (eventId : string) {
-		console.log("* * * * in getevent - eventId= * * * *", eventId);
+		// console.log("* * * * in getevent - eventId= * * * *", eventId);
 		const token = localStorage.getItem('token') 
 			? '?token='+ localStorage.getItem('token') 
 			: '';
-		return this.http.get('https://blucore.herokuapp.com/event/'+eventId + token)
+		return this.http.get(AppSettings.API_ENDPOINT + 'event/'+eventId + token)
 			.map((response:Response) => {
 				const evt = response.json().obj;
-				console.log("event in getEvent: ",evt);
+				// console.log("event in getEvent: ",evt);
 				const newEvt = new Event (
 					evt.name, 
 					evt.description,
@@ -79,45 +80,45 @@ export class EventService {
 					evt.ownerId._id,
 					evt.participants
 				);
-				console.log(newEvt);
+				// console.log(newEvt);
 				return newEvt;
 			})
 			.catch((error: Response) => {
-				console.log(error);
+				// console.log(error);
 				this.errorService.handleError(error.json())
 				return Observable.throw(error.json());
 		});
 	}
 
 	getEvents (parms?:string[]) {
-		console.log("in getEvents: ", parms);
+		// console.log("in getEvents: ", parms);
 		let parmString: string = "";
 		if (parms) {
 			for (let parmIdx = 0; parmIdx < parms.length; parmIdx++) {
-				console.log("in loop: ", parmIdx, parms[parmIdx]);
+				// console.log("in loop: ", parmIdx, parms[parmIdx]);
 				if (parmIdx == 0) parmString = '?' + parms[parmIdx];
 				else parmString = '&' + parms[parmIdx];
 			}
 		}
-		/* console.log(this.events);
+		/* // console.log(this.events);
 		if ((!parms) && (this.events) && this.events.length != 0) {
-			console.log("returning quickly",this.events,Observable.of(this.events));
+			// console.log("returning quickly",this.events,Observable.of(this.events));
 			return  Observable.of(this.events);
 			 	.map(o => {
-					console.log("O is...",o);
-					console.log("JSON...",JSON.stringify(o));
+					// console.log("O is...",o);
+					// console.log("JSON...",JSON.stringify(o));
 					return JSON.stringify(o);
 					}
 				);
 		} */
 
-		console.log("parmString: ",parmString);
-		return this.http.get('https://blucore.herokuapp.com/event'+ parmString)
+		// console.log("parmString: ",parmString);
+		return this.http.get(AppSettings.API_ENDPOINT + 'event'+ parmString)
 			.map((response:Response) => {
 				const events = response.json().obj;
 				let transformedEvents: Event[] = [];
 				for (let evt of events) {
-					console.log(evt);
+					// console.log(evt);
 					const newEvt = new Event (
 						evt.name, 
 						evt.description,
@@ -132,14 +133,14 @@ export class EventService {
 						evt.ownerId._id,
 						evt.participants
 					);
-					console.log(newEvt);
+					// console.log(newEvt);
 					transformedEvents.push(newEvt);
 				};
 				this.events = transformedEvents;
 				return transformedEvents; // delivered to the subscribe.
 			})
 			.catch((error: Response) => {
-				console.log(error);
+				// console.log(error);
 				this.errorService.handleError(error.json())
 				return Observable.throw(error.json());
 			});
@@ -148,31 +149,31 @@ export class EventService {
 
 	editEvent (event: Event) {
 		// prompt the loading of the event
-		console.log("edit triggered in service");
+		// console.log("edit triggered in service");
 		this.router.navigate(['/events/input',event.eventId]);
 	}
 
 	updateEvent (evt: Event) {
 		// update the server.
 		const tempEventId: string = evt.eventId;
-		console.log("Updating Event: ",evt);
+		// console.log("Updating Event: ",evt);
 		// delete evt.ownerName;
 		delete evt.eventId;
-		console.log(evt);
+		// console.log(evt);
 		const body = JSON.stringify(evt);
 		const headers = new Headers({'Content-Type': 'application/json'});
 		const token = localStorage.getItem('token') 
 			? '?token='+ localStorage.getItem('token') 
 			: '';
 		// creates an observable and returns it
-		console.log("* * * * in updateEvent - sending patch * * * *",tempEventId,body);
-		const url = 'https://blucore.herokuapp.com/event/'+ tempEventId + token;
-		console.log(url);
+		// console.log("* * * * in updateEvent - sending patch * * * *",tempEventId,body);
+		const url = AppSettings.API_ENDPOINT + 'event/'+ tempEventId + token;
+		// console.log(url);
 		return this.http.patch( url, body, {headers: headers})
 			// this is an anonymous function that takes a Response and yields a response.json ????
 			.map((response: Response) => response.json())
 			.catch((error: Response) => {
-				console.log("Patch Error Response: ",error);
+				// console.log("Patch Error Response: ",error);
 				this.errorService.handleError(error.json());
 				return Observable.throw(error.json());
 			});
@@ -180,42 +181,42 @@ export class EventService {
 
 	deleteEvent (evt:Event) {
 
-		console.log("in delete event: ",evt, this.events);
+		// console.log("in delete event: ",evt, this.events);
 		// todo - there is an issue in that the event that I am attempting to 
 		// delete is not in the list of events.
 		// I believe that this is because I created a new list out of the
 		// users list.  I have to find the list with the same ID and delete it.
 		let indexOfEvent = this.events.indexOf(evt);
-		console.log("index: ",indexOfEvent);
+		// console.log("index: ",indexOfEvent);
 		if (indexOfEvent < 0) {
 			for (let i=0; i<this.events.length;i++){
-				console.log("scanning:", i, this.events[i]);
+				// console.log("scanning:", i, this.events[i]);
 				if (evt.ownerId == this.events[i].ownerId) {
-					console.log("found it: ", this.events[i] );
+					// console.log("found it: ", this.events[i] );
 					indexOfEvent = i;
 				}
 			}
 		}
-		console.log("before splice attempt", this.events);
+		// console.log("before splice attempt", this.events);
 		this.events.splice(indexOfEvent, 1);
-		console.log("after splice attempt", this.events);
+		// console.log("after splice attempt", this.events);
 		// update the server.
 		// creates an observable and returns it
 		const token = localStorage.getItem('token') 
 			? '?token='+ localStorage.getItem('token') 
 			: '';
-		console.log("just before DELETE call to /event/"+ evt.eventId + token);
+		// console.log("just before DELETE call to /event/"+ evt.eventId + token);
 
-		return this.http.delete( 'https://blucore.herokuapp.com/event/'+ evt.eventId + token )
+		return this.http.delete( AppSettings.API_ENDPOINT + 'event/'+ evt.eventId + token )
 
 			// this is an anonymous function that takes a Response and yields a response.json ????
 			
 			.map((response: Response) => {
-				console.log("In the response: ",response);
+				// console.log("In the response: ",response);
 				response.json()
 			})
 			.catch((error: Response) => {
-				console.log(error);
+				// console.log(error);
 				this.errorService.handleError(error.json())
 				return Observable.throw(error.json());
 			})

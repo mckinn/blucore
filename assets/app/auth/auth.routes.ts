@@ -8,6 +8,7 @@ import { UserListComponent } from "./userlist.component";
 import { LogoutComponent } from "./logout.component";
 import { AuthLandingComponent} from "./auth.landing.component";
 import { EventsComponent} from "../events/events.component";
+import { EmailComponent} from "../email/email.compose.component";
 
 export const AUTH_ROUTES: Routes = [
     //{ path: '', redirectTo: 'signin', pathMatch: 'full' },
@@ -17,6 +18,7 @@ export const AUTH_ROUTES: Routes = [
 	{ path: 'edit/:userId', component: EditComponent },
 	{ path: 'users', component: UserListComponent },
 	{ path: 'logout', component: LogoutComponent },
+	{ path: 'email', component: EmailComponent},
 	{ path: 'eventsMenu', redirectTo: '/events'}
 
 ];

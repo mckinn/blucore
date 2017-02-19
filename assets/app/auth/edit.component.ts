@@ -59,7 +59,7 @@ export class EditComponent implements OnInit {
 				this.myForm.value.kind
 				);
 			this.user.userName = this.myForm.value.firstName + " " + this.myForm.value.lastName;
-			console.log("in submit", this.myForm, this.user);
+			// console.log("in submit", this.myForm, this.user);
 			this.authService.addUser( this.user )
 				.subscribe(
 					data => console.log(data),
@@ -72,9 +72,17 @@ export class EditComponent implements OnInit {
 			this.myForm.reset(); 
 			this.user = null;
 		}
-		console.log(this.myForm);
-		console.log(this.user);
+		// console.log(this.myForm);
+		// console.log(this.user);
 	
+	}
+
+	emailUser() {
+		console.log("pretend that this is an email :-)");
+		this.authService.setNamedUser(this.user); // declare what user is being edited
+		this.router.navigate(['/authentication/email']);
+		// what I want to do is pop up a modal email creation box as a component.  
+		// sort of like the /error case.  Lets model it on that.
 	}
 
 	buttonIsPresent() {
@@ -87,9 +95,9 @@ export class EditComponent implements OnInit {
 		// console.log("* * * * checking submit button * * * *")
 		// console.log("logged in: ",this.authService.isLoggedIn());
 		if (this.authService.isLoggedIn()) {
-			console.log(
-					this.authService.whoIsLoggedIn().userId,
-					this.userId,this.authService.whoIsLoggedIn().kind);
+			// console.log(
+			//		this.authService.whoIsLoggedIn().userId,
+			//		this.userId,this.authService.whoIsLoggedIn().kind);
 		}
 		
 		// return early to avoid NPE
@@ -102,7 +110,7 @@ export class EditComponent implements OnInit {
 
 	ngOnInit() {
 
-		console.log("* * * * in edit component * * * *");
+		// console.log("* * * * in edit component * * * *");
 		this.userId = null;
 
 		// console.log("* * * * editing user * * * * ");
@@ -120,33 +128,33 @@ export class EditComponent implements OnInit {
 				kind: new FormControl(null, Validators.required)
 			});
 		}
-		console.log(this.myForm);
-		console.log(this.route.params);
-		console.log(this.route.url);
-		console.log("* * * * in edit component (2) * * * *");
+		// console.log(this.myForm);
+		// console.log(this.route.params);
+		// console.log(this.route.url);
+		// console.log("* * * * in edit component (2) * * * *");
 
 		if (!(Object.keys(this.route.snapshot.params).length === 0 && this.route.snapshot.params.constructor === Object)) {
-			console.log("* * * * parsing parameters * * * *");
+			// console.log("* * * * parsing parameters * * * *");
 			this.userId = this.route.snapshot.params['userId'];
 		} else {
 			if (this.authService.isLoggedIn()) {
-				console.log("passed the logged in test");
+				// console.log("passed the logged in test");
 				this.userId = this.authService.whoIsLoggedIn().userId;
 			}
 		}
 		console.log("before checking this.userId");
 		if (this.userId) {
-			console.log("User ID in edit",this.userId);
+			// console.log("User ID in edit",this.userId);
 			return this.authService.getUser(this.userId)
 			.subscribe( (user: User) => { 
-				console.log("* * * * User Edit - subscription activation * * * *");
-				console.log(this.myForm);
-				console.log(user);
+				// console.log("* * * * User Edit - subscription activation * * * *");
+				// console.log(this.myForm);
+				// console.log(user);
 				if (user) {   // if there actually was a parameter...
-					console.log("* * * * setting the form * * * *");
+					// console.log("* * * * setting the form * * * *");
 					if (!user.kind) user.kind = 'admin';
 					this.user = user;
-					console.log(this.user);
+					// console.log(this.user);
 					this.myForm.setValue({
 						email: user.email,
 						password: null, // if they change the password we need to 
@@ -164,15 +172,15 @@ export class EditComponent implements OnInit {
 				}
 
 				// the form is diabled if it is filled with data and not owned by me.
-				// if (false) {
-				//	console.log("disable");
-				//	this.myForm.disable();
-				// }
+				if (!this.buttonIsPresent()) {
+					// console.log("disable");
+					this.myForm.disable();
+				}
 
-				console.log("* * * * edit user subscribe - end * * * *");
-				console.log(this.myForm);
-				console.log(this.user);
-				console.log("* * * * edit user subscribe - end * * * *");
+				// console.log("* * * * edit user subscribe - end * * * *");
+				// console.log(this.myForm);
+				// console.log(this.user);
+				// console.log("* * * * edit user subscribe - end * * * *");
 			});
 		}
 	}

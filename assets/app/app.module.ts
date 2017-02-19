@@ -26,7 +26,10 @@ import { ErrorService } from "./errors/error.service";
 import { HeaderComponent } from "./header.component";
 import { routing } from "./app.routing";
 import { ErrorComponent } from "./errors/error.component";
+import { NotFoundErrorComponent } from "./errors/404.error.component";
 import { UserComponent } from "./auth/user.component";
+
+import { EmailComponent } from "./email/email.compose.component";
 
 
 @NgModule({
@@ -46,7 +49,9 @@ import { UserComponent } from "./auth/user.component";
         AuthLandingComponent,
         EventLandingComponent,
         MyEventListComponent,
-        UserComponent
+        EmailComponent,
+        UserComponent,
+        NotFoundErrorComponent
     ],
     providers: [AuthService, ErrorService, EventService],
     imports: [BrowserModule, FormsModule, routing, ReactiveFormsModule, HttpModule],

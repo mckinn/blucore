@@ -29,6 +29,7 @@ import {AuthService} from "../auth/auth.service";
 						<ul class="dropdown-menu">
 							<li> <a class="text-right" >{{roleIsLoggedIn()}}</a></li>
 							<li> <a class="text-right" [routerLink]="['edit']">User Details</a></li>
+							<li> <a class="text-right" [routerLink]="['email']">email</a></li>
 							<li (click)="onLogout()"> <a href=#  class="text-right">Logout</a></li>
 						</ul>
 					</li>
@@ -52,7 +53,7 @@ export class EventsComponent {
 	}
 
 	activeForTeachers(){
-		// console.log("* * * * active for teacher * * * *",this.authService.whoIsLoggedIn().kind);
+		// // console.log("* * * * active for teacher * * * *",this.authService.whoIsLoggedIn().kind);
 		if (this.authService.isLoggedIn()) {
 			return (this.authService.whoIsLoggedIn().kind == 'teacher');
 		}
@@ -60,7 +61,7 @@ export class EventsComponent {
 	}
 
 	isAdmin(){
-		// console.log("* * * * is admin* * * *",this.authService.whoIsLoggedIn().kind);
+		// // console.log("* * * * is admin* * * *",this.authService.whoIsLoggedIn().kind);
 		if (this.authService.isLoggedIn()) {
 			return (this.authService.whoIsLoggedIn().kind == 'admin');
 		}
@@ -88,7 +89,7 @@ export class EventsComponent {
 
 	onLogout() {
 		this.authService.logout();
-		// console.log("this.router.navigate(['/authentication', 'signin']);");
+		// // console.log("this.router.navigate(['/authentication', 'signin']);");
 		this.authService.clearWhoIsLoggedIn();
 		this.router.navigate(['/authentication', 'signin']);
 	}

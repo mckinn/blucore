@@ -1,0 +1,36 @@
+<div class= "backdrop" [ngStyle]="{'display':display}">
+</div>
+<div class="modal" tabindex="-1" role="dialog" [ngStyle]="{'display':display}">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title">Send an email to {{ destination }}</h4>
+      </div>
+      <div class="modal-body">
+        <form [formGroup]="emailForm">
+          <div class="form-group">
+            <label  for="emailSubject">email Subject</label>
+            <input  class="form-control"
+              type="text" 
+              id="emailSubject" 
+              formControlName = "emailSubject"
+                >
+          </div>
+          <div class="form-group">
+            <label  for="emailText">email Body</label>
+            <textarea  class="form-control"
+              type="text" 
+              id="emailText" 
+              formControlName =  "emailBody"   
+              rows="10">
+            </textarea>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" (click)="submitEmail()">Close send ==></button>
+        <button type="button" class="btn btn-default" (click)="cancelEmail()">Cancel</button>
+      </div>
+    </div><!-- /.modal-content -->
+  </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->

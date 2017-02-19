@@ -1,6 +1,6 @@
 <div class = "col-md-8 col-md-offset-2">
 	<form [formGroup]="myForm" (ngSubmit)="onSubmit()">
-		<div class="form-group">
+		<div class="form-group" >
 			<label for="firstName">First Name</label>
 			<input 
 				type="text" 
@@ -8,7 +8,7 @@
 				class="form-control"
 				formControlName = "firstName">
 		</div>
-		<div class="form-group">
+		<div class="form-group" >
 			<label for="lastName">Last Name</label>
 			<input 
 				type="text" 
@@ -16,7 +16,7 @@
 				class="form-control"
 				formControlName = "lastName">
 		</div>	
-		<div class="form-group">
+		<div class="form-group" >
 			<label for="email">email address</label>
 			<input 
 				type="email" 
@@ -24,7 +24,7 @@
 				class="form-control"
 				formControlName = "email">
 		</div>
-		<div class="form-group">
+		<div class="form-group" *ngIf= "buttonIsPresent()">
 			<label for="password">password</label>
 			<input 
 				type="password" 
@@ -32,7 +32,7 @@
 				class="form-control"
 				formControlName = "password">
 		</div>
-		<div class="form-group">
+		<div class="form-group" *ngIf= "buttonIsPresent()">
 			<label for="wcpssId">WCPSS ID</label>
 			<input 
 				type="text" 
@@ -40,17 +40,17 @@
 				class="form-control"
 				formControlName = "wcpssId">
 		</div>
-		<div class="form-group">
+		<div class="form-group" >
 			<label for="school">School</label>
-			<input 
+			<input
 				type="text" 
 				id="school" 
 				class="form-control"
 				formControlName = "school">
 		</div>
-		<div class="form-group">
+		<div class="form-group" >
 			<label for="kind">Kind</label>
-			<select 
+			<select
 				id="kind" 
 				class="form-control"
 				formControlName = "kind">
@@ -66,6 +66,17 @@
 			type="submit"
 			[disabled]="!myForm.valid"
 			>
-			Submit</button>
+			Update
+		</button>
+	</form>
+	<form>
+		<button 
+			class="btn btn-primary" 
+			*ngIf= "!buttonIsPresent()"
+			type="button"
+			(click) = "emailUser()"
+			>
+			email user
+		</button>
 	</form>
 </div>

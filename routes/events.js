@@ -12,11 +12,11 @@ router.get('/', function(req,res,next){
 	var qparms = req.query;
 	var mongooseQuery = {};
 	var mongooseQueryList = [];
-	console.log("queryparms",qparms);
+	// console.log("queryparms",qparms);
 	if (qparms) {
-		console.log("qparms",qparms);
+		// console.log("qparms",qparms);
 		for (var qparm in qparms){
-			console.log("qparm",qparm, qparms[qparm]);
+			// console.log("qparm",qparm, qparms[qparm]);
 			switch(qparm) {
 				case "text":
 					// mongooseQuery.description = { $regex: qparms[qparm] }
@@ -24,17 +24,17 @@ router.get('/', function(req,res,next){
 					{description: { $regex: qparms[qparm], $options: "i" }} );
 					mongooseQueryList.push( 
 							{name: { $regex: qparms[qparm], $options: "i" }} );
-					console.log("mgql1 ",mongooseQueryList);
+					// console.log("mgql1 ",mongooseQueryList);
 					break;
 				case "teacher":
 					mongooseQueryList.push( 
 							{ownerName: { $regex: qparms[qparm], $options: "i" }} );
-					console.log("mgql2 ",mongooseQueryList);
+					// console.log("mgql2 ",mongooseQueryList);
 					break;
 			}
 		}
 		if (mongooseQueryList.length != 0) mongooseQuery = {$or: mongooseQueryList};
-		console.log("aggregate",mongooseQuery);
+		// console.log("aggregate",mongooseQuery);
 	}
 
 	Event.find(mongooseQuery)
@@ -69,7 +69,7 @@ router.use('/',function(req,res,next){
 
 // create an event
 router.post('/', function (req, res, next) {
-	console.log(req);
+	// console.log(req);
 	var decoded = jwt.decode(req.query.token); 
 	User.findById(decoded.user._id, function(err, user){
 		if (err) {
@@ -79,7 +79,7 @@ router.post('/', function (req, res, next) {
 			});
 		};
 
-		console.log(" after FindById: - user is: ",user);
+		// console.log(" after FindById: - user is: ",user);
 		
 		var event = new Event({
 			name: req.body.name,
@@ -94,8 +94,8 @@ router.post('/', function (req, res, next) {
 			ownerId: user._id  // only set once
 			// _id is auto-populated.
 		}); 
-		console.log("* * * * new event * * * *");
-		console.log(event);
+		// console.log("* * * * new event * * * *");
+		// console.log(event);
 		event.save( function (err, result) {
 			if (err) {
 				return res.status(500).json({
@@ -116,7 +116,7 @@ router.post('/', function (req, res, next) {
 });
 
 router.get('/:evtId', function (req, res, next) {
-	console.log(req.params.evtId);
+	// console.log(req.params.evtId);
 	Event.findById(req.params.evtId)
 		.populate('ownerId')
 		.exec( function( err , event ){
@@ -132,7 +132,7 @@ router.get('/:evtId', function (req, res, next) {
 				error: { message: 'NOT FOUND'}
 				});
 			}
-			console.log(req.params.evtId);
+			// console.log(req.params.evtId);
 			res.status(200).json({
 				message: 'Updated Event',
 				obj: event
@@ -141,7 +141,7 @@ router.get('/:evtId', function (req, res, next) {
 });
 
 router.patch('/:evtId', function (req, res, next) {
-	console.log(" ------------------------PATCH Event Start------------------------------- ");
+	// console.log(" ------------------------PATCH Event Start------------------------------- ");
 	Event.findById(req.params.evtId, function( err , evt ){
 		if (err) {
 			return res.status(500).json({
@@ -155,9 +155,9 @@ router.patch('/:evtId', function (req, res, next) {
 			error: { message: 'NOT FOUND'}
 			});
 		}
-		console.log("------------------ in patch ------------------");
-		console.log(req.body);
-		console.log(evt);
+		// console.log("------------------ in patch ------------------");
+		// console.log(req.body);
+		// console.log(evt);
 
 		if( req.body.name ) evt.name = req.body.name;
 		if( req.body.description ) evt.description = req.body.description;
@@ -170,7 +170,7 @@ router.patch('/:evtId', function (req, res, next) {
 		if( req.body.participants ) evt.participants = req.body.participants;
 		if( req.body.ownerName ) evt.ownerName = req.body.ownerName;
 
-		console.log(evt);
+		// console.log(evt);
 		evt.save( function (err, result) {
 			if (err) {
 				return res.status(500).json({
@@ -178,7 +178,7 @@ router.patch('/:evtId', function (req, res, next) {
 					error: err
 				});
 			};
-			console.log(result);
+			// console.log(result);
 			res.status(200).json({
 				message: 'Updated Event',
 				obj: result

@@ -34,7 +34,7 @@ export class EventComponent {
 	}
 
     onDelete() {
-		console.log("Deletion attempt");
+		// console.log("Deletion attempt");
         this.eventService.deleteEvent(this.event);
     }
 
@@ -71,7 +71,7 @@ export class EventComponent {
 
 
 	iAmAStudent() {
-		// console.log("* * * * I am a teacher * * * *",this.authService.whoIsLoggedIn().kind);
+		// // console.log("* * * * I am a teacher * * * *",this.authService.whoIsLoggedIn().kind);
 		return (this.authService.whoIsLoggedIn().kind == 'student');
 	}
 
