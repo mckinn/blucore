@@ -38,11 +38,15 @@ export class EmailComponent implements OnInit {
 
 	submitEmail() {
 		this.display = 'none';
+		let fromUser = this.authService.whoIsLoggedIn();
+		let toUser = this.authService.getNamedUser();
 		this.email = new Email (
 			// ignore the real target until we go live.
-			// this.authService.getNamedUser().email, //to
-			this.destination,
-			this.authService.whoIsLoggedIn().email, //from
+			// this.authService.getNamedUser().email, // todo 
+			this.destination,  // to
+			fromUser.email, //from
+			toUser.firstName + ' ' + toUser.lastName, // to common
+			fromUser.firstName + ' ' + fromUser.lastName,// from common
 			this.emailForm.value.emailSubject,
 			this.emailForm.value.emailBody
 			);

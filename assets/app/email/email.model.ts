@@ -5,6 +5,8 @@ export class Email {
 	constructor (
 		public to: string,
 		public from: string,
+		public toCommon: string,
+		public fromCommon: string,
         public subject:string,
 		public body: string
 		) {}

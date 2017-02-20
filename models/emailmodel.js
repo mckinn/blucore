@@ -8,7 +8,7 @@ const nodemailer = require('nodemailer');
 module.exports = nodemailer.createTransport({
     service: 'gmail',
     auth: {
-        user: 'blucore.manager@gmail.com',
+        user: 'blucore.emaildaemon@gmail.com',
         pass: 'athens drive high school'
     }
 });

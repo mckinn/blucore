@@ -4,6 +4,7 @@ var bcrypt = require('bcryptjs');
 var jwt = require('jsonwebtoken');
 
 var transporter = require('../models/emailmodel');
+var htmlemail = require('../models/emailhtml');
 
 // check for logged in user
 router.use('/',function(req,res,next){
@@ -22,15 +23,17 @@ router.post('/', function (req, res, next) {
 
     // setup email data with unicode symbols
     let mailOptions = {
-        //from: '"Jumping Jehosophat" <mckinn@yahoo.com>',
+        from: '"'+req.body.fromCommon+'"<blucore.emaildaemon@gmail.com>',
         //from: req.body.from, // sender address
-        to: req.body.to, // list of receivers
-        envelope: {
-            from: '"Jumping Jehosophat" <mckinn@yahoo.com>', // used as MAIL FROM: address for SMTP
+        // to: req.body.to, // list of receivers
+        to: '"'+req.body.toCommon+'"<'+req.body.to+'>',
+        /*envelope: {
+            from: '"BluCore Emailer" <blucore.emaildaemon@gmail.com>', // used as MAIL FROM: address for SMTP
             to: req.body.to // used as RCPT TO: address for SMTP
-        },
+        },*/
         subject: req.body.subject, // Subject line
-        text: req.body.body
+        text: req.body.body + '\n\n' + 'The sender can be reached at: '+ req.body.from +'.',
+        html: htmlemail.populateInterpersonalEmail(req.body.from, req.body.fromCommon, req.body.body)
     };
 
     console.log("the email options", mailOptions);
@@ -42,6 +45,9 @@ router.post('/', function (req, res, next) {
         }
         console.log('Message %s sent: %s', info.messageId, info.response);
     });
+    res.status(200).json({
+				message: 'email sent'
+			});
 });
 
 module.exports = router;
