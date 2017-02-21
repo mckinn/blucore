@@ -42,23 +42,19 @@ exports.populateInterpersonalEmail = function (emailAddress, friendly, bodyText)
         }
         .gwd-p-rzrb {
             position: absolute;
-            width: 640px;
-            left: 42px;
             border-style: solid;
-            border-width: 1px;
+            border-width: 0px;
             color: rgb(42, 42, 42);
             font-family: Verdana;
             font-size: 14px;
-            top: 61px;
-            height: 187px;
             transform-origin: 320px 237.5px 0px;
-            -webkit-transform-origin: 320px 237.5px 0px;
-            -moz-transform-origin: 320px 237.5px 0px;
-            background-image: -webkit-radial-gradient(ellipse closest-side, rgb(255, 255, 255) 0%, rgb(234, 234, 243) 100%);
-            background-image: -moz-radial-gradient(ellipse closest-side, rgb(255, 255, 255) 0%, rgb(234, 234, 243) 100%);
-            background-image: radial-gradient(ellipse closest-side, rgb(255, 255, 255) 0%, rgb(234, 234, 243) 100%);
-            background-repeat: no-repeat;
-            background-color: rgb(234, 234, 243);
+            margin: 0px;
+            padding: 15px;
+            left: 41px;
+            top: 63px;
+            width: 610px;
+            height: 160px;
+            background-image: -webkit-radial-gradient(center center, circle cover, rgb(255, 255, 255) 0%, rgb(234, 234, 243) 100%);
             background-color: transparent;
         }
         .gwd-p-h5lt {
