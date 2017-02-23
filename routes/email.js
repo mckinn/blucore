@@ -3,6 +3,10 @@ var router = express.Router();
 var bcrypt = require('bcryptjs');
 var jwt = require('jsonwebtoken');
 
+var Promises = require('bluebird');
+var EmailTemplate = require('email-templates-v2').EmailTemplate;
+var path = require('path');
+
 var transporter = require('../models/emailmodel');
 var htmlemail = require('../models/emailhtml');
 
@@ -21,33 +25,54 @@ router.use('/',function(req,res,next){
 
 router.post('/', function (req, res, next) {
 
-    // setup email data with unicode symbols
-    let mailOptions = {
-        from: '"'+req.body.fromCommon+'"<blucore.emaildaemon@gmail.com>',
-        //from: req.body.from, // sender address
-        // to: req.body.to, // list of receivers
-        to: '"'+req.body.toCommon+'"<'+req.body.to+'>',
-        /*envelope: {
-            from: '"BluCore Emailer" <blucore.emaildaemon@gmail.com>', // used as MAIL FROM: address for SMTP
-            to: req.body.to // used as RCPT TO: address for SMTP
-        },*/
-        subject: req.body.subject, // Subject line
-        text: req.body.body + '\n\n' + 'The sender can be reached at: '+ req.body.from +'.',
-        html: htmlemail.populateInterpersonalEmail(req.body.from, req.body.fromCommon, req.body.body)
+    emailAddress = req.body.from;
+    friendly = req.body.fromCommon;
+    bodyText = req.body.body;
+
+    var prepareAndSend_p = function (htmlbody){
+        console.log("htmlbody",htmlbody );
+        let mailOptions = {
+            from: '"'+req.body.fromCommon+'"<blucore.emaildaemon@gmail.com>',
+            to: '"'+req.body.toCommon+'"<'+req.body.to+'>',
+            subject: req.body.subject, // Subject line
+            text: req.body.body + '\n\n' + 'The sender can be reached at: '+ req.body.from +'.',
+            html: htmlbody.html
+        };
+        console.log("the email options", mailOptions);
+
+        // send mail with defined transport object
+        return new Promise(function(resolve,reject){
+            transporter.sendMail(mailOptions, function(error, info) {
+                console.log("inside the callback for sendmail: ", error, info);
+                if (error) {
+                    console.log(error);
+                    reject(error);
+                }
+                console.log('Message %s sent: %s', info.messageId, info.response);
+                resolve({message:'email sent'});
+            });
+            }
+        )
     };
 
-    console.log("the email options", mailOptions);
+    console.log ("the arguments",emailAddress, friendly, bodyText);
 
-    // send mail with defined transport object
-    transporter.sendMail(mailOptions, (error, info) => {
-        if (error) {
-            return console.log(error);
-        }
-        console.log('Message %s sent: %s', info.messageId, info.response);
-    });
-    res.status(200).json({
-				message: 'email sent'
-			});
+    var templateDir = path.resolve(__dirname, '../templates', 'interpersonal');
+    console.log("template: ", templateDir);
+    
+    var interpersonal = new EmailTemplate(templateDir);
+    var user = {name: friendly, email: emailAddress, body: bodyText.replace(/\n/g, "<br>")};
+
+    // var interpersonal_p = interpersonal.render(user);
+    // interpersonal_p
+    interpersonal.render(user)
+        .then(prepareAndSend_p)
+        .then(function(outcome){
+            res.status(200).json(outcome);
+        });
+
+    console.log("end of the chain");
+
 });
 
 module.exports = router;
