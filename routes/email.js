@@ -3,7 +3,7 @@ var router = express.Router();
 var bcrypt = require('bcryptjs');
 var jwt = require('jsonwebtoken');
 
-var Promises = require('bluebird');
+// var Promises = require('bluebird');
 var EmailTemplate = require('email-templates-v2').EmailTemplate;
 var path = require('path');
 
