@@ -4,6 +4,7 @@ import { Component, OnInit } from "@angular/core";
 
 import { FormGroup, FormControl, Validators, NgForm, AbstractControl } from "@angular/forms";
 import { Router, ActivatedRoute, Params } from "@angular/router";
+import { Location } from "@angular/common"; 
 import { EventService } from "./event.service";
 import { AuthService } from "../auth/auth.service";
 import { Event } from "./event.model";
@@ -30,7 +31,8 @@ export class EventInputComponent implements OnInit {
 		private eventService: EventService,
 		private authService: AuthService,
 		private router: Router,
-		private route: ActivatedRoute) { }
+		private route: ActivatedRoute,
+		private location: Location) { }
 
 	onSubmit() {
 		// console.log("* * * * onSubmit * * * *");
@@ -103,6 +105,10 @@ export class EventInputComponent implements OnInit {
 		this.myForm.reset();
 		this.myForm.enable();
 		this.event = null;
+	}
+
+	goBack() {
+		this.location.back();
 	}
 
 	isEmpty(obj) {

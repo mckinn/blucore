@@ -68,15 +68,22 @@
 			>
 			Update
 		</button>
-	</form>
-	<form>
+
 		<button 
 			class="btn btn-primary" 
-			*ngIf= "!buttonIsPresent()"
+			*ngIf= "!isMe()" 
 			type="button"
 			(click) = "emailUser()"
 			>
 			email user
+		</button>
+		<button 
+			class="btn btn-primary" 
+			*ngIf= "isLoggedIn()" 
+			type="button"
+			(click) = "goBack()"
+			>
+			Back
 		</button>
 	</form>
 </div>

@@ -69,6 +69,10 @@
 				[disabled]="!myForm.disabled && myForm.valid" 
 				*ngIf= "iHaveNotSelectedThis() && iAmAStudent()"
 				>Signup</button>
+		<button class="btn btn-primary" 
+				type="button" 
+				(click) = "goBack()" 
+				>Back</button>
 	</form>
 
 </div>

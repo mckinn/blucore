@@ -1,6 +1,7 @@
 
 
 import { Component, OnInit } from "@angular/core";
+import { Location } from "@angular/common";
 import { FormGroup, FormControl, Validators } from "@angular/forms";
 import { Router, ActivatedRoute, Params } from "@angular/router";
 
@@ -20,7 +21,8 @@ export class EditComponent implements OnInit {
 
 	constructor( private authService: AuthService,
 				private router: Router,
-				private route: ActivatedRoute
+				private route: ActivatedRoute,
+				private location: Location
 		 ) {}
 
 	onSubmit() {
@@ -78,12 +80,26 @@ export class EditComponent implements OnInit {
 	}
 
 	emailUser() {
-		console.log("pretend that this is an email :-)");
 		this.authService.setNamedUser(this.user); // declare what user is being edited
 		this.router.navigate(['/authentication/email']);
 		// what I want to do is pop up a modal email creation box as a component.  
 		// sort of like the /error case.  Lets model it on that.
 	}
+
+	goBack() {
+		this.location.back();
+	}
+
+	isLoggedIn () {
+		console.log("isLoggedIn is: ", this.authService.isLoggedIn());
+		return this.authService.isLoggedIn();
+	}
+	
+	isMe () {
+		console.log("userCheck: ", this.userId, this.authService.whoIsLoggedIn().userId );
+		return (this.userId == this.authService.whoIsLoggedIn().userId);
+	}
+
 
 	buttonIsPresent() {
 		/* The ability to submit  something in the user view ( the criteria for the button existence) is…
