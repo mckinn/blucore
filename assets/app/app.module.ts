@@ -31,6 +31,8 @@ import { UserComponent } from "./auth/user.component";
 
 import { EmailComponent } from "./email/email.compose.component";
 
+import { CommonHttp } from "./common/common.http";
+
 
 @NgModule({
     declarations: [
@@ -53,7 +55,7 @@ import { EmailComponent } from "./email/email.compose.component";
         UserComponent,
         NotFoundErrorComponent
     ],
-    providers: [AuthService, ErrorService, EventService],
+    providers: [AuthService, ErrorService, EventService, CommonHttp],
     imports: [BrowserModule, FormsModule, routing, ReactiveFormsModule, HttpModule],
     bootstrap: [AppComponent]
 })

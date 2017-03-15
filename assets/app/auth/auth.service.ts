@@ -11,6 +11,7 @@ import { Event } from '../events/event.model';
 import { ErrorService } from '../errors/error.service';
 import { EventService } from '../events/event.service';
 import { AppSettings } from '../app.settings';
+import { CommonHttp } from '../common/common.http';
 
 @Injectable()
 export class AuthService {
@@ -23,12 +24,14 @@ export class AuthService {
 				private errorService: ErrorService, 
 				private router: Router,
 				private responseOptions: ResponseOptions, 
-				private eventService: EventService
+				private eventService: EventService,
+				private commonHttp: CommonHttp
 				){}
 
 	addUser(user: User) {
 		const body = JSON.stringify(user);
-		const headers = new Headers({'Content-Type': 'application/json'});
+		const headers = this.commonHttp.setHeaders();
+		// const headers = new Headers({'Content-Type': 'application/json'});
 		// console.log(user);
 		// console.log(body);
 		return this.http.post(AppSettings.API_ENDPOINT + 'user',body,{headers: headers})
@@ -42,7 +45,8 @@ export class AuthService {
 
 	updateUser(user: User) {
 		const body = JSON.stringify(user);
-		const headers = new Headers({'Content-Type': 'application/json'});
+		// const headers = new Headers({'Content-Type': 'application/json'});
+		const headers = this.commonHttp.setHeaders();
 		console.log("* * * * Update User * * * *",user,body);
 		return this.http.patch(
 				AppSettings.API_ENDPOINT + 'user/users/'+user.userId,
@@ -57,7 +61,8 @@ export class AuthService {
 		}
 		
 	getUsers () {
-		return this.http.get(AppSettings.API_ENDPOINT + 'user/users')
+		const headers = this.commonHttp.setHeaders();
+		return this.http.get(AppSettings.API_ENDPOINT + 'user/users',{headers:headers})
 			.map((response:Response) => {
 				// console.log(response);
 				const users = response.json().obj;
@@ -69,15 +74,20 @@ export class AuthService {
 				return transformedUsers;
 			})
 			.catch((error: Response) => {
-				console.error(error);
-				this.errorService.handleError(error.json())
+				console.error("caught error is: ",error);
+				console.error("caught error in json is: ",error.json());
+				console.error("caught sstatus is: ",error.status);
+				this.errorService.handleError(error.json(),error.status);
 				return Observable.throw(error.json());
 			});	
 		};
+
 	// get a user object from a user id.
 	getUser (uid: String) {
-		// console.log(uid);
-		return this.http.get(AppSettings.API_ENDPOINT + 'user/users/'+uid)
+		console.log("in getUser: ",uid);
+		// const headers = new Headers({'Content-Type': 'application/json','X-token':'this is a token'});
+		const headers = this.commonHttp.setHeaders();
+		return this.http.get(AppSettings.API_ENDPOINT + 'user/users/'+uid,{headers:headers})
 			.map((response:Response) => {
 				// console.log("in the users get response");
 				// console.log(response);
@@ -90,6 +100,9 @@ export class AuthService {
 			})
 			.catch((error: Response) => {
 				console.error(error);
+				console.log("clearing out the token and userId");
+				localStorage.removeItem('token');
+				localStorage.removeItem('userId');
 				this.errorService.handleError(error.json())
 				return Observable.throw(error.json());
 			});
@@ -118,9 +131,8 @@ export class AuthService {
 	// It does not really touch the single instance of a user
 	editUser (user: User) {
 		// prompt the loading of the event
-		// console.log("user edit triggered in service");
-		// console.log(user,user.userId);
-		this.router.navigate(['/authentication/edit',user.userId]);
+		console.log("editUser - user edit triggered in service",user,user.userId);
+		this.router.navigate(['/events/edit',user.userId]);
 		}
 
 	isLoggedIn () {
@@ -137,7 +149,7 @@ export class AuthService {
 		// console.log (user);
 		this.loggedInUser = user;
 		this.loggedInUser.userId = userId;
-		// console.log (this.loggedInUser);
+		console.log ("in setWhoIsLoggedIn: ",this.loggedInUser);
 		this.getUser( this.loggedInUser.userId)
 			.subscribe(
 				data => {
@@ -286,6 +298,5 @@ export class AuthService {
 			this.errorService.handleError(error);
 			return Observable.throw(error);
 		};
-
-
-	}
+	
+}

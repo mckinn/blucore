@@ -1,13 +1,16 @@
 // event.service.ts
 import { Http, Response, Headers } from "@angular/http";
 import { Injectable, EventEmitter } from "@angular/core";
+
 import { Router } from "@angular/router";
 
 import "rxjs/Rx";
 import { Observable } from "rxjs";
 
 import { Event } from "./event.model";
+import { CommonHttp } from "../common/common.http";
 import { ErrorService } from "../errors/error.service";
+
 import { AppSettings } from '../app.settings';
 
 @Injectable()
@@ -15,7 +18,12 @@ export class EventService {
 
 	private events: Event[] = [];
 
-	constructor(private http: Http, private errorService: ErrorService, private router: Router) {}
+	constructor(private http: Http, 
+				private commonHttp: CommonHttp,
+				private errorService: ErrorService, 
+				private router: Router
+				
+				) {}
 
 	addEvent (evt:Event) {
 		// console.log("* * * * add event * * * *");
@@ -23,12 +31,13 @@ export class EventService {
 		// delete evt.ownerName;  // get rid of derived items
 		delete evt.eventId;
 		const body = JSON.stringify(evt);
-		const headers = new Headers({'Content-Type': 'application/json'});
-		const token = localStorage.getItem('token') 
-			? '?token='+ localStorage.getItem('token') 
-			: '';
+		const headers = this.commonHttp.setHeaders();
+		// const headers = new Headers({'Content-Type': 'application/json'});
+		// const token = localStorage.getItem('token') 
+		//	? '?token='+ localStorage.getItem('token') 
+		//	: '';
 		// creates an observable and returns it
-		return this.http.post( AppSettings.API_ENDPOINT + 'event'+token,	body, {headers: headers})
+		return this.http.post( AppSettings.API_ENDPOINT + 'event',	body, {headers: headers})
 			// this is an anonymous function that takes a Response and yields a response.json ????
 			// extract the complete response and save that returned result, so that we get the ID 
 			// of the just added event
@@ -58,11 +67,12 @@ export class EventService {
 	}
 
 	getEvent (eventId : string) {
+		const headers = this.commonHttp.setHeaders();
 		// console.log("* * * * in getevent - eventId= * * * *", eventId);
-		const token = localStorage.getItem('token') 
-			? '?token='+ localStorage.getItem('token') 
-			: '';
-		return this.http.get(AppSettings.API_ENDPOINT + 'event/'+eventId + token)
+		// const token = localStorage.getItem('token') 
+		//	? '?token='+ localStorage.getItem('token') 
+		//	: '';
+		return this.http.get(AppSettings.API_ENDPOINT + 'event/'+eventId  ,{headers:headers} )
 			.map((response:Response) => {
 				const evt = response.json().obj;
 				// console.log("event in getEvent: ",evt);
@@ -113,7 +123,8 @@ export class EventService {
 		} */
 
 		// console.log("parmString: ",parmString);
-		return this.http.get(AppSettings.API_ENDPOINT + 'event'+ parmString)
+		const headers = this.commonHttp.setHeaders();
+		return this.http.get(AppSettings.API_ENDPOINT + 'event'+ parmString,{headers:headers})
 			.map((response:Response) => {
 				const events = response.json().obj;
 				let transformedEvents: Event[] = [];
@@ -161,13 +172,14 @@ export class EventService {
 		delete evt.eventId;
 		// console.log(evt);
 		const body = JSON.stringify(evt);
-		const headers = new Headers({'Content-Type': 'application/json'});
-		const token = localStorage.getItem('token') 
-			? '?token='+ localStorage.getItem('token') 
-			: '';
+		const headers = this.commonHttp.setHeaders();
+		// const headers = new Headers({'Content-Type': 'application/json'});
+		// const token = localStorage.getItem('token') 
+		// 	? '?token='+ localStorage.getItem('token') 
+		//	: '';
 		// creates an observable and returns it
 		// console.log("* * * * in updateEvent - sending patch * * * *",tempEventId,body);
-		const url = AppSettings.API_ENDPOINT + 'event/'+ tempEventId + token;
+		const url = AppSettings.API_ENDPOINT + 'event/'+ tempEventId;
 		// console.log(url);
 		return this.http.patch( url, body, {headers: headers})
 			// this is an anonymous function that takes a Response and yields a response.json ????
@@ -202,12 +214,12 @@ export class EventService {
 		// console.log("after splice attempt", this.events);
 		// update the server.
 		// creates an observable and returns it
-		const token = localStorage.getItem('token') 
-			? '?token='+ localStorage.getItem('token') 
-			: '';
+		// const token = localStorage.getItem('token') 
+		//	? '?token='+ localStorage.getItem('token') 
+		//	: '';
 		// console.log("just before DELETE call to /event/"+ evt.eventId + token);
-
-		return this.http.delete( AppSettings.API_ENDPOINT + 'event/'+ evt.eventId + token )
+		const headers = this.commonHttp.setHeaders();
+		return this.http.delete( AppSettings.API_ENDPOINT + 'event/'+ evt.eventId,{headers:headers} )
 
 			// this is an anonymous function that takes a Response and yields a response.json ????
 			

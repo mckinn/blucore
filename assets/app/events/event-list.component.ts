@@ -2,7 +2,9 @@
 
 import { Component, OnInit } from "@angular/core";
 import { FormGroup, FormControl,NgForm, FormsModule } from "@angular/forms";
+import { Router } from "@angular/router";
 
+import { ErrorService } from "../errors/error.service";
 import { EventService } from "./event.service";
 import { AuthService } from "../auth/auth.service";
 import { Event } from "./event.model";
@@ -17,7 +19,11 @@ export class EventListComponent implements OnInit {
 	events: Event[];
 	
 	searchForm: FormGroup;
-    constructor( private eventService: EventService, private authService: AuthService ) {}
+    constructor( private eventService: EventService,
+				 private authService: AuthService,
+				 private router: Router,
+				 private errorService: ErrorService 
+				 ) {}
 
 
 	onSearch () {
@@ -51,6 +57,15 @@ export class EventListComponent implements OnInit {
 
 
     ngOnInit () {
+
+		if (!this.authService.isLoggedIn()) {
+			console.log("re-setting user due to logout");
+			this.errorService.handleError(
+				this.errorService.loginTimeoutError
+				);
+			this.router.navigate(['/authentication/signin']);
+			return;
+		}
 
 		if (!this.searchForm) {
 			this.searchForm = new FormGroup({

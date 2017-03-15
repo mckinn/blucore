@@ -12,7 +12,9 @@ var htmlemail = require('../models/emailhtml');
 
 // check for logged in user
 router.use('/',function(req,res,next){
-	jwt.verify(req.query.token, 'secretkey', function (err, decoded) {
+    console.log("checking in email.js: ",req.query.token," or ", req.headers['x-token'] );
+    var token = req.body.token || req.query.token || req.headers['x-token'];
+	jwt.verify(token, 'secretkey', function (err, decoded) {
 		if (err) {
 			return res.status(401).json({
 				title:'user no longer logged in',

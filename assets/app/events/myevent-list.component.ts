@@ -1,8 +1,10 @@
 
 import { Component, OnInit } from "@angular/core";
+import { Router } from "@angular/router";
 
 import { EventService } from "./event.service";
 import { AuthService } from "../auth/auth.service";
+import { ErrorService } from "../errors/error.service";
 import { Event } from "./event.model";
 import { User } from "../auth/user.model";
 
@@ -35,9 +37,22 @@ import { User } from "../auth/user.model";
 export class MyEventListComponent implements OnInit {
 
 	events: Event[];
-    constructor( private eventService: EventService, private authService: AuthService ) {}
+    constructor( private eventService: EventService, 
+				 private authService: AuthService,
+				 private errorService: ErrorService,
+				 private router: Router ) {}
 
     ngOnInit () {
+
+		if (!this.authService.isLoggedIn()) {
+			console.log("re-setting user due to logout");
+			this.errorService.handleError(
+				this.errorService.loginTimeoutError
+			);
+			this.router.navigate(['/authentication/signin']);
+			return;
+		}
+
         const user: User = this.authService.whoIsLoggedIn();
         if (user) {  // somebody is logged in...
             // console.log("somebody is logged in");

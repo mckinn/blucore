@@ -5,6 +5,7 @@ import { Location } from "@angular/common";
 import { FormGroup, FormControl, Validators } from "@angular/forms";
 import { Router, ActivatedRoute, Params } from "@angular/router";
 
+import { ErrorService } from "../errors/error.service";
 import { AuthService } from "./auth.service";
 import { User } from "./user.model";
 
@@ -22,7 +23,8 @@ export class EditComponent implements OnInit {
 	constructor( private authService: AuthService,
 				private router: Router,
 				private route: ActivatedRoute,
-				private location: Location
+				private location: Location,
+				private errorService: ErrorService
 		 ) {}
 
 	onSubmit() {
@@ -96,8 +98,7 @@ export class EditComponent implements OnInit {
 	}
 	
 	isMe () {
-		console.log("userCheck: ", this.userId, this.authService.whoIsLoggedIn().userId );
-		return (this.userId == this.authService.whoIsLoggedIn().userId);
+		return (this.authService.isLoggedIn() && this.userId == this.authService.whoIsLoggedIn().userId);
 	}
 
 
@@ -126,7 +127,7 @@ export class EditComponent implements OnInit {
 
 	ngOnInit() {
 
-		// console.log("* * * * in edit component * * * *");
+		console.log("* * * * in edit component * * * *");
 		this.userId = null;
 
 		// console.log("* * * * editing user * * * * ");
@@ -158,19 +159,33 @@ export class EditComponent implements OnInit {
 				this.userId = this.authService.whoIsLoggedIn().userId;
 			}
 		}
+
+
+
 		console.log("before checking this.userId");
 		if (this.userId) {
-			// console.log("User ID in edit",this.userId);
+			// ToDo - determine how to do this by throwing an exception.
+			if (!this.authService.isLoggedIn()) {
+				console.log("re-setting user due to logout");
+				this.errorService.handleError(
+					this.errorService.loginTimeoutError
+				);
+				this.router.navigate(['/authentication/signin']);
+				return;
+			}
+			console.log("User ID in edit",this.userId);
 			return this.authService.getUser(this.userId)
+			
 			.subscribe( (user: User) => { 
-				// console.log("* * * * User Edit - subscription activation * * * *");
-				// console.log(this.myForm);
-				// console.log(user);
+
+				console.log("* * * * User Edit - subscription activation * * * *");
+				console.log(this.myForm);
+				console.log(user);
 				if (user) {   // if there actually was a parameter...
-					// console.log("* * * * setting the form * * * *");
+					console.log("* * * * setting the form * * * *");
 					if (!user.kind) user.kind = 'admin';
 					this.user = user;
-					// console.log(this.user);
+					console.log(this.user);
 					this.myForm.setValue({
 						email: user.email,
 						password: null, // if they change the password we need to 
@@ -189,14 +204,14 @@ export class EditComponent implements OnInit {
 
 				// the form is diabled if it is filled with data and not owned by me.
 				if (!this.buttonIsPresent()) {
-					// console.log("disable");
+					console.log("disable");
 					this.myForm.disable();
 				}
 
-				// console.log("* * * * edit user subscribe - end * * * *");
-				// console.log(this.myForm);
-				// console.log(this.user);
-				// console.log("* * * * edit user subscribe - end * * * *");
+				console.log("* * * * edit user subscribe - end * * * *");
+				console.log(this.myForm);
+				console.log(this.user);
+				console.log("* * * * edit user subscribe - end * * * *");
 			});
 		}
 	}

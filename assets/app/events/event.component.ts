@@ -47,7 +47,7 @@ export class EventComponent {
     }
 
 	onShowTeacher(){
-		this.router.navigate(['/authentication/edit',this.event.ownerId]);
+		this.router.navigate(['/events/edit',this.event.ownerId]);
 	}
 	
 	eventIsNotMine() {

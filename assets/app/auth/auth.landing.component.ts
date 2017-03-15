@@ -13,5 +13,6 @@ import { Component, OnInit } from '@angular/core';
 export class AuthLandingComponent implements OnInit {
     constructor() { }
 
-    ngOnInit() { }
+    ngOnInit() { 
+    }
 }

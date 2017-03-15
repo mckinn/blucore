@@ -5,7 +5,7 @@ var jwt = require('jsonwebtoken');
 
 var User = require('../models/user');
 
-router.post('/', function (req, res, next) {
+router.post('/', function (req, res, next) { // create a new user
 	var user = new User({
 		firstName: req.body.firstName,
 		lastName: req.body.lastName,
@@ -29,7 +29,78 @@ router.post('/', function (req, res, next) {
 	});
 });
 
-router.patch('/users/:uid', function( req, res, next) {
+router.post('/signin', function( req, res, next) {  // sign in 
+	User.findOne({email:req.body.email},function(err,user){
+		if (err) {
+			return res.status(500).json({
+				title:'An Error Occurred in finding a user for login',
+				error: err
+			});
+		};
+		if (!user) {
+			return res.status(401).json({
+				title:'No user found',
+				error: err
+			});
+		};
+		if (!bcrypt.compareSync(req.body.password, user.password)) {
+			return res.status(401).json({
+				title:'incorrect password - please try again',
+				error: err
+			});
+		};
+		var token = jwt.sign({user: user}, 'secretkey', {expiresIn: 7200});
+		res.status(200).json({
+			message: 'Thanks for the login',
+			token : token,
+			userId: user._id 
+		});
+	})
+
+});
+
+
+// check for logged in user
+router.use('/',function(req,res,next){
+	console.log("checking in user.js: ",req.query.token," or ", req.headers['x-token'] );
+    var token = req.body.token || req.query.token || req.headers['x-token'];
+	jwt.verify(token, 'secretkey', function (err, decoded) {
+		if (err) {
+			return res.status(401).json({
+				title:'user no longer logged in',
+				error: err
+			});
+		};
+		next();
+	})
+});
+
+router.get('/users/:uid', function( req, res, next) {   // get the details for a user
+	// console.log(req.params.uid);
+	User.findById(req.params.uid,function(err,user){
+		if (err) {
+			return res.status(500).json({
+				title:'An Error Occurred in finding a user',
+				error: err
+			});
+		};
+		if (!user) {
+			return res.status(404).json({
+				title:'gasp ! user cannot be found',
+				error: err
+			});
+		};
+		res.status(200).json({
+			message: 'here is the user',
+			obj: user
+		});
+	})
+
+});
+
+
+
+router.patch('/users/:uid', function( req, res, next) {  // update a user - must be logged in to do this.
 	// console.log("--------------------------------------------");
 	// Make sure that we don't change the [events] as the result of an update.
 	// console.log(req.params.uid);
@@ -83,7 +154,7 @@ router.patch('/users/:uid', function( req, res, next) {
 
 });
 
-router.get('/users', function( req, res, next) {
+router.get('/users', function( req, res, next) {  // get a list of users
 	User.find({},function(err,users){
 		if (err) {
 			return res.status(500).json({
@@ -105,7 +176,7 @@ router.get('/users', function( req, res, next) {
 
 });
 
-router.get('/users/:uid', function( req, res, next) {
+router.get('/users/:uid', function( req, res, next) {   // get the details for a user
 	// console.log(req.params.uid);
 	User.findById(req.params.uid,function(err,user){
 		if (err) {
@@ -128,34 +199,6 @@ router.get('/users/:uid', function( req, res, next) {
 
 });
 
-router.post('/signin', function( req, res, next) {
-	User.findOne({email:req.body.email},function(err,user){
-		if (err) {
-			return res.status(500).json({
-				title:'An Error Occurred in finding a user for login',
-				error: err
-			});
-		};
-		if (!user) {
-			return res.status(401).json({
-				title:'No user found',
-				error: err
-			});
-		};
-		if (!bcrypt.compareSync(req.body.password, user.password)) {
-			return res.status(401).json({
-				title:'incorrect password - please try again',
-				error: err
-			});
-		};
-		var token = jwt.sign({user: user}, 'secretkey', {expiresIn: 7200});
-		res.status(200).json({
-			message: 'Thanks for the login',
-			token : token,
-			userId: user._id 
-		});
-	})
 
-});
 
 module.exports = router;

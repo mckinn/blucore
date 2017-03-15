@@ -14,8 +14,8 @@ import {AuthService} from "../auth/auth.service";
 					<li routerLinkActive="active" class="disabled" *ngIf= "!activeForTeachers() && isLoggedIn()"><a>Event Details</a></li>
 					<li routerLinkActive="active" *ngIf= "isLoggedIn()"><a [routerLink]="['list']">All Events</a></li>
 					<li routerLinkActive="active" *ngIf= "isLoggedIn() && !isAdmin()"><a [routerLink]="['mylist']">My Events</a></li>
-					<li routerLinkActive="active" *ngIf="!isLoggedIn()"><a [routerLink]="['signin']">Sign In  </a></li>
-					<li routerLinkActive="active" *ngIf="!isLoggedIn()"><a [routerLink]="['edit']">Sign Up  </a></li>
+					<li routerLinkActive="active" *ngIf="!isLoggedIn()"><a [routerLink]="['signin']">Sign In</a></li>
+					<li routerLinkActive="active" *ngIf="!isLoggedIn()"><a [routerLink]="['edit']">Sign Up</a></li>
 					<li routerLinkActive="active" *ngIf="isLoggedIn()"> <a [routerLink]="['edit']">User Details</a></li>
 					<li routerLinkActive="active" *ngIf= "isLoggedInAdmin()"><a [routerLink]="['users' ]">User List</a></li>
 				</ul>

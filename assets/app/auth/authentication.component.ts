@@ -1,5 +1,6 @@
 // authentication.component.ts
-import { Component } from "@angular/core";
+import { Component, OnInit } from "@angular/core";
+import { Router } from "@angular/router";
 
 import { AuthService } from "./auth.service";
 
@@ -9,14 +10,16 @@ import { AuthService } from "./auth.service";
 		<header class="row spacing">
 			<nav class="col-md-6 col-md-offset-2">
 				<ul class="nav nav-tabs"> 
-					<li routerLinkActive="active" *ngIf="!isLoggedIn()"><a [routerLink]="['edit']">Sign Up  </a></li>
-					<li routerLinkActive="active" *ngIf="isLoggedIn()"> <a [routerLink]="['edit']">User Details</a></li>
-					<li routerLinkActive="active" *ngIf="!isLoggedIn()"><a [routerLink]="['signin']">Sign In  </a></li>
+					<li routerLinkActive="active"><a [routerLink]="['signin']">Sign In</a></li>
+					<li routerLinkActive="active"><a [routerLink]="['edit']">Sign Up</a></li>
+				<!--	<li routerLinkActive="active" *ngIf="!isLoggedIn()"><a [routerLink]="['signin']">Sign In</a></li>
+					<li routerLinkActive="active" *ngIf="!isLoggedIn()"><a [routerLink]="['edit']">Sign Up</a></li>  -->
+					<!-- <li routerLinkActive="active" *ngIf="isLoggedIn()"> <a [routerLink]="['edit']">User Details</a></li>
 					<li routerLinkActive="active" *ngIf= "isLoggedInAdmin()"><a [routerLink]="['users' ]">User List</a></li>
-					<li routerLinkActive="active" *ngIf= "isLoggedIn()"><a [routerLink]="['eventsMenu']">Events</a></li>
+					<li routerLinkActive="active" *ngIf= "isLoggedIn()"><a [routerLink]="['eventsMenu']">Events</a></li> -->
 				</ul>
 			</nav>
-			<nav class= "col-md-2" *ngIf="isLoggedIn()">
+			<!-- <nav class= "col-md-2" *ngIf="isLoggedIn()">
 				<ul class="nav nav-tabs">
 					<li role="presentation" class="dropdown">
 						<a class="dropdown-toggle" data-toggle="dropdown"  role="button" aria-haspopup="true" aria-expanded="false">
@@ -30,7 +33,7 @@ import { AuthService } from "./auth.service";
 						</ul>
 					</li>
 				</ul>
-			</nav>
+			</nav> -->
 		</header>
 		<div class="row spacing">
 			<router-outlet></router-outlet>
@@ -38,9 +41,11 @@ import { AuthService } from "./auth.service";
 	`
 })
 
-export class AuthenticationComponent {
+export class AuthenticationComponent implements OnInit{
 
-	constructor (private authService: AuthService) {}
+	constructor (   private authService: AuthService,
+					private router: Router
+					) {}
 
 	isLoggedIn () {
 		return this.authService.isLoggedIn();
@@ -65,4 +70,11 @@ export class AuthenticationComponent {
 		return "";
 	}
 
+	ngOnInit() {
+		// check to see if we think that we are logged in, and redirect to /events if so.
+		// if(	this.isLoggedIn() ) {
+		// 	console.log("we think that we are logged in - head for somewhere else");
+		// 	this.router.navigate(['/events']);
+		// }
+	}
 }

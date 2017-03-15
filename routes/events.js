@@ -6,6 +6,20 @@ var Event = require('../models/event');
 var User = require('../models/user');
 
 
+// check for logged in user
+router.use('/',function(req,res,next){
+	console.log("checking in events.js: ",req.query.token," or ", req.headers['x-token'] );
+    var token = req.body.token || req.query.token || req.headers['x-token'];
+	jwt.verify(token, 'secretkey', function (err, decoded) {
+		if (err) {
+			return res.status(401).json({
+				title:'user no longer logged in',
+				error: err
+			});
+		};
+		next();
+	})
+});
 
 router.get('/', function(req,res,next){
 
@@ -54,18 +68,6 @@ router.get('/', function(req,res,next){
 		});
 });
 
-// check for logged in user
-router.use('/',function(req,res,next){
-	jwt.verify(req.query.token, 'secretkey', function (err, decoded) {
-		if (err) {
-			return res.status(401).json({
-				title:'user no longer logged in',
-				error: err
-			});
-		};
-		next();
-	})
-});
 
 // create an event
 router.post('/', function (req, res, next) {

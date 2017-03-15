@@ -39,6 +39,7 @@ export class SignInComponent {
 	}
 
 	ngOnInit() {
+		console.log("signin component");
 		this.myForm = new FormGroup({
 			email: new FormControl(null, [
 					Validators.required, 
