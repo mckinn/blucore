@@ -25,7 +25,7 @@ import { User } from "../auth/user.model";
 					</tr>
 			    </thead>
 			    <tbody>
-					<tr *ngFor="let evt of events" app-event [event]="evt">
+					<tr *ngFor="let evt of events" app-event [rowevent]="evt">
 					</tr>
 				</tbody>
 			</table>

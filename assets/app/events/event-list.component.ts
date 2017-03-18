@@ -16,7 +16,7 @@ import { Event } from "./event.model";
 
 export class EventListComponent implements OnInit {
 
-	events: Event[];
+	blucoreEvents: Event[];
 	
 	searchForm: FormGroup;
     constructor( private eventService: EventService,
@@ -34,10 +34,10 @@ export class EventListComponent implements OnInit {
 			this.searchForm.get("teacherSearch").value);
 		this.eventService.getEvents(queryParms)
     		.subscribe(
-    			(events: Event[]) => {
+    			(bcevents: Event[]) => {
     				// console.log('* * * * eventlist on search * * * *');
     				// console.log(events);
-    				this.events = events;
+    				this.blucoreEvents = bcevents;
     			}
     		);
 		this.searchForm.reset();
@@ -46,10 +46,10 @@ export class EventListComponent implements OnInit {
 	onClear () {
 		this.eventService.getEvents()
     		.subscribe(
-    			(events: Event[]) => {
+    			(bcevents: Event[]) => {
     				// console.log('* * * * eventlist on clear * * * *');
     				// console.log(events);
-    				this.events = events;
+    				this.blucoreEvents = bcevents;
     			}
     		);
 		this.searchForm.reset();
@@ -76,10 +76,9 @@ export class EventListComponent implements OnInit {
 		// console.log("calling geteventS");
     	this.eventService.getEvents()
     		.subscribe(
-    			(events: Event[]) => {
-    				// console.log('* * * * eventlist on nginit * * * *');
-    				// console.log(events);
-    				this.events = events;
+    			(bcevents: Event[]) => {
+    				console.log('* * * * eventlist on nginit * * * *',bcevents);
+    				this.blucoreEvents = bcevents;
     			}
     		);
     }

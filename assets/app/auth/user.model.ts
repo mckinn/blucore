@@ -14,6 +14,7 @@ export class User {
 		public kind?: string, // Admin, Student, Teacher, Parent
 		public userId?: string,
 		public userName?: string, // the aggregate user name
-		public myEvents?: string[]
+		public myEvents?: string[],
+		public valid?: Boolean
 		) {}
 }

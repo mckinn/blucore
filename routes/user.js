@@ -49,7 +49,8 @@ router.post('/signin', function( req, res, next) {  // sign in
 				error: err
 			});
 		};
-		var token = jwt.sign({user: user}, 'secretkey', {expiresIn: 7200});
+		var token = jwt.sign({user: user}, 'secretkey', {expiresIn: 7200}); 
+		//Creates a token that contains the encrypted user email for subsequent authorization
 		res.status(200).json({
 			message: 'Thanks for the login',
 			token : token,
@@ -62,7 +63,7 @@ router.post('/signin', function( req, res, next) {  // sign in
 
 // check for logged in user
 router.use('/',function(req,res,next){
-	console.log("checking in user.js: ",req.query.token," or ", req.headers['x-token'] );
+	// console.log("checking in user.js: ",req.query.token," or ", req.headers['x-token'] );
     var token = req.body.token || req.query.token || req.headers['x-token'];
 	jwt.verify(token, 'secretkey', function (err, decoded) {
 		if (err) {
@@ -128,6 +129,7 @@ router.patch('/users/:uid', function( req, res, next) {  // update a user - must
 		if( req.body.school ) user.school = req.body.school;
 		if( req.body.kind ) user.kind = req.body.kind;
 		if( req.body.myEvents ) user.events = req.body.myEvents;
+		if( req.body.valid ) user.valid = req.body.valid;
 		// don't touch the _id
 		// only touch the password if it is not null
 		if( req.body.password ) {

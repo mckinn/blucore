@@ -183,7 +183,10 @@ export class EventService {
 		// console.log(url);
 		return this.http.patch( url, body, {headers: headers})
 			// this is an anonymous function that takes a Response and yields a response.json ????
-			.map((response: Response) => response.json())
+			.map((response: Response) => {
+				evt.eventId = tempEventId;
+				console.log("the event that was passed in: ",evt);
+				response.json()})
 			.catch((error: Response) => {
 				// console.log("Patch Error Response: ",error);
 				this.errorService.handleError(error.json());

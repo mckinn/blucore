@@ -10,10 +10,10 @@ import {AuthService} from "../auth/auth.service";
 		<header class="row spacing">
 			<nav class="col-md-6 col-md-offset-2">
 				<ul class="nav nav-tabs"> 
-					<li routerLinkActive="active" *ngIf= "activeForTeachers() && isLoggedIn()"><a [routerLink]="['input']">Event Details</a></li>
+					<li routerLinkActive="active" *ngIf= "activeForTeachers() && isLoggedIn() && isValidatedUser()"><a [routerLink]="['input']">New Event</a></li>
 					<li routerLinkActive="active" class="disabled" *ngIf= "!activeForTeachers() && isLoggedIn()"><a>Event Details</a></li>
-					<li routerLinkActive="active" *ngIf= "isLoggedIn()"><a [routerLink]="['list']">All Events</a></li>
-					<li routerLinkActive="active" *ngIf= "isLoggedIn() && !isAdmin()"><a [routerLink]="['mylist']">My Events</a></li>
+					<li routerLinkActive="active" *ngIf= "isLoggedIn() && isValidatedUser()"><a [routerLink]="['list']">All Events</a></li>
+					<li routerLinkActive="active" *ngIf= "isLoggedIn() && !isAdmin() && isValidatedUser()"><a [routerLink]="['mylist']">My Events</a></li>
 					<li routerLinkActive="active" *ngIf="!isLoggedIn()"><a [routerLink]="['signin']">Sign In</a></li>
 					<li routerLinkActive="active" *ngIf="!isLoggedIn()"><a [routerLink]="['edit']">Sign Up</a></li>
 					<li routerLinkActive="active" *ngIf="isLoggedIn()"> <a [routerLink]="['edit']">User Details</a></li>
@@ -29,7 +29,6 @@ import {AuthService} from "../auth/auth.service";
 						<ul class="dropdown-menu">
 							<li> <a class="text-right" >{{roleIsLoggedIn()}}</a></li>
 							<li> <a class="text-right" [routerLink]="['edit']">User Details</a></li>
-							<li> <a class="text-right" [routerLink]="['email']">email</a></li>
 							<li (click)="onLogout()"> <a href=#  class="text-right">Logout</a></li>
 						</ul>
 					</li>
@@ -46,7 +45,8 @@ import {AuthService} from "../auth/auth.service";
 export class EventsComponent {
 
 
-	constructor (private authService: AuthService, private router: Router) {}
+	constructor (private authService: AuthService, 
+				 private router: Router) {}
 
 	isLoggedIn () {
 		return this.authService.isLoggedIn();
@@ -64,6 +64,16 @@ export class EventsComponent {
 		// // console.log("* * * * is admin* * * *",this.authService.whoIsLoggedIn().kind);
 		if (this.authService.isLoggedIn()) {
 			return (this.authService.whoIsLoggedIn().kind == 'admin');
+		}
+		return false;
+	}
+
+	isValidatedUser () {
+
+		console.log("logged in user: ",this.authService.whoIsLoggedIn());
+		if (this.authService.isLoggedIn()) {
+			console.log("valid user: ",this.authService.whoIsLoggedIn().userName,this.authService.whoIsLoggedIn().valid);
+			return (this.authService.whoIsLoggedIn().valid);
 		}
 		return false;
 	}

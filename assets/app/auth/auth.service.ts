@@ -93,9 +93,12 @@ export class AuthService {
 				// console.log(response);
 				const user = response.json().obj;
 				// console.log(user);
-				const userObj = new User(user.email, '', user.firstName, user.lastName, user.wcpssId, user.school, user.kind, user._id, user.userName, user.events );
+				const userObj = new User(user.email, '', user.firstName, user.lastName, user.wcpssId, 
+										user.school, user.kind, user._id, user.userName, user.events,
+										user.valid );
 				// console.log("* * * * userObj * * * *");
 				// console.log(userObj);
+				if (!userObj.valid) userObj.valid = false;
 				return userObj;
 			})
 			.catch((error: Response) => {
@@ -145,8 +148,7 @@ export class AuthService {
 		}
 
 	setWhoIsLoggedIn ( user: User, userId: string) {
-		// console.log ("setWhoIsLoggedIn");
-		// console.log (user);
+		console.log ("setWhoIsLoggedIn", user);
 		this.loggedInUser = user;
 		this.loggedInUser.userId = userId;
 		console.log ("in setWhoIsLoggedIn: ",this.loggedInUser);
@@ -164,6 +166,7 @@ export class AuthService {
 					if (!this.loggedInUser.userName) this.loggedInUser.userName = data.UserName;
 					if (!this.loggedInUser.userId) this.loggedInUser.userId = data.UserId;
 					if (!this.loggedInUser.myEvents) this.loggedInUser.myEvents = data.myEvents;
+					if (!this.loggedInUser.valid) this.loggedInUser.valid = data.valid;
 					// console.log (this.loggedInUser);
 					
 				}
@@ -202,10 +205,11 @@ export class AuthService {
 
 	loggedInRole() {
 		return this.loggedInUser.kind;
-		}
+	}
+	
 	claimEvent ( event: Event ) { // add the specified event to the user's list of events.
 		
-		console.log ("* * * * claimEvent * * * *",event);
+		console.log ("* * * * claimEvent * * * *",event, this.loggedInUser);
 
 		let error: Object;
 		
@@ -262,9 +266,9 @@ export class AuthService {
 					return ( current == event.eventId )}))
 				{
 					error = {
-						title:"The event is not there",
+						title:"Event Missing",
 						error: {
-							errors: [{message:"this is a secondary message"}]
+							errors: [{message:"The Event is not in the queue for the user."}]
 						}
 					};
 				} else {
@@ -276,9 +280,9 @@ export class AuthService {
 					console.log("User Events after removal", this.loggedInUser.myEvents);
 
 					// taking away the user from the event's list of participants
-					console.log("Event before/after removal",event);
+					console.log("Event before User removal",event);
 					event.participants.splice(event.participants.indexOf(this.loggedInUser.userId,1));
-					console.log("Event before/after removal",event);
+					console.log("Event after User removal",event);
 					console.log("event and user should not be linked: ", event, this.loggedInUser);
 					// update the event, and the user, on the server to preserve the linkages
 					Observable.forkJoin([this.eventService.updateEvent(event),this.updateUser(this.loggedInUser)])

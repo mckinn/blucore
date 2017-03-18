@@ -8,7 +8,7 @@ var User = require('../models/user');
 
 // check for logged in user
 router.use('/',function(req,res,next){
-	console.log("checking in events.js: ",req.query.token," or ", req.headers['x-token'] );
+	// console.log("checking in events.js: ",req.query.token," or ", req.headers['x-token'] );
     var token = req.body.token || req.query.token || req.headers['x-token'];
 	jwt.verify(token, 'secretkey', function (err, decoded) {
 		if (err) {
@@ -72,7 +72,8 @@ router.get('/', function(req,res,next){
 // create an event
 router.post('/', function (req, res, next) {
 	// console.log(req);
-	var decoded = jwt.decode(req.query.token); 
+	var token = req.body.token || req.query.token || req.headers['x-token'];
+	var decoded = jwt.decode(token); 
 	User.findById(decoded.user._id, function(err, user){
 		if (err) {
 			return res.status(500).json({

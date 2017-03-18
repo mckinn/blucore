@@ -45,6 +45,8 @@ export class EditComponent implements OnInit {
 			this.user.wcpssId = this.myForm.value.wcpssId;
 			this.user.school = this.myForm.value.school;
 			this.user.kind = this.myForm.value.kind;
+			this.user.valid = this.myForm.value.valid;
+			// this should preserve the user.valid value (hopefully)
 
 			this.authService.updateUser( this.user )
 				.subscribe(
@@ -63,6 +65,7 @@ export class EditComponent implements OnInit {
 				this.myForm.value.kind
 				);
 			this.user.userName = this.myForm.value.firstName + " " + this.myForm.value.lastName;
+			this.user.valid = false;
 			// console.log("in submit", this.myForm, this.user);
 			this.authService.addUser( this.user )
 				.subscribe(
@@ -78,6 +81,7 @@ export class EditComponent implements OnInit {
 		}
 		// console.log(this.myForm);
 		// console.log(this.user);
+		this.location.back();
 	
 	}
 
@@ -97,6 +101,20 @@ export class EditComponent implements OnInit {
 		return this.authService.isLoggedIn();
 	}
 	
+	isValidatedUser () {
+
+		console.log("logged in user: ",this.authService.whoIsLoggedIn());
+		if (this.authService.isLoggedIn()) {
+			console.log("valid user: ",this.authService.whoIsLoggedIn().userName,this.authService.whoIsLoggedIn().valid);
+			return (this.authService.whoIsLoggedIn().valid);
+		}
+		return false;
+	}
+	
+	isAdmin () { // determine if the current user is an admin
+		return (this.authService.isLoggedIn() && this.authService.whoIsLoggedIn().kind == "admin");
+	}
+
 	isMe () {
 		return (this.authService.isLoggedIn() && this.userId == this.authService.whoIsLoggedIn().userId);
 	}
@@ -111,11 +129,11 @@ export class EditComponent implements OnInit {
 
 		// console.log("* * * * checking submit button * * * *")
 		// console.log("logged in: ",this.authService.isLoggedIn());
-		if (this.authService.isLoggedIn()) {
+		// if (this.authService.isLoggedIn()) {
 			// console.log(
 			//		this.authService.whoIsLoggedIn().userId,
 			//		this.userId,this.authService.whoIsLoggedIn().kind);
-		}
+		// }
 		
 		// return early to avoid NPE
 		if	( !this.authService.isLoggedIn()) return true; // nobody is logged in
@@ -130,7 +148,7 @@ export class EditComponent implements OnInit {
 		console.log("* * * * in edit component * * * *");
 		this.userId = null;
 
-		// console.log("* * * * editing user * * * * ");
+		console.log("* * * * user edit form * * * * ");
 		if (!this.myForm){
 			this.myForm = new FormGroup({
 				firstName: new FormControl(null, Validators.required),
@@ -140,22 +158,24 @@ export class EditComponent implements OnInit {
 						Validators.pattern("[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?")
 						]),
 				password: new FormControl(null, Validators.required),
+				dupPassword: new FormControl(null, Validators.required),
 				wcpssId: new FormControl(null, Validators.required),
 				school: new FormControl(null, Validators.required),
-				kind: new FormControl(null, Validators.required)
+				kind: new FormControl(null, Validators.required),
+				valid: new FormControl(null)
 			});
 		}
-		// console.log(this.myForm);
-		// console.log(this.route.params);
-		// console.log(this.route.url);
-		// console.log("* * * * in edit component (2) * * * *");
+		console.log(this.myForm);
+		console.log(this.route.params);
+		console.log(this.route.url);
+		console.log("* * * * in edit component (2) * * * *");
 
 		if (!(Object.keys(this.route.snapshot.params).length === 0 && this.route.snapshot.params.constructor === Object)) {
-			// console.log("* * * * parsing parameters * * * *");
+			console.log("* * * * parsing parameters * * * *");
 			this.userId = this.route.snapshot.params['userId'];
 		} else {
 			if (this.authService.isLoggedIn()) {
-				// console.log("passed the logged in test");
+				console.log("passed the logged in test");
 				this.userId = this.authService.whoIsLoggedIn().userId;
 			}
 		}
@@ -189,14 +209,20 @@ export class EditComponent implements OnInit {
 					this.myForm.setValue({
 						email: user.email,
 						password: null, // if they change the password we need to 
-						                // re-register it
+						dupPassword: null, // re-register it
 						firstName: user.firstName,   // the ? makes the fields optional
 						lastName: user.lastName,
 						wcpssId: user.wcpssId, 
 						school: user.school,  // wcpss student or teacher ID
-						kind: user.kind // Admin, Student, Teacher, Parent
+						kind: user.kind,
+						valid: user.valid // Admin, Student, Teacher, Parent
 					});
+					// Why ???
 					this.myForm.setControl('password', new FormControl("", 
+						(c:FormControl) => { return Validators.required}
+						)
+					);
+					this.myForm.setControl('dupPassword', new FormControl("", 
 						(c:FormControl) => { return Validators.required}
 						)
 					);

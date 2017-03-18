@@ -1,5 +1,5 @@
 // event.component.ts
-import { Component, Input } from "@angular/core";
+import { Component, Input, OnInit } from "@angular/core";
 import { Router } from "@angular/router";
 
 import { Event } from "./event.model";
@@ -21,37 +21,40 @@ import { AuthService } from "../auth/auth.service";
 
 })
 
-export class EventComponent {
+export class EventComponent implements OnInit {
 	
-	@Input() event: Event; 
+	@Input() rowevent: Event; 
 
     constructor(private eventService: EventService, 
-			private authService: AuthService,
-			private router: Router){}
+				private authService: AuthService,
+				private router: Router){}
 
 	onEdit() {
-		this.eventService.editEvent(this.event);
+		this.eventService.editEvent(this.rowevent);
 	}
 
     onDelete() {
 		// console.log("Deletion attempt");
-        this.eventService.deleteEvent(this.event);
+        this.eventService.deleteEvent(this.rowevent);
     }
 
 	onSelect() {
-		this.authService.claimEvent(this.event); // it handles its own errors.
+		console.log("in Select: ",this.rowevent);
+		this.authService.claimEvent(this.rowevent); // it handles its own errors.
     }
 
 	 onDecline() {
-        this.authService.declineEvent(this.event);
+		console.log("in Decline: ",this.rowevent);
+        this.authService.declineEvent(this.rowevent);
+
     }
 
 	onShowTeacher(){
-		this.router.navigate(['/events/edit',this.event.ownerId]);
+		this.router.navigate(['/events/edit',this.rowevent.ownerId]);
 	}
 	
 	eventIsNotMine() {
-		return ((localStorage.getItem('userId') != this.event.ownerId) &&
+		return ((localStorage.getItem('userId') != this.rowevent.ownerId) &&
 				(localStorage.getItem('userId') != null)
 		) // somebody ELSE has to be logged on
 	}
@@ -59,12 +62,12 @@ export class EventComponent {
 	iHaveNotSelectedThis() {
 		// the eventId is not in my list.
 		// replicated in the list and in edit component - need to refactor ToDo
-		return this.authService.notInMyList(this.event.eventId);
+		return this.authService.notInMyList(this.rowevent.eventId);
 	}
 
 
 	showEdit() {
-		return ((localStorage.getItem('userId') == this.event.ownerId) // It must be mine and I must be allowed to edit
+		return ((localStorage.getItem('userId') == this.rowevent.ownerId) // It must be mine and I must be allowed to edit
 			&&	( (this.authService.whoIsLoggedIn().kind == "admin") ||  
 				(this.authService.whoIsLoggedIn().kind == "teacher") ))
 	}
@@ -73,6 +76,11 @@ export class EventComponent {
 	iAmAStudent() {
 		// // console.log("* * * * I am a teacher * * * *",this.authService.whoIsLoggedIn().kind);
 		return (this.authService.whoIsLoggedIn().kind == 'student');
+	}
+
+	ngOnInit () {
+		console.log("in event onInit: ");
+		console.log(this.rowevent);
 	}
 
 }
