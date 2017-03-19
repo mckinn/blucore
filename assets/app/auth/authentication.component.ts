@@ -73,7 +73,7 @@ export class AuthenticationComponent implements OnInit{
 	ngOnInit() {
 		// check to see if we think that we are logged in, and redirect to /events if so.
 		if(	this.isLoggedIn() ) {
-			console.log("we think that we are logged in - head for somewhere else");
+			console.log("in auth component but logged in - sending to events");
 			this.router.navigate(['/events']);
 		}
 	}

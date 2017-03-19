@@ -86,8 +86,9 @@ export class EditComponent implements OnInit {
 	}
 
 	emailUser() {
+		console.log("selecting email button");
 		this.authService.setNamedUser(this.user); // declare what user is being edited
-		this.router.navigate(['/authentication/email']);
+		this.router.navigate(['/events/email']);
 		// what I want to do is pop up a modal email creation box as a component.  
 		// sort of like the /error case.  Lets model it on that.
 	}

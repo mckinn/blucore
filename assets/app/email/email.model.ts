@@ -8,6 +8,7 @@ export class Email {
 		public toCommon: string,
 		public fromCommon: string,
         public subject:string,
+		public templateName:string,
 		public body: string
 		) {}
 }

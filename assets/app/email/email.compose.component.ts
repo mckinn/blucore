@@ -1,4 +1,5 @@
 import { Component, OnInit } from "@angular/core";
+import { Location } from "@angular/common";
 import { FormGroup, FormControl, Validators } from "@angular/forms";
 import { Router } from "@angular/router";
 import { Http, Response, ResponseOptions, Headers } from "@angular/http";
@@ -6,6 +7,7 @@ import { Http, Response, ResponseOptions, Headers } from "@angular/http";
 import { AppSettings } from '../app.settings';
 import { AuthService } from "../auth/auth.service";
 import { Email } from './email.model';
+import { CommonHttp } from '../common/common.http';
 
 @Component ({
 	selector: 'app-email',
@@ -27,6 +29,8 @@ export class EmailComponent implements OnInit {
 	constructor ( 	private router: Router,
 					private authService: AuthService,
 					private http: Http,
+					private commonHttp: CommonHttp,
+					private location:Location 
 				) {};
 
 	email: Email;
@@ -43,34 +47,35 @@ export class EmailComponent implements OnInit {
 		this.email = new Email (
 			// ignore the real target until we go live.
 			// this.authService.getNamedUser().email, // todo 
-			this.destination,  // to
+			this.destination,  // toUser.email once we are up and running
 			fromUser.email, //from
 			toUser.firstName + ' ' + toUser.lastName, // to common
 			fromUser.firstName + ' ' + fromUser.lastName,// from common
 			this.emailForm.value.emailSubject,
+			"interpersonal",   // the name of the template to use.
 			this.emailForm.value.emailBody
 			);
         console.log("send the email here", this.email);
 		const body = JSON.stringify(this.email);
-		const headers = new Headers({'Content-Type': 'application/json'});
-		const token = localStorage.getItem('token') 
-			? '?token='+ localStorage.getItem('token') 
-			: '';
+		const headers = this.commonHttp.setHeaders();
 		// fire and forget for now.
 		// ToDo - add a copy myself on the email capability.
-		this.http.post( AppSettings.API_ENDPOINT + 'email'+token,	body, {headers: headers})
+		this.http.post( AppSettings.API_ENDPOINT + 'email',	body, {headers: headers})
 			.subscribe();
-		this.router.navigate(['/events']);
+		this.location.back();
+		// this.router.navigate(['/events']);
 	}
 
 	cancelEmail() {
 		this.display = 'none';
         console.log("cancel the email here", this.email );
-		this.router.navigate(['/events']);
+		this.location.back();
+		// this.router.navigate(['/events']);
 	}
 
 
 	ngOnInit() {
+		console.log("in email component");
         this.display = 'block';
 		this.destination = 'mckinn@gmail.com';
 		this.emailForm = new FormGroup({
