@@ -8,7 +8,7 @@ import { AuthService } from "./auth.service";
 	selector: 'app-authentication',
 	template: `
 		<header class="row spacing">
-			<nav class="col-md-6 col-md-offset-2">
+			<nav class="col-md-8 col-md-offset-2 ">
 				<ul class="nav nav-tabs"> 
 					<li routerLinkActive="active"><a [routerLink]="['signin']">Sign In</a></li>
 					<li routerLinkActive="active"><a [routerLink]="['edit']">Sign Up</a></li>

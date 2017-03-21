@@ -6,12 +6,14 @@ background: url(/images/blue-images-15.jpg) no-repeat center center fixed;
 background-size: cover;
 }
 
+/* Mine */
 body {
   background: rgba(122, 130, 136, 0.0);
   padding: 50px;
   font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
   color: #999;
 }
+
 
 a {
   color: #00B7FF;
@@ -30,6 +32,15 @@ a.danger {
 
 .spacing {
   margin-bottom: 20px;
+}
+
+/* Mine */
+.container-space {
+  margin-right: auto;
+  margin-left: auto;
+  padding-left: 0px;
+  padding-right: 0px;
+  padding-top: 80px;
 }
 
 .panel-transparent {
@@ -53,3 +64,5 @@ input.ng-invalid.ng-touched {
     width: 100%;
     display: inline-block;
 }
+
+

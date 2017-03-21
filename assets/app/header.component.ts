@@ -7,12 +7,12 @@ import { AuthService } from "./auth/auth.service";
 	selector: 'app-header',
 	template: `
 		<header class="row">
-			<!-- <nav class="col-md-6 col-md-offset-2">
+			<nav class="col-md-6 col-md-offset-2">
 				<ul class = "nav nav-pills">
 					<li routerLinkActive="active"><a [routerLink]="['/authentication']">User Manager</a></li>
 					<li routerLinkActive="active"><a [routerLink]="['/events']">Event Manager</a></li>
 				</ul>
-			</nav> -->
+			</nav>
 		</header>
 	`
 })

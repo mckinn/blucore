@@ -4,7 +4,7 @@ import { Component } from "@angular/core";
 	selector: 'app-404error',
     template: `
     <div class="container">
-        <div class="jumbotron col-md-8 col-md-offset-2">
+        <div class="jumbotron col-md-12">
             <h1>OOPS</h1>
             <h2>I can't find that !!!</h2>
         </div>

@@ -8,7 +8,7 @@ import {AuthService} from "../auth/auth.service";
 	selector: 'app-events', 
 	template: `
 		<header class="row spacing">
-			<nav class="col-md-6 col-md-offset-2">
+			<nav class="col-md-8 col-md-offset-2">
 				<ul class="nav nav-tabs"> 
 					<li routerLinkActive="active" *ngIf= "activeForTeachers() && isLoggedIn() && isValidatedUser()"><a [routerLink]="['input']">New Event</a></li>
 					<li routerLinkActive="active" class="disabled" *ngIf= "!activeForTeachers() && isLoggedIn()"><a>Event Details</a></li>

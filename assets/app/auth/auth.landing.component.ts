@@ -2,16 +2,15 @@ import { Component, OnInit } from '@angular/core';
 
 @Component({
     selector: 'app-authlanding',
-    templateUrl: `
-    <div class="container">
-        <div class="jumbotron col-md-8 col-md-offset-2">
-            <h1>Landing Page</h1>
-        </div>
-    </div>
-    `
+    templateUrl: './auth.landing.component.html'
 })
 export class AuthLandingComponent implements OnInit {
-    constructor() { }
+    
+    fullImagePath: string;
+
+    constructor() {
+        this.fullImagePath = '/images/header.png'
+    }
 
     ngOnInit() { 
     }
