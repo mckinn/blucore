@@ -5,21 +5,22 @@ import { AuthService } from "./auth/auth.service";
 
 @Component ({
 	selector: 'app-header',
-	template: `
-		<header class="row">
-			<nav class="col-md-6 col-md-offset-2">
-				<ul class = "nav nav-pills">
-					<li routerLinkActive="active"><a [routerLink]="['/authentication']">User Manager</a></li>
-					<li routerLinkActive="active"><a [routerLink]="['/events']">Event Manager</a></li>
-				</ul>
-			</nav>
-		</header>
-	`
+	templateUrl: './header.component.html'
 })
 
 export class HeaderComponent {
 
-	constructor ( private authService: AuthService){}
+	headerimg: string;
+	studentimg: string;
+	teacherimg: string;
+	adminimg: string;
+
+	constructor ( private authService: AuthService){
+		this.headerimg = '/images/header.png';
+		this.studentimg = '/images/student.png'
+		this.teacherimg = '/images/teacher.png'
+		this.adminimg = '/images/administrator.png'
+	}
 
 	whoIsLoggedIn (){
 		// // console.log("in whoIsLoggedIn");

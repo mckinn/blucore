@@ -10,6 +10,7 @@ var appRoutes = require('./routes/app');
 var eventRoutes = require('./routes/events');
 var userRoutes = require('./routes/user');
 var emailRoutes = require('./routes/email');
+var schoolRoutes = require('./routes/schools');
 
 var app = express();
 // mongoose.connect('localhost:27017/blucore');
@@ -37,6 +38,7 @@ app.use(function (req, res, next) {
 app.use('/event', eventRoutes);
 app.use('/user', userRoutes);
 app.use('/email', emailRoutes);
+app.use('/schools', schoolRoutes);
 app.use('/', appRoutes);
 
 // catch 404 and forward to error handler

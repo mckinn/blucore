@@ -19,6 +19,7 @@ export class EditComponent implements OnInit {
 	myForm: FormGroup;
 	user: User;
 	userId: string;
+	selectDisabled: Boolean;
 
 	constructor( private authService: AuthService,
 				private router: Router,
@@ -104,9 +105,9 @@ export class EditComponent implements OnInit {
 	
 	isValidatedUser () {
 
-		console.log("logged in user: ",this.authService.whoIsLoggedIn());
+		// console.log("logged in user: ",this.authService.whoIsLoggedIn());
 		if (this.authService.isLoggedIn()) {
-			console.log("valid user: ",this.authService.whoIsLoggedIn().userName,this.authService.whoIsLoggedIn().valid);
+			// console.log("valid user: ",this.authService.whoIsLoggedIn().userName,this.authService.whoIsLoggedIn().valid);
 			return (this.authService.whoIsLoggedIn().valid);
 		}
 		return false;
@@ -144,10 +145,16 @@ export class EditComponent implements OnInit {
 
 	}
 
+	/*kindIsLocked() {
+		if (this.myForm.controls['kind'].value) return true;
+		return false;
+	}*/
+
 	ngOnInit() {
 
 		console.log("* * * * in edit component * * * *");
 		this.userId = null;
+		let userParm:string;
 
 		console.log("* * * * user edit form * * * * ");
 		if (!this.myForm){
@@ -173,15 +180,25 @@ export class EditComponent implements OnInit {
 
 		if (!(Object.keys(this.route.snapshot.params).length === 0 && this.route.snapshot.params.constructor === Object)) {
 			console.log("* * * * parsing parameters * * * *");
-			this.userId = this.route.snapshot.params['userId'];
+			userParm = this.route.snapshot.params['userId'];
+			if (userParm != "teacher" && userParm != "student" && userParm != "administrator") { // assume it is a user
+				console.log("* * * * found a "+userParm + " * * * *");
+				this.userId = userParm;
+				userParm = null;
+			}
 		} else {
 			if (this.authService.isLoggedIn()) {
 				console.log("passed the logged in test");
 				this.userId = this.authService.whoIsLoggedIn().userId;
-			}
+			} 
 		}
-
-
+		this.selectDisabled = false;
+		if (userParm) { // we want to lock-down the type of user
+			this.myForm.controls['kind'].setValue (userParm);
+			// this.myForm.controls['kind'].setValue({kind:{name }})
+			this.selectDisabled = true;
+			console.log("the kind form value", this.myForm.controls['kind'].value);
+		}
 
 		console.log("before checking this.userId");
 		if (this.userId) {
@@ -241,6 +258,7 @@ export class EditComponent implements OnInit {
 				console.log("* * * * edit user subscribe - end * * * *");
 			});
 		}
+		console.log("the kind form value", this.myForm.controls['kind'].value);
 	}
 
 }

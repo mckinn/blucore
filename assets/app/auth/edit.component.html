@@ -62,7 +62,7 @@
 		</div>
 		<div class="form-group" >
 			<label for="kind">Kind</label>
-			<select
+			<select [attr.disabled]="selectDisabled"
 				id="kind" 
 				class="form-control"
 				formControlName = "kind">

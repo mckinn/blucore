@@ -70,9 +70,9 @@ export class EventsComponent {
 
 	isValidatedUser () {
 
-		console.log("logged in user: ",this.authService.whoIsLoggedIn());
+		// console.log("logged in user: ",this.authService.whoIsLoggedIn());
 		if (this.authService.isLoggedIn()) {
-			console.log("valid user: ",this.authService.whoIsLoggedIn().userName,this.authService.whoIsLoggedIn().valid);
+			// console.log("valid user: ",this.authService.whoIsLoggedIn().userName,this.authService.whoIsLoggedIn().valid);
 			return (this.authService.whoIsLoggedIn().valid);
 		}
 		return false;
