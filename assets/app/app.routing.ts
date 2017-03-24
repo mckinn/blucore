@@ -10,7 +10,8 @@ import { AUTH_ROUTES }             from "./auth/auth.routes";
 import { EVENT_ROUTES }            from "./events/event.routes";
 
 const APP_ROUTES: Routes = [
-	{ path: '', redirectTo: '/mainpage', pathMatch: 'full' },
+//	{ path: '', redirectTo: '/mainpage', pathMatch: 'full' },
+	{ path: '', component: HeaderComponent },
 	{ path: 'events', component: EventsComponent, children: EVENT_ROUTES },
 	{ path: 'authentication', component: AuthenticationComponent, children: AUTH_ROUTES },
 	{ path: 'mainpage', component: HeaderComponent },
