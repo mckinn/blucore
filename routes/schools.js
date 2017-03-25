@@ -5,22 +5,8 @@ var jwt = require('jsonwebtoken');
 
 var School = require('../models/school.model');
 
-// check for logged in user
-router.use('/',function(req,res,next){
-	console.log("checking in schools.js: ",req.query.token," or ", req.headers['x-token'] );
-	console.log(req);
-    var token = req.body.token || req.query.token || req.headers['x-token'];
-	jwt.verify(token, 'secretkey', function (err, decoded) {
-		if (err) {
-			return res.status(401).json({
-				title:'user no longer logged in',
-				error: err
-			});
-		};
-		console.log("nexting");
-		next();
-	});
-});
+// no requirement to check for logged in user, because
+// we need the list of schools to add a user
 
 router.get('/', function( req, res, next) {  // get a list of schools
     console.log("in school");

@@ -47,6 +47,8 @@ Temporary Items
 node_modules
 .apdisk
 public/js/app/bundle.js
+templates/interpersonal/archive
+templates/interpersonal/resources
 npm-debug.log
 
 .env

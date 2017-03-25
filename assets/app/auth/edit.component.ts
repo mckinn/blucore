@@ -7,7 +7,9 @@ import { Router, ActivatedRoute, Params } from "@angular/router";
 
 import { ErrorService } from "../errors/error.service";
 import { AuthService } from "./auth.service";
+import { SchoolService } from "../schools/school.service";
 import { User } from "./user.model";
+import { School } from "../schools/school.model";
 
 @Component ({
 	selector: 'app-edit',
@@ -20,12 +22,14 @@ export class EditComponent implements OnInit {
 	user: User;
 	userId: string;
 	selectDisabled: Boolean;
+	schoolList: School[] = [];
 
 	constructor( private authService: AuthService,
 				private router: Router,
 				private route: ActivatedRoute,
 				private location: Location,
-				private errorService: ErrorService
+				private errorService: ErrorService,
+				private schoolService: SchoolService
 		 ) {}
 
 	onSubmit() {
@@ -155,6 +159,7 @@ export class EditComponent implements OnInit {
 		console.log("* * * * in edit component * * * *");
 		this.userId = null;
 		let userParm:string;
+		
 
 		console.log("* * * * user edit form * * * * ");
 		if (!this.myForm){
@@ -173,6 +178,20 @@ export class EditComponent implements OnInit {
 				valid: new FormControl(null)
 			});
 		}
+		if ((!this.schoolList) || (this.schoolList.length == 0)) {
+			this.schoolService.getSchools()
+				.subscribe(
+					(schools: School[]) => {
+						// console.log('* * * * eventlist on search * * * *');
+						// console.log(events);
+						this.schoolList = schools;
+					}
+				);
+		}
+
+		console.log(this.schoolList);
+
+
 		console.log(this.myForm);
 		console.log(this.route.params);
 		console.log(this.route.url);

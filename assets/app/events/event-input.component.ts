@@ -7,7 +7,9 @@ import { Router, ActivatedRoute, Params } from "@angular/router";
 import { Location } from "@angular/common"; 
 import { EventService } from "./event.service";
 import { AuthService } from "../auth/auth.service";
+import { SchoolService } from "../schools/school.service";
 import { Event } from "./event.model";
+import { School } from "../schools/school.model";
 import { User } from "../auth/user.model";
 
 import 'rxjs/add/operator/switchMap';
@@ -26,13 +28,15 @@ export class EventInputComponent implements OnInit {
 	isLocked: boolean;
 	private initComplete: Boolean;
 	eventParticipants: string[];
+	schoolList: School[] = [];
 
 	constructor(
 		private eventService: EventService,
 		private authService: AuthService,
 		private router: Router,
 		private route: ActivatedRoute,
-		private location: Location) { }
+		private location: Location,
+		private schoolService: SchoolService) { }
 
 	onSubmit() {
 		// console.log("* * * * onSubmit * * * *");
@@ -185,8 +189,21 @@ export class EventInputComponent implements OnInit {
 				eventDuration: new FormControl(null, Validators.required),
 				eventSchool: new FormControl(null, Validators.required)
 			});
-
 		};
+
+		if ((!this.schoolList) || (this.schoolList.length == 0)) {
+			this.schoolService.getSchools()
+				.subscribe(
+					(schools: School[]) => {
+						// console.log('* * * * eventlist on search * * * *');
+						// console.log(events);
+						this.schoolList = schools;
+					}
+				);
+		}
+
+		console.log("in event - list of schools:", this.schoolList);
+
 		// console.log(this.route.params);
 		// console.log(this.route.url);
 		if (!(Object.keys(this.route.snapshot.params).length === 0 && this.route.snapshot.params.constructor === Object)) {

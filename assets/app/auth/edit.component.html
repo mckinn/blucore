@@ -54,11 +54,17 @@
 		</div>
 		<div class="form-group" >
 			<label for="school">School</label>
-			<input
-				type="text" 
+			<select
 				id="school" 
 				class="form-control"
 				formControlName = "school">
+				<option *ngFor = "let theSchool of schoolList">{{theSchool.name}}</option>
+			</select>
+			<!-- <input
+				type="text" 
+				id="school" 
+				class="form-control"
+				formControlName = "school"> -->
 		</div>
 		<div class="form-group" >
 			<label for="kind">Kind</label>

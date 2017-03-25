@@ -51,7 +51,7 @@ export class ErrorService {
 
 		if (oops.message) errorMessage = oops.message + "\n";
 		if (oops.error) {
-			// console.log(oops.error);
+			console.log("processing oops :",oops.error);
 			// console.log("0-> " + errorMessage);
 				for (let key in oops.error.errors) {
 					if (oops.error.errors.hasOwnProperty(key)) {
@@ -64,10 +64,12 @@ export class ErrorService {
 				}
 		
 			// console.log("2-> ",oops.title, errorMessage);
-			const errorData = new Error (oops.title, errorMessage);
-			// console.log(errorData);
-			this.errorHappened.emit(errorData);
+
 		}
+		if (!oops.title) oops.title = "(meta) Error with unknown title";
+		const errorData = new Error (oops.title, errorMessage);
+		console.log("emitting an error ",errorData);
+		this.errorHappened.emit(errorData);
 	}
 
 }
