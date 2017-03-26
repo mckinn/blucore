@@ -50,15 +50,23 @@
 			<select
 				id="eventSchool" 
 				class="form-control"
-				formControlName = "eventSchool">
+				formControlName = "eventSchool" placeholder = "Pick a School">
 				<option *ngFor = "let theSchool of schoolList">{{theSchool.name}}</option>
 			</select>
-			<!--
-			<label for="eventSchool">School</label>
+		</div>
+		<div  class="form-group">
+			<label for="eventRoomNumber">RoomNumber</label>
 			<input class = "form-control" 
-				type="string" 
-				id="eventSchool" 
-				formControlName =  "eventSchool"> -->
+				type="text" 
+				id="eventRoomNumber" 
+				formControlName =  "eventRoomNumber">
+		</div>
+		<div  class="form-group">
+			<label for="eventParticipantCount">Number of Participants</label>
+			<input class = "form-control" 
+				type="number" 
+				id="eventParticipantCount" 
+				formControlName =  "eventParticipantCount">
 		</div>
 			
 		<div *ngIf="initComplete">
@@ -70,7 +78,7 @@
 
 		<button class="btn btn-danger" type="button" (click) = "onClear(localRef)" [disabled]="myForm.disabled" *ngIf="iAmATeacher()">Clear
 		</button>
-		<button class="btn btn-primary" type="submit" [disabled]="!myForm.valid"  *ngIf= "iAmATeacher()">Post</button>
+		<button class="btn btn-primary" type="submit" [disabled]="!myForm.valid"  *ngIf= "iAmATeacher()">Save</button>
 		<button class="btn btn-primary" 
 				type="button" 
 				(click) = "onJoin(localRef)" 

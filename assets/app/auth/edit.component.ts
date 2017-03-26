@@ -71,6 +71,7 @@ export class EditComponent implements OnInit {
 				);
 			this.user.userName = this.myForm.value.firstName + " " + this.myForm.value.lastName;
 			this.user.valid = false;
+			this.user.pending = true;
 			// console.log("in submit", this.myForm, this.user);
 			this.authService.addUser( this.user )
 				.subscribe(

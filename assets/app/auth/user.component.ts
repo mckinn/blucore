@@ -26,9 +26,14 @@ export class UserComponent {
             );
     } */
 	
+	isValid() {
+		console.log("user valid ???", this.user.valid);
+		return (this.user.valid) // somebody has to be logged on
+	};
+
 	showView() {
 		return (false) // somebody has to be logged on
-	}
+	};
 
 	showEdit() {
 		return ((localStorage.getItem('userId') != null) // somebody has to be logged on

@@ -9,15 +9,17 @@ export class Event {
 	time?: string;
 	duration?: number; // minutes
 	school?: string;
-	kind?: string;
+	roomNumber?: string;
+	participantCount?: number;
 	ownerName?: string;
 	ownerId?: string;
 	participants?: string[];
 
 
 
-	constructor(name:string, description: string, date:string, eventNumber: number, eventId: string, time?:string, duration?:number, 
-				school?: string, kind?: string, ownerName?:string, ownerId?:string, participants?: string[]) 
+	constructor(name:string, description: string, date:string, eventNumber: number, eventId: string,
+				time?:string, duration?:number, school?: string, roomNumber?: string, participantCount?: number,
+				ownerName?:string, ownerId?:string,  participants?: string[]) 
 	{
 		this.name = name;
 		this.description = description;
@@ -27,7 +29,8 @@ export class Event {
 		this.time = time;
 		this.duration = duration;
 		this.school = school;
-		this.kind = kind;
+		this.roomNumber = roomNumber;
+		this.participantCount = participantCount;
 		this.ownerName = ownerName;
 		this.ownerId = ownerId;
 		this.participants = participants;

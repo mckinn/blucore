@@ -68,7 +68,8 @@ export class AuthService {
 				const users = response.json().obj;
 				let transformedUsers: User[] = [];
 				for (let user of users) {
-					transformedUsers.push(new User(user.email, '', user.firstName, user.lastName, user.wcpssId, user.school, user.kind, user._id ));
+					transformedUsers.push(new User( user.email, '', user.firstName, user.lastName, user.wcpssId, user.school,
+													user.kind, user._id, user.userName, user.events, user.valid, user.pendingValidation ));
 				}
 				this.users = transformedUsers;
 				return transformedUsers;
@@ -95,7 +96,7 @@ export class AuthService {
 				// console.log(user);
 				const userObj = new User(user.email, '', user.firstName, user.lastName, user.wcpssId, 
 										user.school, user.kind, user._id, user.userName, user.events,
-										user.valid );
+										user.valid, user.pendingValidation );
 				// console.log("* * * * userObj * * * *");
 				// console.log(userObj);
 				if (!userObj.valid) userObj.valid = false;
@@ -226,25 +227,34 @@ export class AuthService {
 							errors: [{message:"this is a secondary message"}]
 						}
 					};
-				} else {
+				} else { //event is not associated with the user
 					console.log("******************** Claiming the selected event: ",this.loggedInUser.myEvents);
 					this.loggedInUser.myEvents.push(event.eventId);
 					console.log("User with events", this.loggedInUser.myEvents);
 					event.participants.push(this.loggedInUser.userId);
-					console.log("event and user should be linked: ", event, this.loggedInUser);
-					// update the event, and the user, on the server to preserve the linkages
-
-					Observable.forkJoin([this.eventService.updateEvent(event),this.updateUser(this.loggedInUser)])
-						.subscribe(results => {
-							console.log("results are...",results[0],results[1]);
-						});
-					return;
-					};
+					if (event.participants.length >= event.participantCount) {
+						// we should have caught this in the UI
+						error = {
+							title:"This event is full",
+							error: {
+								errors: [{message:"The event can only have "+event.participantCount+" attendees"}]
+							}
+						}
+					} else {
+						// update the event, and the user, on the server to preserve the linkages
+						Observable.forkJoin([this.eventService.updateEvent(event),this.updateUser(this.loggedInUser)])
+							.subscribe(results => {
+								console.log("results are...",results[0],results[1]);
+							});
+						console.log("event and user should be linked: ", event, this.loggedInUser);
+						return;
+					};	
+				}
 			} else {
 				error = {
 					title:"User cannot claim event",
 					error: {
-						errors: [{message:"this is a secondary message"}]
+						errors: [{message:"something else is wrong"}]
 					}
 				};
 			}

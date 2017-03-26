@@ -53,6 +53,8 @@ export class EventService {
 						result.obj.time, 
 						result.obj.duration,
 						result.obj.school,
+						result.obj.roomNumber,
+						result.obj.participantCount,
 						result.obj.ownerId.firstName + " " + result.obj.ownerId.lastName,
 						result.obj.ownerId._id
 					);
@@ -85,7 +87,8 @@ export class EventService {
 					evt.time,
 					evt.duration,
 					evt.school,
-					evt.kind,
+					evt.roomNumber,
+					evt.participantCount,
 					evt.ownerId.firstName + " " + evt.ownerId.lastName,
 					evt.ownerId._id,
 					evt.participants
@@ -139,7 +142,8 @@ export class EventService {
 						evt.time,
 						evt.duration,
 						evt.school,
-						evt.kind,
+						evt.roomNumber, 
+						evt.participantCount,
 						evt.ownerId.firstName + " " + evt.ownerId.lastName,
 						evt.ownerId._id,
 						evt.participants

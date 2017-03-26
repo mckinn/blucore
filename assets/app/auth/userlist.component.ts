@@ -19,6 +19,7 @@ import { User } from "./user.model";
 						<th>WCPSS ID</th>
 						<th>School</th>
 						<th>Kind</th>
+						<th>Valid</th>
 					</tr>
 			    </thead>
 			    <tbody>
@@ -52,10 +53,9 @@ export class UserListComponent implements OnInit {
 			this.authService.getUsers()
 				.subscribe(
 					(users: User[]) => {
-						// console.log("* * * * getusers * * * *");
-						// console.log(users);
+						console.log("* * * * getusers * * * *", users);
 						this.users = users;
-						// console.log(this.users);
+						console.log(this.users);
 					}
 				);
 		}

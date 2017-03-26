@@ -1,5 +1,5 @@
 
-import { Event } from '../events/event.model';
+// import { Event } from '../events/event.model';
 
 export class User { 
 	// typescript provides the short form that results 
@@ -15,6 +15,7 @@ export class User {
 		public userId?: string,
 		public userName?: string, // the aggregate user name
 		public myEvents?: string[],
-		public valid?: Boolean
+		public valid?: Boolean,
+		public pending?: Boolean
 		) {}
 }

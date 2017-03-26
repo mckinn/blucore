@@ -56,6 +56,9 @@ export class EventInputComponent implements OnInit {
 			this.event.time = this.myForm.value.eventTime;
 			this.event.duration = this.myForm.value.eventDuration;
 			this.event.school = this.myForm.value.eventSchool;
+			this.event.roomNumber = this.myForm.value.eventRoomNumber;
+			this.event.participantCount = this.myForm.value.eventParticipantCount;
+			console.log("updated event: ", this.event);
 
 			this.eventService.updateEvent(this.event)
 				.subscribe(
@@ -75,7 +78,9 @@ export class EventInputComponent implements OnInit {
 				" 0 ", // eventId does not matter because server fills it
 				this.myForm.value.eventTime,
 				this.myForm.value.eventDuration,
-				this.myForm.value.eventSchool
+				this.myForm.value.eventSchool,
+				this.myForm.value.eventRoomNumber,
+				this.myForm.value.eventParticipantCount
 				// need to find the user that is creating this
 			);
 			// console.log("* * * * before addEvent * * * *");
@@ -89,6 +94,7 @@ export class EventInputComponent implements OnInit {
 
 		this.myForm.reset();
 		this.myForm.enable();
+		this.location.back();
 	}
 
 
@@ -151,7 +157,7 @@ export class EventInputComponent implements OnInit {
 		return false;
 	}
 
-	populateParticipants() {
+	populateParticipants() { // fills the participant list at the bottom of the form.
 
 		if(this.event) {
 			this.authService.getUsers()
@@ -187,7 +193,9 @@ export class EventInputComponent implements OnInit {
 				eventDate: new FormControl(null, Validators.required),
 				eventTime: new FormControl(null, Validators.required),
 				eventDuration: new FormControl(null, Validators.required),
-				eventSchool: new FormControl(null, Validators.required)
+				eventSchool: new FormControl(null, Validators.required),
+				eventRoomNumber: new FormControl(null, Validators.required),
+				eventParticipantCount: new FormControl(null, Validators.required)
 			});
 		};
 
@@ -203,6 +211,7 @@ export class EventInputComponent implements OnInit {
 		}
 
 		console.log("in event - list of schools:", this.schoolList);
+		console.log("in event - myForm Values: ", this.myForm);
 
 		// console.log(this.route.params);
 		// console.log(this.route.url);
@@ -223,7 +232,9 @@ export class EventInputComponent implements OnInit {
 							eventDate: event.date,
 							eventTime: event.time,
 							eventDuration: event.duration,
-							eventSchool: event.school
+							eventSchool: event.school,
+							eventRoomNumber: (event.roomNumber || "no room specified"),
+							eventParticipantCount: (event.participantCount || 1 )
 						});
 						this.populateParticipants();
 					}

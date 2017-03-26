@@ -9,7 +9,7 @@ var School = require('../models/school.model');
 // we need the list of schools to add a user
 
 router.get('/', function( req, res, next) {  // get a list of schools
-    console.log("in school");
+    // console.log("in school");
 	School.find({},function(err,schools){
 		if (err) {
 			return res.status(500).json({
@@ -23,7 +23,7 @@ router.get('/', function( req, res, next) {  // get a list of schools
 				error: err
 			});
 		};
-        console.log("the schools: ",schools);
+        // console.log("the schools: ",schools);
 		res.status(200).json({
 			message: 'here are the schools',
 			obj: schools

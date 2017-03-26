@@ -15,6 +15,8 @@ router.post('/', function (req, res, next) { // create a new user
 		school: req.body.school,
 		kind: req.body.kind
 	});
+	user.valid = false;
+	user.validationPending = true;
 	// Todo
 	// when we are adding a user, make sure that we
 	// email them to tell them that they are being verifed,
@@ -137,6 +139,7 @@ router.patch('/users/:uid', function( req, res, next) {  // update a user - must
 		if( req.body.kind ) user.kind = req.body.kind;
 		if( req.body.myEvents ) user.events = req.body.myEvents;
 	 	user.valid = req.body.valid;
+		
 		// don't touch the _id
 		// only touch the password if it is not null
 		if( req.body.password ) {
@@ -144,6 +147,14 @@ router.patch('/users/:uid', function( req, res, next) {  // update a user - must
 			// console.log(req.body.password,bcrypt.hashSync(req.body.password, 10));
 			user.password = bcrypt.hashSync(req.body.password, 10);
 		};
+
+		if (user.validationPending && user.valid) { // the state has changed to valid from invalid
+			// reset the pending status and send an email.
+			user.validationPending = true;
+			// Send the right form of email
+			// Todo
+		}
+
         // Todo
 		// If a user has their verified bit moved from no to yes, we should tell them
 		// in an email from their coordinator, and give them a propper welcome.
