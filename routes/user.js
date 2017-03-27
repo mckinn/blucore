@@ -44,7 +44,7 @@ router.options('/signin', function( req, res, next) {  // pre-flight on sign-in
 		title:'options response'
 	});
 
-}
+});
 
 router.post('/signin', function( req, res, next) {  // sign in 
 	User.findOne({email:req.body.email},function(err,user){
