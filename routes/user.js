@@ -38,6 +38,14 @@ router.post('/', function (req, res, next) { // create a new user
 	});
 });
 
+router.options('/signin', function( req, res, next) {  // pre-flight on sign-in
+	console.log("pre-flight on sign-in");
+	return res.status(200).json({
+		title:'options response'
+	});
+
+}
+
 router.post('/signin', function( req, res, next) {  // sign in 
 	User.findOne({email:req.body.email},function(err,user){
 		if (err) {
