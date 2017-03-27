@@ -102,12 +102,12 @@ export class EventInputComponent implements OnInit {
 		// basically - add the current event to the user's queue, and 
 		// add the user to the list of users for the event.
 		// this needs to wait until we have the roles stuff sorted out.
-
+		console.log("event being claimed ", this.event);
 		this.authService.claimEvent(this.event)
-			.subscribe(
-			result => // console.log("* * * * subscription in claimEvent * * * *", result),
+			/*.subscribe(
+			// result => console.log("* * * * subscription in claimEvent * * * *", result),
 			error => console.error("error in subscription in claimEvent", error)
-			);
+			);*/
 
 	}
 
@@ -136,6 +136,11 @@ export class EventInputComponent implements OnInit {
 	iAmATeacher() {
 		// // console.log("* * * * I am a teacher * * * *",this.authService.whoIsLoggedIn().kind);
 		return (this.authService.whoIsLoggedIn().kind == 'teacher');
+	}
+	
+	tooManySignedUpAlready() {
+		console.log("* * * * how many signed in * * * *",this.event.name, this.event.participantCount, this.event.participants.length);
+		return (this.event.participantCount <= this.event.participants.length);
 	}
 
 	iAmAStudent() {
@@ -212,6 +217,7 @@ export class EventInputComponent implements OnInit {
 
 		console.log("in event - list of schools:", this.schoolList);
 		console.log("in event - myForm Values: ", this.myForm);
+		console.log("in event - event Values: ", this.event);
 
 		// console.log(this.route.params);
 		// console.log(this.route.url);
@@ -221,9 +227,7 @@ export class EventInputComponent implements OnInit {
 			return this.eventService.getEvent(this.route.snapshot.params['eventId'])
 			// })
 				.subscribe((event: Event) => {
-					// console.log("* * * * IC - subscription activation * * * *");
-					// console.log(this.myForm);
-					// console.log(event);
+					console.log("* * * * IC - subscription activation * * * *",this.myForm,event);
 					if (event) {   // if there actually was a parameter...
 						this.event = event;
 						this.myForm.setValue({
@@ -234,10 +238,11 @@ export class EventInputComponent implements OnInit {
 							eventDuration: event.duration,
 							eventSchool: event.school,
 							eventRoomNumber: (event.roomNumber || "no room specified"),
-							eventParticipantCount: (event.participantCount || 1 )
+							eventParticipantCount: (event.participantCount || 0 )
 						});
 						this.populateParticipants();
 					}
+					console.log("* * * * IC - subscription activation 2 * * *",this.myForm,event);
 					// the form is diabled if it is filled with data and not owned by me.
 					if (this.isNotMine(this.event)) {
 						// console.log("disable");

@@ -227,11 +227,10 @@ export class AuthService {
 							errors: [{message:"this is a secondary message"}]
 						}
 					};
-				} else { //event is not associated with the user
+				} else { //event is not (yet) associated with the user
 					console.log("******************** Claiming the selected event: ",this.loggedInUser.myEvents);
 					this.loggedInUser.myEvents.push(event.eventId);
 					console.log("User with events", this.loggedInUser.myEvents);
-					event.participants.push(this.loggedInUser.userId);
 					if (event.participants.length >= event.participantCount) {
 						// we should have caught this in the UI
 						error = {
@@ -241,6 +240,7 @@ export class AuthService {
 							}
 						}
 					} else {
+						event.participants.push(this.loggedInUser.userId);
 						// update the event, and the user, on the server to preserve the linkages
 						Observable.forkJoin([this.eventService.updateEvent(event),this.updateUser(this.loggedInUser)])
 							.subscribe(results => {

@@ -11,7 +11,7 @@
 				<a (click)="onEdit()" *ngIf="showEdit()">Edit</a>
 				<a (click)="onDelete()" *ngIf="showEdit()">Delete</a>
 				<a (click)="onEdit()" *ngIf="eventIsNotMine() && !showEdit()">View</a>
-				<a (click)="onSelect()" *ngIf="eventIsNotMine() && iAmAStudent() && iHaveNotSelectedThis()">Participate</a>
+				<a (click)="onSelect()" *ngIf="eventIsNotMine() && iAmAStudent() && iHaveNotSelectedThis() && !tooManySignedUpAlready()">Participate</a>
 				<a (click)="onDecline()" *ngIf="eventIsNotMine() && iAmAStudent() && !iHaveNotSelectedThis()">Decline</a>
 			</div>
 		<!-- </footer> -->

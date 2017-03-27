@@ -83,7 +83,7 @@
 				type="button" 
 				(click) = "onJoin(localRef)" 
 				[disabled]="!myForm.disabled && myForm.valid" 
-				*ngIf= "iHaveNotSelectedThis() && iAmAStudent()"
+				*ngIf= "iHaveNotSelectedThis() && iAmAStudent() && !tooManySignedUpAlready()"
 				>Signup</button>
 		<button class="btn btn-primary" 
 				type="button" 

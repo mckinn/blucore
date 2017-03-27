@@ -78,6 +78,11 @@ export class EventComponent implements OnInit {
 		return (this.authService.whoIsLoggedIn().kind == 'student');
 	}
 
+	tooManySignedUpAlready() {
+		console.log("* * * * how many signed in * * * *",this.rowevent.name, this.rowevent.participantCount, this.rowevent.participants.length);
+		return (this.rowevent.participantCount <= this.rowevent.participants.length);
+	}
+
 	ngOnInit () {
 		console.log("in event onInit: ");
 		console.log(this.rowevent);
