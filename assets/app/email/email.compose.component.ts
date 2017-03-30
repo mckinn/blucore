@@ -47,7 +47,7 @@ export class EmailComponent implements OnInit {
 		this.email = new Email (
 			// ignore the real target until we go live.
 			// this.authService.getNamedUser().email, // todo 
-			this.destination,  // toUser.email once we are up and running
+			"mckinn@gmail.com",  // toUser.email once we are up and running
 			fromUser.email, //from
 			toUser.firstName + ' ' + toUser.lastName, // to common
 			fromUser.firstName + ' ' + fromUser.lastName,// from common
@@ -60,8 +60,9 @@ export class EmailComponent implements OnInit {
 		const headers = this.commonHttp.setHeaders();
 		// fire and forget for now.
 		// ToDo - add a copy myself on the email capability.
+		console.log("the email body",body);
 		this.http.post( AppSettings.API_ENDPOINT + 'email',	body, {headers: headers})
-			.subscribe();
+		   .subscribe();
 		this.location.back();
 		// this.router.navigate(['/events']);
 	}

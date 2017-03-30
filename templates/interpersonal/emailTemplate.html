@@ -1,0 +1,37 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html><head>
+<meta content="text/html; charset=ISO-8859-1" http-equiv="content-type"><title>emailTemplate</title>
+
+<style type="text/css">
+.container-pad {
+padding: 10px 5px 15px 10px;
+}
+.email-content {
+padding: 10px 5px 15px 10px;
+margin-left: 40px;
+margin-right: 40px;
+background-color: lightgray;
+border-style: solid;
+border-color:blue;
+border-width: 1px;
+}
+</style>
+</head><body style="color: rgb(0, 0, 0); background-color: white; font-family: Open Sans;" alink="#000099" link="#000099" vlink="#990099">
+<div style="text-align: center; font-weight: bold; color: rgb(0, 0, 153);"><big><big><big><big><span style="color: rgb(51, 102, 255);">blu</span>Core</big></big></big></big></div>
+<div class="container-pad">Hi - I'm your friendly
+neighborhood bluCore mail bot.<br>
+<br>
+{{name}} at {{email}} sent you a message, which I have carefully typed
+into the gray box below.</div>
+<div class="email-content">{{{body}}}</div>
+<div>
+<div class="container-pad">Feel free to respond back to
+{{name}} directly - I don't
+feel the need to carefully type the contents of all your communications</div>
+<div class="container-pad">Cheers</div>
+<div style="margin-left: 40px;">
+<span style="font-style: italic;">your friendly
+neighborhood bluCore mailbot</span>
+</div>
+</div>
+</body></html>

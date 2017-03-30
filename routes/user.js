@@ -4,6 +4,7 @@ var bcrypt = require('bcryptjs');
 var jwt = require('jsonwebtoken');
 
 var User = require('../models/user');
+var BluCoreEmail = require('../models/email.model');
 
 router.post('/', function (req, res, next) { // create a new user
 	var user = new User({
@@ -17,13 +18,18 @@ router.post('/', function (req, res, next) { // create a new user
 	});
 	user.valid = false;
 	user.validationPending = true;
-	// Todo
+	// Todo later.  
 	// when we are adding a user, make sure that we
 	// email them to tell them that they are being verifed,
 	// and to welcome them.
 	//
 	// also email the coordinator to tell that coordinator to validate them
     //
+	// For now we will assume that the important emails are the 
+	// 'valid' and 'invalid' to the user when the record is updated (patched).
+
+	if (!user.valid && userValidationPending)
+
 	user.save(function(err, result) {
 		if (err) {
 			return res.status(500).json({
@@ -139,6 +145,26 @@ router.patch('/users/:uid', function( req, res, next) {  // update a user - must
 		// console.log(req.body);
 		// console.log(user);
 
+		// determine whether to send validation emails
+		if ((!user.valid && req.body.valid) || 
+			(user.validationPending && !req.body.validationPending)) { // state change
+				var templateName;
+				if (req.body.valid) {
+					// send a OK email
+					templateName = 'verified.html'
+				} else {
+					// send a failure email and reset the validation pending
+					templateName = 'notVerified.html';
+					req.body.validationPending = true; // to be copied below. 
+				}
+				console.log("inside patch ",req.body);
+				// todo make sure that we get the school's administrator filled in here.
+				// also have to make sure that to: email is correct
+				BluCoreEmail ( "mckinn@yahoo.com", "mckinn@gmail.com", user.firstName, "The universal bluCore admin",
+							   "bluCore User Validation", templateName, ""); 
+
+		}
+
 		if( req.body.email ) user.email = req.body.email;
 		if( req.body.firstName ) user.firstName = req.body.firstName;
 		if( req.body.lastName ) user.lastName = req.body.lastName;
@@ -147,6 +173,7 @@ router.patch('/users/:uid', function( req, res, next) {  // update a user - must
 		if( req.body.kind ) user.kind = req.body.kind;
 		if( req.body.myEvents ) user.events = req.body.myEvents;
 	 	user.valid = req.body.valid;
+		user.validationPending = req.body.validationPending;
 		
 		// don't touch the _id
 		// only touch the password if it is not null
