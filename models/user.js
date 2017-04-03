@@ -11,8 +11,7 @@ var schema = new Schema({
 	wcpssId: {type: String, required: false, unique: true},
 	school: {type: String, required: true},  // wcpss student or teacher ID
 	kind: {type: String}, // A, S, T, P, null
-	valid: {type: Boolean, default: false},
-	pendingValidation: {type: Boolean, default: true},
+	valid: {type: String, default: "unknown"},
 	events: [ {type: Schema.Types.ObjectId, ref: 'Event'} ] // ObjectID is an internal GUID	
 });
 

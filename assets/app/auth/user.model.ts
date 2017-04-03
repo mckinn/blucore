@@ -15,7 +15,6 @@ export class User {
 		public userId?: string,
 		public userName?: string, // the aggregate user name
 		public myEvents?: string[],
-		public valid?: Boolean,
-		public pending?: Boolean
+		public valid?: string // approved, rejected, unknown
 		) {}
 }

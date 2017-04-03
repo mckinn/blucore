@@ -21,8 +21,11 @@ export class EditComponent implements OnInit {
 	myForm: FormGroup;
 	user: User;
 	userId: string;
-	selectDisabled: Boolean;
 	schoolList: School[] = [];
+
+	// my failed attempt at radio buttons
+	// radioItems = 'valid invalid unknown'.split(' ');
+	// radioModel = { options: 'unknown' };
 
 	constructor( private authService: AuthService,
 				private router: Router,
@@ -67,11 +70,10 @@ export class EditComponent implements OnInit {
 				this.myForm.value.lastName,
 				this.myForm.value.wcpssId,
 				this.myForm.value.school,
-				this.myForm.value.kind
+				this.myForm.value.kind,
+				"unknown"
 				);
 			this.user.userName = this.myForm.value.firstName + " " + this.myForm.value.lastName;
-			this.user.valid = false;
-			this.user.pending = true;
 			// console.log("in submit", this.myForm, this.user);
 			this.authService.addUser( this.user )
 				.subscribe(
@@ -104,7 +106,7 @@ export class EditComponent implements OnInit {
 	}
 
 	isLoggedIn () {
-		console.log("isLoggedIn is: ", this.authService.isLoggedIn());
+		// console.log("isLoggedIn is: ", this.authService.isLoggedIn());
 		return this.authService.isLoggedIn();
 	}
 	
@@ -113,12 +115,12 @@ export class EditComponent implements OnInit {
 		// console.log("logged in user: ",this.authService.whoIsLoggedIn());
 		if (this.authService.isLoggedIn()) {
 			// console.log("valid user: ",this.authService.whoIsLoggedIn().userName,this.authService.whoIsLoggedIn().valid);
-			return (this.authService.whoIsLoggedIn().valid);
+			return (this.authService.whoIsLoggedIn().valid == "valid");
 		}
 		return false;
 	}
 	
-	isAdmin () { // determine if the current user is an admin
+	isAdmin () { // determine if the current logged in user is an admin
 		return (this.authService.isLoggedIn() && this.authService.whoIsLoggedIn().kind == "admin");
 	}
 
@@ -163,22 +165,20 @@ export class EditComponent implements OnInit {
 		
 
 		console.log("* * * * user edit form * * * * ");
-		if (!this.myForm){
-			this.myForm = new FormGroup({
-				firstName: new FormControl(null, Validators.required),
-				lastName: new FormControl(null, Validators.required),
-				email: new FormControl(null, [
-						Validators.required, 
-						Validators.pattern("[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?")
-						]),
-				password: new FormControl(null, Validators.required),
-				dupPassword: new FormControl(null, Validators.required),
-				wcpssId: new FormControl(null, Validators.required),
-				school: new FormControl(null, Validators.required),
-				kind: new FormControl(null, Validators.required),
-				valid: new FormControl(null)
-			});
-		}
+		this.myForm = new FormGroup({
+			firstName: new FormControl(null, Validators.required),
+			lastName: new FormControl(null, Validators.required),
+			email: new FormControl(null, [
+					Validators.required, 
+					Validators.pattern("[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?")
+					]),
+			password: new FormControl(null, Validators.required),
+			dupPassword: new FormControl(null, Validators.required),
+			wcpssId: new FormControl(null, Validators.required),
+			school: new FormControl(null, Validators.required),
+			kind: new FormControl(null, Validators.required),
+			valid: new FormControl(null, Validators.required)
+		});
 		if ((!this.schoolList) || (this.schoolList.length == 0)) {
 			this.schoolService.getSchools()
 				.subscribe(
@@ -190,7 +190,7 @@ export class EditComponent implements OnInit {
 				);
 		}
 
-		console.log(this.schoolList);
+		// console.log(this.schoolList);
 
 
 		console.log(this.myForm);
@@ -212,16 +212,17 @@ export class EditComponent implements OnInit {
 				this.userId = this.authService.whoIsLoggedIn().userId;
 			} 
 		}
-		this.selectDisabled = false;
-		if (userParm) { // we want to lock-down the type of user
-			this.myForm.controls['kind'].setValue (userParm);
-			// this.myForm.controls['kind'].setValue({kind:{name }})
-			this.selectDisabled = true;
-			console.log("the kind form value", this.myForm.controls['kind'].value);
+        // userParm
+		if (userParm || !this.isAdmin()) {  // if the user-type was passed in, or the current logged in user is not an Admin..
+			// note that the value will get set below if this is an existing user.
+			this.myForm.controls['kind'] = new FormControl({value: userParm, disabled: true}, Validators.required);
 		}
+		// lock the validation down unless it is an admin.
+		if (!this.isAdmin()) this.myForm.controls['valid'] = new FormControl({value: "unknown", disabled: true}, Validators.required);
+
 
 		console.log("before checking this.userId");
-		if (this.userId) {
+		if (this.userId) { // the userid of the logged in user, or of the user specified in the URL
 			// ToDo - determine how to do this by throwing an exception.
 			if (!this.authService.isLoggedIn()) {
 				console.log("re-setting user due to logout");
@@ -233,50 +234,51 @@ export class EditComponent implements OnInit {
 			}
 			console.log("User ID in edit",this.userId);
 			return this.authService.getUser(this.userId)
-			
-			.subscribe( (user: User) => { 
+				.subscribe( (user: User) => { 
 
-				console.log("* * * * User Edit - subscription activation * * * *");
-				console.log(this.myForm);
-				console.log(user);
-				if (user) {   // if there actually was a parameter...
-					console.log("* * * * setting the form * * * *");
-					if (!user.kind) user.kind = 'admin';
-					this.user = user;
+					console.log("* * * * User Edit - subscription activation * * * *");
+					console.log(this.myForm);
+					console.log(user);
+					if (user) {   // if there actually was a parameter...
+						console.log("* * * * setting the form * * * *");
+						if (!user.kind) user.kind = 'admin';
+						this.user = user;
+						console.log(this.user);
+						this.myForm.setValue({
+							email: user.email,
+							password: null, // if they change the password we need to 
+							dupPassword: null, // re-register it
+							firstName: user.firstName,   // the ? makes the fields optional
+							lastName: user.lastName,
+							wcpssId: user.wcpssId, 
+							school: user.school,  // wcpss student or teacher ID
+							kind: user.kind, // Admin, Student, Teacher, Parent
+							valid: user.valid  // approved, rejected, unknown
+						});
+						// Why ???
+						this.myForm.setControl('password', new FormControl("", 
+							(c:FormControl) => { return Validators.required}
+							)
+						);
+						this.myForm.setControl('dupPassword', new FormControl("", 
+							(c:FormControl) => { return Validators.required}
+							)
+						);
+						
+					}
+
+					// the form is diabled if it is filled with data and not owned by me
+					// unless an admin has opened it.
+					if (!this.buttonIsPresent()) {
+						console.log("disable");
+						this.myForm.disable();
+					}
+
+					console.log("* * * * edit user subscribe - end * * * *");
+					console.log(this.myForm);
 					console.log(this.user);
-					this.myForm.setValue({
-						email: user.email,
-						password: null, // if they change the password we need to 
-						dupPassword: null, // re-register it
-						firstName: user.firstName,   // the ? makes the fields optional
-						lastName: user.lastName,
-						wcpssId: user.wcpssId, 
-						school: user.school,  // wcpss student or teacher ID
-						kind: user.kind,
-						valid: user.valid // Admin, Student, Teacher, Parent
-					});
-					// Why ???
-					this.myForm.setControl('password', new FormControl("", 
-						(c:FormControl) => { return Validators.required}
-						)
-					);
-					this.myForm.setControl('dupPassword', new FormControl("", 
-						(c:FormControl) => { return Validators.required}
-						)
-					);
-				}
-
-				// the form is diabled if it is filled with data and not owned by me.
-				if (!this.buttonIsPresent()) {
-					console.log("disable");
-					this.myForm.disable();
-				}
-
-				console.log("* * * * edit user subscribe - end * * * *");
-				console.log(this.myForm);
-				console.log(this.user);
-				console.log("* * * * edit user subscribe - end * * * *");
-			});
+					console.log("* * * * edit user subscribe - end * * * *");
+				});
 		}
 		console.log("the kind form value", this.myForm.controls['kind'].value);
 	}

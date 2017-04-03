@@ -60,15 +60,10 @@
 				formControlName = "school">
 				<option *ngFor = "let theSchool of schoolList">{{theSchool.name}}</option>
 			</select>
-			<!-- <input
-				type="text" 
-				id="school" 
-				class="form-control"
-				formControlName = "school"> -->
 		</div>
 		<div class="form-group" >
 			<label for="kind">Kind</label>
-			<select [attr.disabled]="selectDisabled"
+			<select     
 				id="kind" 
 				class="form-control"
 				formControlName = "kind">
@@ -78,13 +73,16 @@
 				<option>parent</option>
 			</select>
 		</div>
-		<div class="checkbox form-group" *ngIf= "isAdmin()">
-			<label for="valid">
-			<input 
-				type="checkbox"
+		<div class="form-group" >
+			<label for="valid">Validation State</label>
+			<select 
 				id="valid" 
+				class="form-control"
 				formControlName = "valid">
-			Valid?</label>
+				<option>approved</option>
+				<option>rejected</option>
+				<option>unknown</option>
+			</select>
 		</div>
 		<div *ngIf= "!isAdmin() && !isValidatedUser ()">
 			<span class="text-danger">Your userid has not been validated - if you are tired of waiting contact your school rep</span>

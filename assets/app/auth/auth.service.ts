@@ -69,7 +69,7 @@ export class AuthService {
 				let transformedUsers: User[] = [];
 				for (let user of users) {
 					transformedUsers.push(new User( user.email, '', user.firstName, user.lastName, user.wcpssId, user.school,
-													user.kind, user._id, user.userName, user.events, user.valid, user.pendingValidation ));
+													user.kind, user._id, user.userName, user.events, user.valid ));
 				}
 				this.users = transformedUsers;
 				return transformedUsers;
@@ -96,10 +96,11 @@ export class AuthService {
 				// console.log(user);
 				const userObj = new User(user.email, '', user.firstName, user.lastName, user.wcpssId, 
 										user.school, user.kind, user._id, user.userName, user.events,
-										user.valid, user.pendingValidation );
+										user.valid );
 				// console.log("* * * * userObj * * * *");
 				// console.log(userObj);
-				if (!userObj.valid) userObj.valid = false;
+				// fix broken user validation values
+				if ((userObj.valid != "rejected") && (userObj.valid != "approved") ) userObj.valid = "unknown";
 				return userObj;
 			})
 			.catch((error: Response) => {

@@ -16,8 +16,7 @@ router.post('/', function (req, res, next) { // create a new user
 		school: req.body.school,
 		kind: req.body.kind
 	});
-	user.valid = false;
-	user.validationPending = true;
+	user.valid = "unknown";
 	// Todo later.  
 	// when we are adding a user, make sure that we
 	// email them to tell them that they are being verifed,
@@ -26,9 +25,7 @@ router.post('/', function (req, res, next) { // create a new user
 	// also email the coordinator to tell that coordinator to validate them
     //
 	// For now we will assume that the important emails are the 
-	// 'valid' and 'invalid' to the user when the record is updated (patched).
-
-	if (!user.valid && userValidationPending)
+	// 'approved' and 'rejected' to the user when the record is updated (patched).
 
 	user.save(function(err, result) {
 		if (err) {
@@ -146,16 +143,15 @@ router.patch('/users/:uid', function( req, res, next) {  // update a user - must
 		// console.log(user);
 
 		// determine whether to send validation emails
-		if ((!user.valid && req.body.valid) || 
-			(user.validationPending && !req.body.validationPending)) { // state change
+		if (user.valid != req.body.valid)  // something has changed to approved, rejected, unknown
+			 { 
 				var templateName;
-				if (req.body.valid) {
+				if (req.body.valid == "approved") {
 					// send a OK email
-					templateName = 'verified.html'
+					templateName = 'verified'
 				} else {
 					// send a failure email and reset the validation pending
-					templateName = 'notVerified.html';
-					req.body.validationPending = true; // to be copied below. 
+					if (req.body.valid == "rejected") templateName = 'notVerified';
 				}
 				console.log("inside patch ",req.body);
 				// todo make sure that we get the school's administrator filled in here.
@@ -163,7 +159,7 @@ router.patch('/users/:uid', function( req, res, next) {  // update a user - must
 				BluCoreEmail ( "mckinn@yahoo.com", "mckinn@gmail.com", user.firstName, "The universal bluCore admin",
 							   "bluCore User Validation", templateName, ""); 
 
-		}
+			}
 
 		if( req.body.email ) user.email = req.body.email;
 		if( req.body.firstName ) user.firstName = req.body.firstName;
@@ -173,7 +169,6 @@ router.patch('/users/:uid', function( req, res, next) {  // update a user - must
 		if( req.body.kind ) user.kind = req.body.kind;
 		if( req.body.myEvents ) user.events = req.body.myEvents;
 	 	user.valid = req.body.valid;
-		user.validationPending = req.body.validationPending;
 		
 		// don't touch the _id
 		// only touch the password if it is not null
@@ -183,17 +178,6 @@ router.patch('/users/:uid', function( req, res, next) {  // update a user - must
 			user.password = bcrypt.hashSync(req.body.password, 10);
 		};
 
-		if (user.validationPending && user.valid) { // the state has changed to valid from invalid
-			// reset the pending status and send an email.
-			user.validationPending = true;
-			// Send the right form of email
-			// Todo
-		}
-
-        // Todo
-		// If a user has their verified bit moved from no to yes, we should tell them
-		// in an email from their coordinator, and give them a propper welcome.
-		//
 		// console.log(user);
 		user.save( function (err, result) {
 			if (err) {

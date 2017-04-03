@@ -11,13 +11,13 @@ import {AuthService} from "../auth/auth.service";
 			<nav class="col-md-8 col-md-offset-2">
 				<ul class="nav nav-tabs"> 
 					<li routerLinkActive="active" *ngIf= "activeForTeachers() && isLoggedIn() && isValidatedUser()"><a [routerLink]="['input']">New Event</a></li>
-					<li routerLinkActive="active" class="disabled" *ngIf= "!activeForTeachers() && isLoggedIn()"><a>Event Details</a></li>
+					<li routerLinkActive="active" class="disabled" *ngIf= "!activeForTeachers() && isLoggedIn() && isValidatedUser()"><a>Event Details</a></li>
 					<li routerLinkActive="active" *ngIf= "isLoggedIn() && isValidatedUser()"><a [routerLink]="['list']">All Events</a></li>
 					<li routerLinkActive="active" *ngIf= "isLoggedIn() && !isAdmin() && isValidatedUser()"><a [routerLink]="['mylist']">My Events</a></li>
 					<li routerLinkActive="active" *ngIf="!isLoggedIn()"><a [routerLink]="['signin']">Sign In</a></li>
 					<li routerLinkActive="active" *ngIf="!isLoggedIn()"><a [routerLink]="['edit']">Sign Up</a></li>
 					<li routerLinkActive="active" *ngIf="isLoggedIn()"> <a [routerLink]="['edit']">User Details</a></li>
-					<li routerLinkActive="active" *ngIf= "isLoggedInAdmin()"><a [routerLink]="['users' ]">User List</a></li>
+					<li routerLinkActive="active" *ngIf= "isLoggedInAdmin() && isValidatedUser()"><a [routerLink]="['users' ]">User List</a></li>
 				</ul>
 			</nav>
 			<nav class= "col-md-2" *ngIf="isLoggedIn()">
@@ -73,7 +73,7 @@ export class EventsComponent {
 		// console.log("logged in user: ",this.authService.whoIsLoggedIn());
 		if (this.authService.isLoggedIn()) {
 			// console.log("valid user: ",this.authService.whoIsLoggedIn().userName,this.authService.whoIsLoggedIn().valid);
-			return (this.authService.whoIsLoggedIn().valid);
+			return (this.authService.whoIsLoggedIn().valid == "approved");
 		}
 		return false;
 	}
