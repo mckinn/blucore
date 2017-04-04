@@ -43,14 +43,18 @@ var sendBluCoreEmail = function (  to, from, toFriendly, fromFriendly,
                 }
             });
 
+            console.log("the transporter: ", transporter);
+            console.log("options.auth.user: ", transporter.options.auth.user );
+            // console.log("Mail.options.auth.user: ", transporter.Mail.options.auth.user );
+
             // setup email data with unicode symbols
             let mailOptions = {
-                from: fromFriendly + '<' + from + '>',     // sender
-                // from: from,
+                replyTo: fromFriendly + '<' + from + '>',     // sender
+                from: 'the bluCore email bot <' + transporter.options.auth.user  + '>',          // gmail does this anyway
                 to: toFriendly + '<' + to + '>',           // receiver
                 // to: to,
                 subject: subject,                           // Subject line
-                text: 'Hello world ?',                      // plain text body
+                // text: 'Hello world ?',                      // plain text body
                 html: htmlbody.html                         // html body
             };
 

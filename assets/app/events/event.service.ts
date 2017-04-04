@@ -104,7 +104,7 @@ export class EventService {
 	}
 
 	getEvents (parms?:string[]) {
-		// console.log("in getEvents: ", parms);
+		console.log("in getEvents: ", parms);
 		let parmString: string = "";
 		if (parms) {
 			for (let parmIdx = 0; parmIdx < parms.length; parmIdx++) {
@@ -125,14 +125,14 @@ export class EventService {
 				);
 		} */
 
-		// console.log("parmString: ",parmString);
+		console.log("parmString: ",parmString);
 		const headers = this.commonHttp.setHeaders();
 		return this.http.get(AppSettings.API_ENDPOINT + 'event'+ parmString,{headers:headers})
 			.map((response:Response) => {
 				const events = response.json().obj;
 				let transformedEvents: Event[] = [];
 				for (let evt of events) {
-					// console.log(evt);
+					console.log("Received Event: ",evt);
 					const newEvt = new Event (
 						evt.name, 
 						evt.description,
@@ -148,15 +148,15 @@ export class EventService {
 						evt.ownerId._id,
 						evt.participants
 					);
-					// console.log(newEvt);
+					console.log("New Event: ",newEvt);
 					transformedEvents.push(newEvt);
 				};
 				this.events = transformedEvents;
 				return transformedEvents; // delivered to the subscribe.
 			})
 			.catch((error: Response) => {
-				// console.log(error);
-				this.errorService.handleError(error.json())
+				console.log("In GET event error catch: ",error);
+				this.errorService.handleError(error.json());
 				return Observable.throw(error.json());
 			});
 		

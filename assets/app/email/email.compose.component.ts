@@ -47,7 +47,7 @@ export class EmailComponent implements OnInit {
 		this.email = new Email (
 			// ignore the real target until we go live.
 			// this.authService.getNamedUser().email, // todo 
-			"mckinn@gmail.com",  // toUser.email once we are up and running
+			toUser.email,  // toUser.email once we are up and running
 			fromUser.email, //from
 			toUser.firstName + ' ' + toUser.lastName, // to common
 			fromUser.firstName + ' ' + fromUser.lastName,// from common
@@ -77,8 +77,9 @@ export class EmailComponent implements OnInit {
 
 	ngOnInit() {
 		console.log("in email component");
-        this.display = 'block';
-		this.destination = 'mckinn@gmail.com';
+		let toUser = this.authService.getNamedUser();
+		this.display = 'block';
+		this.destination = "TO: "+toUser.firstName+" "+toUser.lastName;
 		this.emailForm = new FormGroup({
 				emailSubject: new FormControl(null, Validators.required),
 				emailBody: new FormControl(null, Validators.required)

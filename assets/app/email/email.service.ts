@@ -10,7 +10,6 @@ import { Email } from "./email.model";
 @Injectable()
 export class emailService {
 
-    destination: string = "mckinn@gmail.com";
     email: Email ; 
 
 	constructor ( 	private http: Http,
@@ -22,7 +21,7 @@ export class emailService {
 		this.email = new Email (
 			// ignore the real target until we go live.
 			// this.authService.getNamedUser().email, // todo 
-			this.destination,  // toUser.email once we are up and running
+			toUser.email,  // toUser.email once we are up and running
 			fromUser.email,    //from
 			toUser.firstName + ' ' + toUser.lastName, // to common
 			fromUser.firstName + ' ' + fromUser.lastName,// from common

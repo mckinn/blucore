@@ -156,7 +156,7 @@ router.patch('/users/:uid', function( req, res, next) {  // update a user - must
 				console.log("inside patch ",req.body);
 				// todo make sure that we get the school's administrator filled in here.
 				// also have to make sure that to: email is correct
-				BluCoreEmail ( "mckinn@yahoo.com", "mckinn@gmail.com", user.firstName, "The universal bluCore admin",
+				BluCoreEmail ( user.email, "blucore.emaildaemon@gmail.com", user.firstName, "The bluCore admin",
 							   "bluCore User Validation", templateName, ""); 
 
 			}
