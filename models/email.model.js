@@ -11,27 +11,6 @@ var path = require('path');
 var sendBluCoreEmail = function (  to, from, toFriendly, fromFriendly,
                         subject, templateName, bodyText ){
 
-        // take the html body of the email, and prepare it and send it
-        /*
-        var prepareAndSend_p = function (htmlbody){
-            console.log("htmlbody",htmlbody.html );
-            var from_email = null; // new helper.Email(from); // fromFriendly
-            var to_email = new helper.Email(to); //toFriendly
-            var content = new helper.Content('text/html', htmlbody.html);
-            var mail = new helper.Mail(from_email, subject, to_email, content);
-
-            var request = sg.emptyRequest({
-                method: 'POST',
-                path: '/v3/mail/send',
-                body: mail.toJSON(),
-            });
-
-            console.log("the email: ", request.body);
-
-            // send mail with defined transport object
-            return sg.API(request);
-        }; */
-        
         var prepareAndSend_p = function (htmlbody){
 
             // create reusable transporter object using the default SMTP transport

@@ -4,6 +4,7 @@ var bcrypt = require('bcryptjs');
 var jwt = require('jsonwebtoken');
 
 var User = require('../models/user');
+var School = require('../models/school.model');
 var BluCoreEmail = require('../models/email.model');
 
 router.post('/', function (req, res, next) { // create a new user
@@ -125,6 +126,7 @@ router.patch('/users/:uid', function( req, res, next) {  // update a user - must
 	// console.log("--------------------------------------------");
 	// Make sure that we don't change the [events] as the result of an update.
 	// console.log(req.params.uid);
+	var adminEmail = "mckinn@gmail.com";
 	User.findById(req.params.uid,function(err,user){
 		if (err) {
 			return res.status(500).json({
@@ -139,8 +141,8 @@ router.patch('/users/:uid', function( req, res, next) {  // update a user - must
 			});
 		};
 		// console.log("---------------------- Updating user -------------------")
-		// console.log(req.body);
-		// console.log(user);
+		console.log("req body: ",req.body);
+		console.log("user: ",user);
 
 		// determine whether to send validation emails
 		if (user.valid != req.body.valid)  // something has changed to approved, rejected, unknown
@@ -153,13 +155,22 @@ router.patch('/users/:uid', function( req, res, next) {  // update a user - must
 					// send a failure email and reset the validation pending
 					if (req.body.valid == "rejected") templateName = 'notVerified';
 				}
-				console.log("inside patch ",req.body);
-				// todo make sure that we get the school's administrator filled in here.
-				// also have to make sure that to: email is correct
-				BluCoreEmail ( user.email, "blucore.emaildaemon@gmail.com", user.firstName, "The bluCore admin",
-							   "bluCore User Validation", templateName, ""); 
+				if (req.body.valid != "unknown") {
+					// find the school administrator to fill into the email.
+					School.findOne({'name':req.body.school},function(err,school){
+						if (!err && school) { // no error and there are schools
+							adminEmail = school.adminEmail;
+						};
+						console.log("admin email",adminEmail);
+						BluCoreEmail ( user.email, adminEmail, user.firstName, "The bluCore admin",
+									"bluCore User Validation", templateName, "");
+					});
+
+
+				}
 
 			}
+		console.log("inside patch ",req.body);
 
 		if( req.body.email ) user.email = req.body.email;
 		if( req.body.firstName ) user.firstName = req.body.firstName;
