@@ -115,7 +115,7 @@ export class EditComponent implements OnInit {
 		// console.log("logged in user: ",this.authService.whoIsLoggedIn());
 		if (this.authService.isLoggedIn()) {
 			// console.log("valid user: ",this.authService.whoIsLoggedIn().userName,this.authService.whoIsLoggedIn().valid);
-			return (this.authService.whoIsLoggedIn().valid == "valid");
+			return (this.authService.whoIsLoggedIn().valid == "approved");
 		}
 		return false;
 	}

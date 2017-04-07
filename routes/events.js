@@ -62,7 +62,7 @@ router.get('/', function(req,res,next){
 				});
 			}
 			res.status(200).json({
-				message: 'got the messages',
+				message: 'got the event(s)',
 				obj: events
 			});
 		});
@@ -174,6 +174,7 @@ router.patch('/:evtId', function (req, res, next) {
 		if( req.body.roomNumber ) evt.roomNumber = req.body.roomNumber;
 		if( req.body.ownerId ) evt.ownerId = req.body.ownerId;    // never changes
 		if( req.body.participants ) evt.participants = req.body.participants;
+		if( req.body.attended ) evt.attended = req.body.attended;
 		if( req.body.ownerName ) evt.ownerName = req.body.ownerName;
 
 		// console.log(evt);

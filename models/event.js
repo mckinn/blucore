@@ -19,7 +19,8 @@ var schema = new Schema({
 	participantCount: {type: Number, required: false},
 	ownerName: {type: String, required: false},
 	ownerId: {type: Schema.Types.ObjectId, ref: 'User'},
-	participants: [ {type: Schema.Types.ObjectId, ref: 'User'} ]
+	participants: [ {type: Schema.Types.ObjectId, ref: 'User'} ],
+	attended: [ {type: Boolean, required: false} ]
 });
 
 // the eventNumber seed needs to be maintained on the server-side so that it can be allocated.

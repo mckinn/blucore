@@ -68,12 +68,20 @@
 				id="eventParticipantCount" 
 				formControlName =  "eventParticipantCount">
 		</div>
-			
 		<div *ngIf="initComplete">
-			<span><strong>Current Participant List</strong></span>
-			<ul>
-				<li *ngFor="let participant of eventParticipants">{{participant}}</li>
-			</ul>
+			<span><strong><br>Current Participant List<br></strong></span>
+			<table class="table col-md-8">
+				<tr *ngFor="let participant of eventParticipants">
+					<td><span>{{participant.userName}}</span></td>
+					<td>
+						<div class="checkbox">
+							<label>
+								<input type="checkbox" [value]="participant.userAttended" [checked]="participant.userAttended">Attended
+							</label>
+						</div>
+					</td>
+				</tr>
+			</table>
 		</div> 
 
 		<button class="btn btn-danger" type="button" (click) = "onClear(localRef)" [disabled]="myForm.disabled" *ngIf="iAmATeacher()">Clear
@@ -84,7 +92,7 @@
 				(click) = "onJoin(localRef)" 
 				[disabled]="!myForm.disabled && myForm.valid" 
 				*ngIf= "iHaveNotSelectedThis() && iAmAStudent() && !tooManySignedUpAlready()"
-				>Signup</button>
+				>Participate</button>
 		<button class="btn btn-primary" 
 				type="button" 
 				(click) = "goBack()" 

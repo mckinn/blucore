@@ -91,7 +91,8 @@ export class EventService {
 					evt.participantCount,
 					evt.ownerId.firstName + " " + evt.ownerId.lastName,
 					evt.ownerId._id,
-					evt.participants
+					evt.participants,
+					evt.attended
 				);
 				// console.log(newEvt);
 				return newEvt;
@@ -146,7 +147,8 @@ export class EventService {
 						evt.participantCount,
 						evt.ownerId.firstName + " " + evt.ownerId.lastName,
 						evt.ownerId._id,
-						evt.participants
+						evt.participants,
+						evt.attended
 					);
 					console.log("New Event: ",newEvt);
 					transformedEvents.push(newEvt);

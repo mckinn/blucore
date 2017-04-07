@@ -1,0 +1,14 @@
+
+export class Participant {
+
+  participantName: string;
+  participantId: string;
+  attended: Boolean;
+
+  constructor( participantName: string, id: string, attended: Boolean) {
+      this.participantName = participantName;
+      this.participantId = id;
+      this.attended = attended;
+  }
+
+}

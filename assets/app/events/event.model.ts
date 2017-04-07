@@ -1,3 +1,5 @@
+// import { Participant } from "../common/participant.model";
+
 // the UI model of a event, used as a class/type definition.
 
 export class Event {
@@ -14,12 +16,13 @@ export class Event {
 	ownerName?: string;
 	ownerId?: string;
 	participants?: string[];
+	attended?: boolean[];
 
 
 
 	constructor(name:string, description: string, date:string, eventNumber: number, eventId: string,
 				time?:string, duration?:number, school?: string, roomNumber?: string, participantCount?: number,
-				ownerName?:string, ownerId?:string,  participants?: string[]) 
+				ownerName?:string, ownerId?:string,  participants?: string[], attended?: boolean[]) 
 	{
 		this.name = name;
 		this.description = description;
@@ -34,5 +37,6 @@ export class Event {
 		this.ownerName = ownerName;
 		this.ownerId = ownerId;
 		this.participants = participants;
+		this.attended = attended;
 	} ;
 }

@@ -11,6 +11,7 @@ import { SchoolService } from "../schools/school.service";
 import { Event } from "./event.model";
 import { School } from "../schools/school.model";
 import { User } from "../auth/user.model";
+// import { Participant } from "../common/participant.model";
 
 import 'rxjs/add/operator/switchMap';
 
@@ -26,8 +27,8 @@ export class EventInputComponent implements OnInit {
 	event: Event;
 	myForm: FormGroup;
 	isLocked: boolean;
-	private initComplete: Boolean;
-	eventParticipants: string[];
+	private initComplete: boolean;
+	eventParticipants: any[];
 	schoolList: School[] = [];
 
 	constructor(
@@ -170,12 +171,13 @@ export class EventInputComponent implements OnInit {
 					for (let user of users) {
 						// console.log("scanning users for participants", user.userId, this.event.participants);
 						if (this.event.participants.find(
-							function(userId: string) {
+							function(participant: string) {
 								// console.log("participant: ",userId,"user of total user list: ",user.userId)
-								return userId == user.userId;
+								return participant == user.userId;
 							}
 						)){
-							this.eventParticipants.push(user.firstName+" "+user.lastName);
+							this.eventParticipants.push( {userName:user.firstName + " " + user.lastName,
+							 userAttended:true});
 							// console.log("adding user",user.userId, user.firstName, user.lastName);
 						}
 					}
@@ -189,6 +191,7 @@ export class EventInputComponent implements OnInit {
 	ngOnInit() {
 		this.initComplete = false;
 		this.eventParticipants = [];
+
 		// console.log("* * * * IC - ngOnInit - input start * * * *");
 		if (!this.myForm) {
 			// console.log("* * * creating a formgroup * * *");
