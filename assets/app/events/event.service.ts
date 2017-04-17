@@ -1,6 +1,6 @@
 // event.service.ts
 import { Http, Response, Headers } from "@angular/http";
-import { Injectable, EventEmitter } from "@angular/core";
+import { Injectable, EventEmitter } from "@angular/core";  //, EventEmitter 
 
 import { Router } from "@angular/router";
 
@@ -8,6 +8,7 @@ import "rxjs/Rx";
 import { Observable } from "rxjs";
 
 import { Event } from "./event.model";
+import { User } from "../auth/user.model";
 import { CommonHttp } from "../common/common.http";
 import { ErrorService } from "../errors/error.service";
 
@@ -17,6 +18,8 @@ import { AppSettings } from '../app.settings';
 export class EventService {
 
 	private events: Event[] = [];
+	
+	swapParticipantsEvent = new EventEmitter();
 
 	constructor(private http: Http, 
 				private commonHttp: CommonHttp,
@@ -92,7 +95,7 @@ export class EventService {
 					evt.ownerId.firstName + " " + evt.ownerId.lastName,
 					evt.ownerId._id,
 					evt.participants,
-					evt.attended
+					evt.attendedList  // populates attendedList
 				);
 				// console.log(newEvt);
 				return newEvt;
@@ -148,7 +151,7 @@ export class EventService {
 						evt.ownerId.firstName + " " + evt.ownerId.lastName,
 						evt.ownerId._id,
 						evt.participants,
-						evt.attended
+						evt.attendedList  // creates attendedList
 					);
 					console.log("New Event: ",newEvt);
 					transformedEvents.push(newEvt);
@@ -244,4 +247,51 @@ export class EventService {
 			.subscribe((res)=> {});
 			
 	}
+
+	swapParticipants (event: Event, user: User, moveToAttended: boolean) {
+		// called as the result of being notified of a change 
+		// in the assignment status of a user participating in an event
+		// it either moves to attended or not.
+		
+		// this could be a method in the model.
+		
+		console.log("the event being edited...", event);
+		let foundit: boolean = false;
+		let userId: string = user.userId;
+		if (moveToAttended) { // moving from participant list to attended list
+			for (let i=0;i<event.participants.length;i++) {
+				if (event.participants[i] == userId) { // we have found the user
+					event.participants.splice(i,1);
+					event.attendedList.push(userId);
+					foundit = true;
+					console.log("swapped to attendee list: ", event.attendedList);
+					console.log("swapped from participant list: ", event.participants);
+					break;
+				}
+			}
+		} else {
+			for (let i=0;i<event.attendedList.length;i++) {
+				if (event.attendedList[i] == userId) { // we have found the user
+					event.attendedList.splice(i,1);
+					event.participants.push(userId);
+					console.log("swapped to participant list: ", event.participants);
+					console.log("swapped from participant list: ", event.attendedList);
+					foundit = true;
+					break;
+				}
+			}
+		}
+		if (!foundit) {
+			this.errorService.handleError({ 	
+				title: "Cannot find event participant",
+				error: { 
+					errors: { 
+						missingParticipant: {
+							name: "Missing Participant",
+							message: "Please log this error using the smileyface to the left", 
+				}	}	}	
+			})
+		}
+	}
+
 }

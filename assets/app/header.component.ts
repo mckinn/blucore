@@ -23,10 +23,10 @@ export class HeaderComponent {
 	}
 
 	whoIsLoggedIn (){
-		// // console.log("in whoIsLoggedIn");
+		// console.log("in whoIsLoggedIn");
 		if (this.authService.isLoggedIn()) {
-			// // console.log("user email");
-			// // console.log(this.authService.whoIsLoggedIn().email);
+			// console.log("user email");
+			// console.log(this.authService.whoIsLoggedIn().email);
 			return this.authService.whoIsLoggedIn().email + " - " +
 					this.authService.whoIsLoggedIn().kind;
 		} 

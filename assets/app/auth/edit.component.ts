@@ -71,7 +71,6 @@ export class EditComponent implements OnInit {
 				this.myForm.value.wcpssId,
 				this.myForm.value.school,
 				this.myForm.value.kind,
-				"unknown"
 				);
 			this.user.userName = this.myForm.value.firstName + " " + this.myForm.value.lastName;
 			// console.log("in submit", this.myForm, this.user);
@@ -80,6 +79,7 @@ export class EditComponent implements OnInit {
 					data => console.log(data),
 					error => console.error(error)
 				);
+			this.user.valid = "unknown";
 			// force a form reset, because in spite of the fact that we
 			// have values in this.user and the form, we don't have a userId
 			// ToDo - see if we can retrieve one from the payload

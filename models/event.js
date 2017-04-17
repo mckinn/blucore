@@ -20,7 +20,7 @@ var schema = new Schema({
 	ownerName: {type: String, required: false},
 	ownerId: {type: Schema.Types.ObjectId, ref: 'User'},
 	participants: [ {type: Schema.Types.ObjectId, ref: 'User'} ],
-	attended: [ {type: Boolean, required: false} ]
+	attendedList: [ {type: Schema.Types.ObjectId, ref: 'User'} ]
 });
 
 // the eventNumber seed needs to be maintained on the server-side so that it can be allocated.
@@ -44,6 +44,14 @@ schema.post('remove', function (event){
 		// console.log("in participants", partId);
 		User.findById(partId,function( err, user) {
 			// console.log("removing participant", user, event);
+			user.events.pull(event);
+			user.save();
+		})
+	}
+	for (let partId of event.attendedList ) {
+		// console.log("in attendedList", partId);
+		User.findById(partId,function( err, user) {
+			// console.log("removing attendedList", user, event);
 			user.events.pull(event);
 			user.save();
 		})

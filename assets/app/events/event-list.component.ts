@@ -59,7 +59,7 @@ export class EventListComponent implements OnInit {
     ngOnInit () {
 
 		if (!this.authService.isLoggedIn()) {
-			console.log("re-setting user due to logout");
+			// console.log("re-setting user due to logout");
 			this.errorService.handleError(
 				this.errorService.loginTimeoutError
 				);
@@ -77,7 +77,7 @@ export class EventListComponent implements OnInit {
     	this.eventService.getEvents()
     		.subscribe(
     			(bcevents: Event[]) => {
-    				console.log('* * * * eventlist on nginit * * * *',bcevents);
+    				// console.log('* * * * eventlist on nginit * * * *',bcevents);
     				this.blucoreEvents = bcevents;
     			}
     		);

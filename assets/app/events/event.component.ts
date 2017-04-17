@@ -23,7 +23,8 @@ import { AuthService } from "../auth/auth.service";
 
 export class EventComponent implements OnInit {
 	
-	@Input() rowevent: Event; 
+	@Input() rowevent: Event;
+	@Input() attended: boolean;  // are we displaying the attended or the planned list ?
 
     constructor(private eventService: EventService, 
 				private authService: AuthService,
@@ -39,12 +40,12 @@ export class EventComponent implements OnInit {
     }
 
 	onSelect() {
-		console.log("in Select: ",this.rowevent);
+		// console.log("in Select: ",this.rowevent);
 		this.authService.claimEvent(this.rowevent); // it handles its own errors.
     }
 
 	 onDecline() {
-		console.log("in Decline: ",this.rowevent);
+		// console.log("in Decline: ",this.rowevent);
         this.authService.declineEvent(this.rowevent);
 
     }
@@ -74,18 +75,18 @@ export class EventComponent implements OnInit {
 
 
 	iAmAStudent() {
-		// // console.log("* * * * I am a teacher * * * *",this.authService.whoIsLoggedIn().kind);
+		// console.log("* * * * I am a teacher * * * *",this.authService.whoIsLoggedIn().kind);
 		return (this.authService.whoIsLoggedIn().kind == 'student');
 	}
 
 	tooManySignedUpAlready() {
-		console.log("* * * * how many signed in * * * *",this.rowevent.name, this.rowevent.participantCount, this.rowevent.participants.length);
+		// console.log("* * * * how many signed in * * * *",this.rowevent.name, this.rowevent.participantCount, this.rowevent.participants.length);
 		return (this.rowevent.participantCount <= this.rowevent.participants.length);
 	}
 
 	ngOnInit () {
-		console.log("in event onInit: ");
-		console.log(this.rowevent);
+		// console.log("in event onInit: ");
+		// console.log(this.rowevent);
 	}
 
 }

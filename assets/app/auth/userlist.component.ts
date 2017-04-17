@@ -43,19 +43,19 @@ export class UserListComponent implements OnInit {
 
     ngOnInit () {
 		if (!this.authService.isLoggedIn()) {
-			console.log("re-setting user due to logout");
+			// console.log("re-setting user due to logout");
 			this.errorService.handleError(
 					this.errorService.loginTimeoutError
 					);
 			this.router.navigate(['/authentication/signin']);
 		} else {
-			console.log("carry on");
+			// console.log("carry on");
 			this.authService.getUsers()
 				.subscribe(
 					(users: User[]) => {
-						console.log("* * * * getusers * * * *", users);
+						// console.log("* * * * getusers * * * *", users);
 						this.users = users;
-						console.log(this.users);
+						// console.log(this.users);
 					}
 				);
 		}

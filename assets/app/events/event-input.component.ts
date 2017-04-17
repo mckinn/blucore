@@ -11,7 +11,7 @@ import { SchoolService } from "../schools/school.service";
 import { Event } from "./event.model";
 import { School } from "../schools/school.model";
 import { User } from "../auth/user.model";
-// import { Participant } from "../common/participant.model";
+// import { EventParticipant } from "./event.participant.component";
 
 import 'rxjs/add/operator/switchMap';
 
@@ -28,7 +28,8 @@ export class EventInputComponent implements OnInit {
 	myForm: FormGroup;
 	isLocked: boolean;
 	private initComplete: boolean;
-	eventParticipants: any[];
+	eventParticipants: User[];
+	eventAttendees: User[];
 	schoolList: School[] = [];
 
 	constructor(
@@ -67,6 +68,9 @@ export class EventInputComponent implements OnInit {
 						result; 
 						// console.log(result)
 				});
+			// here's the fun part - any user that has swapped lists needs updating - 
+			// we need to do that in the server.
+			
 			this.event = null;
 		} else {
 			// new.  
@@ -176,10 +180,25 @@ export class EventInputComponent implements OnInit {
 								return participant == user.userId;
 							}
 						)){
-							this.eventParticipants.push( {userName:user.firstName + " " + user.lastName,
-							 userAttended:true});
-							// console.log("adding user",user.userId, user.firstName, user.lastName);
+							/*this.eventParticipants.push( { name:user.firstName + " " + user.lastName,
+														   attended: true,
+														   userId: user.userId });*/
+							this.eventParticipants.push(user); // set up the entire user.
+							console.log("adding user",user.userId, user.firstName, user.lastName);
 						}
+						if (this.event.attendedList.find(
+							function(participant: string) {
+								// console.log("attendee: ",userId,"user of total user list: ",user.userId)
+								return participant == user.userId;
+							}
+						)){
+							/*this.eventParticipants.push( { name:user.firstName + " " + user.lastName,
+														   attended: true,
+														   userId: user.userId });*/
+							this.eventAttendees.push(user); // set up the entire user.
+							console.log("adding user",user.userId, user.firstName, user.lastName);
+						}
+						
 					}
 					// console.log("participants: ",this.eventParticipants);
 					this.initComplete = true;
@@ -191,6 +210,7 @@ export class EventInputComponent implements OnInit {
 	ngOnInit() {
 		this.initComplete = false;
 		this.eventParticipants = [];
+		this.eventAttendees = [];
 
 		// console.log("* * * * IC - ngOnInit - input start * * * *");
 		if (!this.myForm) {
@@ -255,6 +275,7 @@ export class EventInputComponent implements OnInit {
 					// console.log("* * * * ngOnInit - end * * * *");
 					// console.log(this.myForm);
 				});
-		}
+		};	
+
 	}
 }

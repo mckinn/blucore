@@ -21,6 +21,7 @@ import { AuthService } from "./auth/auth.service";
 import { EventService } from "./events/event.service";
 import { AuthLandingComponent } from "./auth/auth.landing.component";
 import { EventLandingComponent } from "./events/event-landing.component";
+import { EventParticipant } from "./events/event.participant.component";
 import { ErrorService } from "./errors/error.service";
 import { SchoolService } from "./schools/school.service";
 
@@ -54,7 +55,8 @@ import { CommonHttp } from "./common/common.http";
         MyEventListComponent,
         EmailComponent,
         UserComponent,
-        NotFoundErrorComponent
+        NotFoundErrorComponent,
+        EventParticipant
     ],
     providers: [AuthService, ErrorService, EventService, CommonHttp, SchoolService],
     imports: [BrowserModule, FormsModule, routing, ReactiveFormsModule, HttpModule],

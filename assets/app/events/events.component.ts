@@ -53,7 +53,7 @@ export class EventsComponent {
 	}
 
 	activeForTeachers(){
-		// // console.log("* * * * active for teacher * * * *",this.authService.whoIsLoggedIn().kind);
+		// console.log("* * * * active for teacher * * * *",this.authService.whoIsLoggedIn().kind);
 		if (this.authService.isLoggedIn()) {
 			return (this.authService.whoIsLoggedIn().kind == 'teacher');
 		}
@@ -61,7 +61,7 @@ export class EventsComponent {
 	}
 
 	isAdmin(){
-		// // console.log("* * * * is admin* * * *",this.authService.whoIsLoggedIn().kind);
+		// console.log("* * * * is admin* * * *",this.authService.whoIsLoggedIn().kind);
 		if (this.authService.isLoggedIn()) {
 			return (this.authService.whoIsLoggedIn().kind == 'admin');
 		}
@@ -99,7 +99,7 @@ export class EventsComponent {
 
 	onLogout() {
 		this.authService.logout();
-		// // console.log("this.router.navigate(['/authentication', 'signin']);");
+		// console.log("this.router.navigate(['/authentication', 'signin']);");
 		this.authService.clearWhoIsLoggedIn();
 		this.router.navigate(['/authentication', 'signin']);
 	}

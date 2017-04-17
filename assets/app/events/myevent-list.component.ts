@@ -21,12 +21,15 @@ import { User } from "../auth/user.model";
 						<th>Duration</th>
 						<th>School</th>
 						<th>Teacher</th>
+						<th>Complete</th>
 						<th>Actions</th>
 					</tr>
 			    </thead>
 			    <tbody>
-					<tr *ngFor="let evt of events" app-event [rowevent]="evt">
-					</tr>
+					<tr><td><span>Planned</span></td></tr>
+					<tr *ngFor="let evt of plannedEvents" app-event [rowevent]="evt" [attended]=false></tr>
+					<tr><td><span>Completed</span></td></tr>
+					<tr *ngFor="let evt of attendedEvents" app-event [rowevent]="evt" [attended]=true></tr>
 				</tbody>
 			</table>
 		</div>
@@ -36,7 +39,8 @@ import { User } from "../auth/user.model";
 
 export class MyEventListComponent implements OnInit {
 
-	events: Event[];
+	plannedEvents: Event[];
+	attendedEvents: Event[];
     constructor( private eventService: EventService, 
 				 private authService: AuthService,
 				 private errorService: ErrorService,
@@ -58,19 +62,30 @@ export class MyEventListComponent implements OnInit {
             // console.log("somebody is logged in");
             // console.log( user );
         
-			this.events = [];
+			this.plannedEvents = [];
+			this.attendedEvents = [];
 			this.authService.getUser(user.userId)   // get the user data
 				.subscribe(
 					(user: User) => {
-						// console.log('* * * * building user event list * * * *');
-						// console.log(user);
+						console.log('* * * * building user event list * * * *');
+						console.log(user);
 						for (let evt of user.myEvents) {
-							// console.log(evt);
+							console.log(evt);
 							this.eventService.getEvent(evt).subscribe (
 								event => {
-									this.events.push(event);
-									// console.log("current events");
-									// console.log(this.events);
+									this.plannedEvents.push(event);
+									console.log("current planned events");
+									console.log(this.plannedEvents);
+								}
+							)
+						}
+						for (let evt of user.attendedEvents) {
+							console.log(evt);
+							this.eventService.getEvent(evt).subscribe (
+								event => {
+									this.attendedEvents.push(event);
+									console.log("current attended events");
+									console.log(this.attendedEvents);
 								}
 							)
 						}

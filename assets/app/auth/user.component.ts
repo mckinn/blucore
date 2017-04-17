@@ -27,7 +27,7 @@ export class UserComponent {
     } */
 	
 	isValid() {
-		console.log("user valid ???", this.user.valid);
+		// console.log("user valid ???", this.user.valid);
 		return (this.user.valid == "approved") // somebody has to be logged on
 	};
 

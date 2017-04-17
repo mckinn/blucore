@@ -1,6 +1,6 @@
 
 import { Http, Response, ResponseOptions, Headers } from "@angular/http";
-import { Injectable, EventEmitter } from "@angular/core";
+import { Injectable } from "@angular/core";
 import { Router } from "@angular/router";
 
 import "rxjs/Rx";
@@ -47,7 +47,7 @@ export class AuthService {
 		const body = JSON.stringify(user);
 		// const headers = new Headers({'Content-Type': 'application/json'});
 		const headers = this.commonHttp.setHeaders();
-		console.log("* * * * Update User * * * *",user,body);
+		// console.log("* * * * Update User * * * *",user,body);
 		return this.http.patch(
 				AppSettings.API_ENDPOINT + 'user/users/'+user.userId,
 				body,
@@ -69,7 +69,7 @@ export class AuthService {
 				let transformedUsers: User[] = [];
 				for (let user of users) {
 					transformedUsers.push(new User( user.email, '', user.firstName, user.lastName, user.wcpssId, user.school,
-													user.kind, user._id, user.userName, user.events, user.valid ));
+													user.kind, user._id, user.userName, user.events, user.attendedEvents, user.valid ));
 				}
 				this.users = transformedUsers;
 				return transformedUsers;
@@ -85,7 +85,7 @@ export class AuthService {
 
 	// get a user object from a user id.
 	getUser (uid: String) {
-		console.log("in getUser: ",uid);
+		// console.log("in getUser: ",uid);
 		// const headers = new Headers({'Content-Type': 'application/json','X-token':'this is a token'});
 		const headers = this.commonHttp.setHeaders();
 		return this.http.get(AppSettings.API_ENDPOINT + 'user/users/'+uid,{headers:headers})
@@ -95,7 +95,7 @@ export class AuthService {
 				const user = response.json().obj;
 				// console.log(user);
 				const userObj = new User(user.email, '', user.firstName, user.lastName, user.wcpssId, 
-										user.school, user.kind, user._id, user.userName, user.events,
+										user.school, user.kind, user._id, user.userName, user.events, user.attendedEvents,
 										user.valid );
 				// console.log("* * * * userObj * * * *");
 				// console.log(userObj);
@@ -105,7 +105,7 @@ export class AuthService {
 			})
 			.catch((error: Response) => {
 				console.error(error);
-				console.log("clearing out the token and userId");
+				// console.log("clearing out the token and userId");
 				localStorage.removeItem('token');
 				localStorage.removeItem('userId');
 				this.errorService.handleError(error.json())
@@ -136,7 +136,7 @@ export class AuthService {
 	// It does not really touch the single instance of a user
 	editUser (user: User) {
 		// prompt the loading of the event
-		console.log("editUser - user edit triggered in service",user,user.userId);
+		// console.log("editUser - user edit triggered in service",user,user.userId);
 		this.router.navigate(['/events/edit',user.userId]);
 		}
 
@@ -150,10 +150,10 @@ export class AuthService {
 		}
 
 	setWhoIsLoggedIn ( user: User, userId: string) {
-		console.log ("setWhoIsLoggedIn", user);
+		// console.log ("setWhoIsLoggedIn", user);
 		this.loggedInUser = user;
 		this.loggedInUser.userId = userId;
-		console.log ("in setWhoIsLoggedIn: ",this.loggedInUser);
+		// console.log ("in setWhoIsLoggedIn: ",this.loggedInUser);
 		this.getUser( this.loggedInUser.userId)
 			.subscribe(
 				data => {
@@ -193,7 +193,7 @@ export class AuthService {
 		for (let evt of myEvents) {
 			// console.log("looking for a previously selected event ", evt);
 			if (evt == eventId) {  // one of the events in my list is this event - I have already selected It
-				// console.log(false);
+				// console.log("should not select",false);
 				return false;
 			}
 		}
@@ -211,7 +211,7 @@ export class AuthService {
 	
 	claimEvent ( event: Event ) { // add the specified event to the user's list of events.
 		
-		console.log ("* * * * claimEvent * * * *",event, this.loggedInUser);
+		// console.log ("* * * * claimEvent * * * *",event, this.loggedInUser);
 
 		let error: Object;
 		
@@ -229,9 +229,9 @@ export class AuthService {
 						}
 					};
 				} else { //event is not (yet) associated with the user
-					console.log("******************** Claiming the selected event: ",this.loggedInUser.myEvents);
+					// console.log("******************** Claiming the selected event: ",this.loggedInUser.myEvents);
 					this.loggedInUser.myEvents.push(event.eventId);
-					console.log("User with events", this.loggedInUser.myEvents);
+					// console.log("User with events", this.loggedInUser.myEvents);
 					if (event.participants.length >= event.participantCount) {
 						// we should have caught this in the UI
 						error = {
@@ -241,13 +241,13 @@ export class AuthService {
 							}
 						}
 					} else {
-						event.participants.push(this.loggedInUser.userId);
+						event.participants.push( this.loggedInUser.userId );
 						// update the event, and the user, on the server to preserve the linkages
 						Observable.forkJoin([this.eventService.updateEvent(event),this.updateUser(this.loggedInUser)])
 							.subscribe(results => {
-								console.log("results are...",results[0],results[1]);
+								// console.log("results are...",results[0],results[1]);
 							});
-						console.log("event and user should be linked: ", event, this.loggedInUser);
+						// console.log("event and user should be linked: ", event, this.loggedInUser);
 						return;
 					};	
 				}
@@ -266,7 +266,7 @@ export class AuthService {
 
 	declineEvent ( event: Event ) { // remove the specified event from the user's list of events, and the user from the event's particpant list.
 		
-		console.log ("* * * * declineEvent * * * *",event);
+		// console.log ("* * * * declineEvent * * * *",event);
 
 		let error: Object;
 		
@@ -283,22 +283,25 @@ export class AuthService {
 						}
 					};
 				} else {
-					console.log("******************** disconnect the selected event: ",this.loggedInUser.myEvents);
+					// console.log("******************** disconnect the selected event: ",this.loggedInUser.myEvents);
 
 					// taking away the event from the user's list of events
-					console.log("User Events before removal", this.loggedInUser.myEvents);
+					// console.log("User Events before removal", this.loggedInUser.myEvents);
 					this.loggedInUser.myEvents.splice(this.loggedInUser.myEvents.indexOf(event.eventId,1));
-					console.log("User Events after removal", this.loggedInUser.myEvents);
+					// console.log("User Events after removal", this.loggedInUser.myEvents);
 
 					// taking away the user from the event's list of participants
-					console.log("Event before User removal",event);
-					event.participants.splice(event.participants.indexOf(this.loggedInUser.userId,1));
-					console.log("Event after User removal",event);
-					console.log("event and user should not be linked: ", event, this.loggedInUser);
+					// console.log("Event before User removal",event);
+
+					let participantIndex: number = event.participants.indexOf(this.loggedInUser.userId,1);
+					event.participants.splice(participantIndex);
+
+					// console.log("Event after User removal",event);
+					// console.log("event and user should not be linked: ", event, this.loggedInUser);
 					// update the event, and the user, on the server to preserve the linkages
 					Observable.forkJoin([this.eventService.updateEvent(event),this.updateUser(this.loggedInUser)])
 						.subscribe(results => {
-							console.log("results are...",results[0],results[1]);
+							// console.log("results are...",results[0],results[1]);
 						});
 					return;
 				}

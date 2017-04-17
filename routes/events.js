@@ -161,7 +161,7 @@ router.patch('/:evtId', function (req, res, next) {
 		}
 		// console.log("------------------ in patch ------------------");
 		// console.log(req.body);
-		// console.log(evt);
+		// console.log("Old: ",evt);
 
 		if( req.body.name ) evt.name = req.body.name;
 		if( req.body.description ) evt.description = req.body.description;
@@ -174,8 +174,36 @@ router.patch('/:evtId', function (req, res, next) {
 		if( req.body.roomNumber ) evt.roomNumber = req.body.roomNumber;
 		if( req.body.ownerId ) evt.ownerId = req.body.ownerId;    // never changes
 		if( req.body.participants ) evt.participants = req.body.participants;
-		if( req.body.attended ) evt.attended = req.body.attended;
+		if( req.body.attendedList ) evt.attendedList = req.body.attendedList;
 		if( req.body.ownerName ) evt.ownerName = req.body.ownerName;
+
+        // console.log(" patching user assignments - New evt: ", evt);
+		for (var i=0;i<evt.participants.length;i++) {
+			// console.log("Participant: ",evt.participants[i]);
+			User.findById(evt.participants[i],function(err,usr){
+				if (usr) { // we found the user
+					User.ensureEventIdInCorrectList(usr, evt._id, false);
+					usr.save( function (err, result) {
+						if (err) { console.log(err)	};
+						})
+				} else {
+					console.log( "Missing participant: ", participants[i], " in ", evt );
+				}
+			})
+		};
+		for (var i=0;i<evt.attendedList.length;i++) {
+			// console.log("Attendee: ",evt.attendedList[i]);
+			User.findById(evt.attendedList[i],function(err,usr){
+				if (usr) { // we found the user
+					User.ensureEventIdInCorrectList(usr, evt._id, true);
+					usr.save( function (err, result) {
+						if (err) { console.log(err)	};
+						})
+				} else {
+					console.log("Missing attendee: ", attendedList[i], " in ", evt );
+				}
+			})
+		}
 
 		// console.log(evt);
 		evt.save( function (err, result) {
