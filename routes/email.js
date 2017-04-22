@@ -6,6 +6,7 @@ var jwt = require('jsonwebtoken');
 var BluCoreEmail = require('../models/email.model');
 var Secret = require('../models/secret.model');
 var User = require("../models/user");
+var Appsetting = require("")
 
 // var helper = require('sendgrid').mail;
 // var sg = require('sendgrid')(process.env.SENDGRID_API_KEY);
@@ -68,7 +69,9 @@ router.get('/validate/:secretId',
                         // console.log("hurray", foundUser);
                         foundUser.valid="approved";
                         foundUser.save();
-                        res.render("verified",{toFriendly: foundUser.firstName});
+                        res.render("verified",
+                                    {toFriendly: foundUser.firstName,
+                                    signinURL: process.env.API_ENDPOINT + 'authentication/signin');
                     } else {
                         // it does not match
                         // report validation failed

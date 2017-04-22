@@ -13,7 +13,7 @@ var emailRoutes = require('./routes/email');
 var schoolRoutes = require('./routes/schools');
 
 var app = express();
-// mongoose.connect('localhost:27017/blucore');
+
 mongoose.Promise = global.Promise;
 mongoose.connect('mongodb://blucoreUser:subbylou@ds153689.mlab.com:53689/blucore');
 

@@ -97,7 +97,7 @@ router.post('/', function (req, res, next) { // create a new user
 								adminEmail = "mckinn@yahoo.com";
 							}
 							// console.log("in findschool callback: ", adminEmail);
-							var urlString = "http://localhost:3000/email/validate/"+ result._id +
+							var urlString = process.env.API_ENDPOINT+"email/validate/"+ result._id +
 											"?userId=" + result.userId + "&uniqueId=" +result.uniqueString;
 							// console.log("admin email",adminEmail);
 							BluCoreEmail ( 
