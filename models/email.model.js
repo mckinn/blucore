@@ -9,7 +9,7 @@ var EmailTemplate = require('email-templates-v2').EmailTemplate;
 var path = require('path');
 
 var sendBluCoreEmail = function (  to, from, toFriendly, fromFriendly,
-                        subject, templateName, bodyText ){
+                        subject, templateName, bodyText, fillins ){
 
         var prepareAndSend_p = function (htmlbody){
 
@@ -46,7 +46,7 @@ var sendBluCoreEmail = function (  to, from, toFriendly, fromFriendly,
 
 
         console.log ("the arguments", "\nto:",to, "\nfrom: ",from, "\nTo Name: ", toFriendly, "\nFrom Name: ", fromFriendly, "\nSubject: ",
-                                      subject, "\nTemplate: ", templateName, "\nBody: ", bodyText);
+                                      subject, "\nTemplate: ", templateName, "\nBody: ", bodyText, "\nFillins", fillins);
 
         // find the template
         var templateDir = path.resolve(__dirname, '../templates', templateName);
@@ -54,10 +54,15 @@ var sendBluCoreEmail = function (  to, from, toFriendly, fromFriendly,
         
         // apply the template with the identifiers 'name' and 'email' in the body
         var interpersonal = new EmailTemplate(templateDir);
-        var user = {name: fromFriendly, 
-                    email: from, 
+        var user = {toEmail: to, 
+                    fromEmail: from ,  
+                    toFriendly: toFriendly, 
+                    fromFriendly: fromFriendly,
+                    subject: subject,
                     body: bodyText.replace(/\n/g, "<br>")};
 
+        Object.assign(user,fillins);
+        console.log("The aggregate user payload",user, fillins);
         console.log("email user for rendering ",user);
         return interpersonal.render(user)
             .then(prepareAndSend_p)

@@ -16,6 +16,7 @@ var schema = new Schema({
 	attendedEvents: [ {type: Schema.Types.ObjectId, ref: 'Event'} ] // ObjectID is an internal GUID	
 });
 
+mongoose.Promise = global.Promise;
 schema.plugin(mongooseUniqueValidator);
 
 module.exports = mongoose.model('User',  // creates a collection in the database called 'users'

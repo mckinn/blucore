@@ -6,8 +6,10 @@ var jwt = require('jsonwebtoken');
 var User = require('../models/user');
 var School = require('../models/school.model');
 var BluCoreEmail = require('../models/email.model');
+var Secret = require('../models/secret.model');
 
 router.post('/', function (req, res, next) { // create a new user
+	var createdUser;
 	var user = new User({
 		firstName: req.body.firstName,
 		lastName: req.body.lastName,
@@ -28,22 +30,109 @@ router.post('/', function (req, res, next) { // create a new user
 	// For now we will assume that the important emails are the 
 	// 'approved' and 'rejected' to the user when the record is updated (patched).
 
-	user.save(function(err, result) {
-		if (err) {
-			return res.status(500).json({
-				title:'An Error Occurred in saving a user',
-				error: err
+
+
+	/*	user.save(function(err, result) {
+			if (err) {
+				return res.status(500).json({
+					title:'An Error Occurred in saving a user',
+					error: err
+				});
+			};
+			createdUser = result;
+			****************************************BUG HERE***********************  Need to nest callbacks or use promises.
+			res.status(201).json({
+				message: 'Saved User definition',
+				obj: result
 			});
-		};
-		res.status(201).json({
-			message: 'Saved User definition',
-			obj: result
-		});
+		});*/
+	
+/*	var promise = new Promise(function(resolve, reject) {
+		// do a thing, possibly async, then…
+
+		if ( everything turned out fine ) {
+			resolve("Stuff worked!");
+		}
+		else {
+			reject(Error("It broke"));
+		}
 	});
-});
+	then returns a promise
+	save is a promise.
+	createSecret is a promise	
+*/
+	var secretNeeded;
+	// console.log("user save: ",user);
+	user.save()
+		.then( 
+			function(result){
+				// console.log("save OK: ",result);
+				// creation of the email will not impact the success or failure of 
+				// API call, so we just continue on from here.
+				var emailRE = new RegExp('[a-z,A-Z,0-9,\+\.\-\_]+@.*wcpss\.net');
+				if (emailRE.test(result.email)) { // we have a wcpss email address
+					// this will send an email address with a special link, and 
+					// once they return the link they will be automatically validated.
+					secretNeeded = true;
+					// console.log("in user.js routes creating a secret: ", result._id);
+					return Promise.resolve(Secret.createSecret(result._id)) ;
+				} else {
+					// console.log("did not try to create secret, but that is OK",user.email);
+					// console.log("can go home now ?");
+					secretNeeded = false;
+					return Promise.resolve("no secret needed");
+				}
+			})
+		.then(
+			function(result) // result should be the secret value.
+					{ 
+					// console.log("secret creation success!",result, secretNeeded);
+
+					if (secretNeeded) {
+						// console.log("getting the school");
+						School.findOne({'name':user.school},function(err,school){
+							if (!err && school) { // no error and there are schools
+								adminEmail = school.adminEmail;
+							} else {
+								adminEmail = "mckinn@yahoo.com";
+							}
+							// console.log("in findschool callback: ", adminEmail);
+							var urlString = "http://localhost:3000/email/validate/"+ result._id +
+											"?userId=" + result.userId + "&uniqueId=" +result.uniqueString;
+							// console.log("admin email",adminEmail);
+							BluCoreEmail ( 
+								user.email, // "mckinn@gmail.com", // , 
+								adminEmail, 
+								user.firstName, 
+								"The bluCore admin",
+								"bluCore User Validation", 
+								"autoVerified", 
+								"",
+								{ validationLink : urlString });
+						});
+					}
+
+			})
+		.then(function(result){
+			// console.log("returning 201");
+			return res.status(201).json({
+				title:"success",
+				result: result
+			});
+		})
+		.catch(
+			function(error) {
+				// console.log("failure :-(", error);
+				// console.log("res ",res);
+				return res.status(500).json({
+					title:'An Error Occurred in saving a user',
+					error: error
+				});
+			});
+		});
 
 router.options('/signin', function( req, res, next) {  // pre-flight on sign-in
-	console.log("pre-flight on sign-in");
+	// console.log("pre-flight on sign-in");
 	return res.status(200).json({
 		title:'options response'
 	});
@@ -161,14 +250,11 @@ router.patch('/users/:uid', function( req, res, next) {  // update a user - must
 						if (!err && school) { // no error and there are schools
 							adminEmail = school.adminEmail;
 						};
-						console.log("admin email",adminEmail);
+						// console.log("admin email",adminEmail);
 						BluCoreEmail ( user.email, adminEmail, user.firstName, "The bluCore admin",
-									"bluCore User Validation", templateName, "");
+									"bluCore User Validation", templateName, "",{});
 					});
-
-
 				}
-
 			}
 		console.log("inside patch ",req.body);
 

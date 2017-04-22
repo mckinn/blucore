@@ -4,6 +4,7 @@ var Schema = mongoose.Schema;
 
 var User = require('./user');
 
+mongoose.Promise = global.Promise;
 var schema = new Schema({
 	name: {type: String, required: true},
 	description: {type: String, required: true},

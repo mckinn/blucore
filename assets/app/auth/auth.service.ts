@@ -32,8 +32,8 @@ export class AuthService {
 		const body = JSON.stringify(user);
 		const headers = this.commonHttp.setHeaders();
 		// const headers = new Headers({'Content-Type': 'application/json'});
-		// console.log(user);
-		// console.log(body);
+		console.log("in addUser: user=",user);
+		console.log("in addUser: body=",body);
 		return this.http.post(AppSettings.API_ENDPOINT + 'user',body,{headers: headers})
 			.map((response: Response) => response.json())
 			.catch((error: Response) => {

@@ -4,6 +4,8 @@ var bcrypt = require('bcryptjs');
 var jwt = require('jsonwebtoken');
 
 var BluCoreEmail = require('../models/email.model');
+var Secret = require('../models/secret.model');
+var User = require("../models/user");
 
 // var helper = require('sendgrid').mail;
 // var sg = require('sendgrid')(process.env.SENDGRID_API_KEY);
@@ -14,6 +16,96 @@ var BluCoreEmail = require('../models/email.model');
 
 // var transporter = require('../models/emailmodel');
 // var htmlemail = require('../models/emailhtml');
+
+
+router.get('/validate/:secretId', 
+    function (req,res,next){
+        // console.log("req.query",req.query);
+        // console.log("uniqueString",req.query.uniqueString);
+        // console.log("userId",req.query.userId);
+        var URLValues = {
+            uniqueString : req.query.uniqueString,
+            userId : req.query.userId,
+            secretId : req.params.secretId
+        }
+        // console.log("URLvalues",URLValues);
+        // look up the secret, and if we find it, validate the user
+        // and return a success payload.  If we can't find it
+        // return a failed payload.
+        var foundSecret;
+        var foundUser;
+        
+        Secret.findById(URLValues.secretId)
+            .then((result) => {
+                // console.log("trying result 1:",result);
+                foundSecret = result;
+                // console.log("trying result 1:",foundSecret);
+//              Promise.resolve(User.findById( URLValues.userId))
+                var query = User.findById( URLValues.userId );
+                return query.exec();    // should this return a promise, and will that work ?
+            })
+            .then((result) => {
+                // console.log("trying result 2:",result);
+                foundUser = result;
+                // console.log("trying result 2:",foundUser);
+                return Promise.resolve(foundUser);
+            })
+            .then((result)=> {
+                // console.log("checking validity: ",result);
+                // console.log("1",String(foundUser._id));
+                // console.log("2",String(foundSecret.userId));
+                // console.log("3",String(foundSecret.uniqueString));
+                // console.log("4",String(URLValues.uniqueString));
+
+                if ((( String(foundUser._id) == String(foundSecret.userId)) &&
+                    ( String(foundSecret.uniqueString) == String(URLValues.uniqueString))) ||
+                    ( String(foundUser.valid) == "approved")
+                    ){
+                        // it all matches
+                        // patch the user with validation
+
+                        // dump an html file saying congratulations
+                        // console.log("hurray", foundUser);
+                        foundUser.valid="approved";
+                        foundUser.save();
+                        res.render("verified",{toFriendly: foundUser.firstName});
+                    } else {
+                        // it does not match
+                        // report validation failed
+                        // potentially mark failed.
+                        // console.log("boo");
+                        foundUser.valid="rejected";
+                        foundUser.save();
+                        res.render("notVerified",{toFriendly:foundUser.firstName});
+                    }
+
+            })
+            .catch((error)=> {
+                // console.log("caught error: ", error);
+                return res.status(400).json({ title:"error in validation #2 ",error});
+
+            })
+
+        
+
+/*        return res.status(200).json(
+            { title:"got the secret",
+              secretId: URLValues.secretId ,
+              uniqueString: URLValues.uniqueString,
+              userId: URLValues.userId});*/
+    });
+
+router.post('/validate',
+    function( req, res, next){
+        // console.log("inside POST validate: ", req.body);
+        secret = Secret.createSecret(req.body.userId);
+        // console.log("the secret:",secret);  // returns a promise
+        secret.then(function(result){console.log("success!",result);
+                                     return res.status(201).json(result); },
+                    function(error) {console.error("failure :-(", error);
+                                     return res.status(400).json(result);}
+            );
+    });
 
 // check for logged in user
 router.use('/',function(req,res,next){
@@ -32,70 +124,14 @@ router.use('/',function(req,res,next){
 
 router.post('/', function (req, res, next) {
 
-    console.log("inside post ",req.body);
+    // console.log("inside post ",req.body);
     BluCoreEmail ( req.body.to, req.body.from, req.body.toCommon, req.body.fromCommon,
-                                    req.body.subject, req.body.templateName, req.body.body)
+                                    req.body.subject, req.body.templateName, req.body.body,{})
         .then(function(resolve,reject){
             // console.log("resolved: ", resolve());
             // console.log("reject: ", reject());
             res.status(200).json(resolve);
-        }); ;
-
-/*    var emailAddress = req.body.from;
-    var friendly = req.body.fromCommon;
-    var bodyText = req.body.body;
-    var templateName = req.body.templateName;
-
-    // console.log("the API key: ",process.env.SENDGRID_API_KEY);
-
-    // take the html body of the email, and prepare it and send it
-    var prepareAndSend_p = function (htmlbody){
-        console.log("htmlbody",htmlbody.html );
-
-        var from_email = new helper.Email(req.body.from);
-        var to_email = new helper.Email(req.body.to);
-        var subject = req.body.subject;
-        var content = new helper.Content('text/html', htmlbody.html);
-        var mail = new helper.Mail(from_email, subject, to_email, content);
-
-        var request = sg.emptyRequest({
-            method: 'POST',
-            path: '/v3/mail/send',
-            body: mail.toJSON(),
         });
-
-        console.log("the email: ", request.body);
-
-        // send mail with defined transport object
-        return sg.API(request);
-    };
-
-    console.log ("the arguments",emailAddress, friendly, bodyText, templateName);
-
-    var templateDir = path.resolve(__dirname, '../templates', templateName);
-    console.log("template: ", templateDir);
-    
-    var interpersonal = new EmailTemplate(templateDir);
-    var user = {name: friendly, email: emailAddress, body: bodyText.replace(/\n/g, "<br>")};
-
-    // var interpersonal_p = interpersonal.render(user);
-    // interpersonal_p
-    interpersonal.render(user)
-        .then(prepareAndSend_p)
-        .then(response => {
-            console.log(response.statusCode);
-            console.log(response.body);
-            console.log(response.headers);
-        })
-        .catch(error => {
-            //error is an instance of SendGridError
-            //The full response is attached to error.response
-            console.log("this is the error", error.response, error.response.statusCode);
-        });
-       
-
-    console.log("end of the chain");*/
-
-});
+    });
 
 module.exports = router;

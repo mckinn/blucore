@@ -61,6 +61,7 @@ export class EditComponent implements OnInit {
 					data => console.log(data),
 					error => console.error(error)
 				);
+			this.location.back();
 			// allow the form to be re-submitted with updates so leave it populated
 		} else { // create a new user
 			this.user = new User(
@@ -73,7 +74,7 @@ export class EditComponent implements OnInit {
 				this.myForm.value.kind,
 				);
 			this.user.userName = this.myForm.value.firstName + " " + this.myForm.value.lastName;
-			// console.log("in submit", this.myForm, this.user);
+			console.log("in submit", this.myForm, this.user);
 			this.authService.addUser( this.user )
 				.subscribe(
 					data => console.log(data),
@@ -89,7 +90,7 @@ export class EditComponent implements OnInit {
 		}
 		// console.log(this.myForm);
 		// console.log(this.user);
-		this.location.back();
+		// this.location.back();
 	
 	}
 
