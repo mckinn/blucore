@@ -70,7 +70,7 @@ router.get('/validate/:secretId',
                         foundUser.save();
                         res.render("verified",
                                     {toFriendly: foundUser.firstName,
-                                    signinURL: process.env.API_ENDPOINT + 'authentication/signin');
+                                    signinURL: process.env.API_ENDPOINT + 'authentication/signin'});
                     } else {
                         // it does not match
                         // report validation failed
