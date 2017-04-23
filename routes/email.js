@@ -52,10 +52,10 @@ router.get('/validate/:secretId',
             })
             .then((result)=> {
                 // console.log("checking validity: ",result);
-                console.log("1",String(foundUser._id));
-                console.log("2",String(foundSecret.userId));
-                console.log("3",String(foundSecret.uniqueString));
-                console.log("4",String(URLValues.uniqueString));
+                // console.log("1",String(foundUser._id));
+                // console.log("2",String(foundSecret.userId));
+                // console.log("3",String(foundSecret.uniqueString));
+                // console.log("4",String(URLValues.uniqueString));
 
                 if ((( String(foundUser._id) == String(foundSecret.userId)) &&
                     ( String(foundSecret.uniqueString) == String(URLValues.uniqueString))) ||
