@@ -1,5 +1,5 @@
 <div class = "col-md-8 col-md-offset-2">
-	<form [formGroup]="myForm" (ngSubmit)="onSubmit()">
+	<form [formGroup]="myForm" (ngSubmit)="onSubmit()" name="myForm">
 		<div class="form-group" >
 			<label for="firstName">First Name</label>
 			<input 
@@ -22,7 +22,12 @@
 				type="email" 
 				id="email" 
 				class="form-control"
-				formControlName = "email">
+				formControlName = "email"
+				aria-describedby="emailHelpBlock"
+				placeholder="<you>@student.wcpss.net">
+			<p id="emailHelpBlock" class="form-text text-muted">
+			     If you use your wcpss email address (you@students.wcpss.net) you will be validated much faster
+			</p>
 		</div>
 		<div class="form-group" *ngIf= "buttonIsPresent()">
 			<label for="password">password</label>
@@ -42,7 +47,7 @@
 		</div>
 		<div *ngIf="(myForm.value.password && !myForm.value.dupPassword) || (!myForm.value.password && myForm.value.dupPassword) || (myForm.value.password && myForm.value.dupPassword && (myForm.value.password != myForm.value.dupPassword))"
 			class="alert">
-			<span> Passwords must match</span>
+			<span class="text-danger"> Passwords must match and be at least 5 characters long</span>
 		</div>
 		<div class="form-group" *ngIf= "buttonIsPresent()">
 			<label for="wcpssId">WCPSS ID</label>
@@ -55,11 +60,17 @@
 		<div class="form-group" >
 			<label for="school">School</label>
 			<select
-				id="school" 
+				id="school"
+				name="school"
 				class="form-control"
-				formControlName = "school">
-				<option *ngFor = "let theSchool of schoolList">{{theSchool.name}}</option>
+				formControlName = "school"
+				>
+				<option  *ngFor = "let theSchool of schoolList" aria-placeholder="select a school">{{theSchool.name}}</option>
 			</select>
+		<div *ngIf="(!myForm.value.school)"
+			class="alert">
+			<span class="text-danger">pick a school</span>
+		</div>
 		</div>
 		<div class="form-group" >
 			<label for="kind">Kind</label>
@@ -84,8 +95,9 @@
 				<option>unknown</option>
 			</select>
 		</div>
-		<div *ngIf= "!isAdmin() && !isValidatedUser ()">
-			<span class="text-danger">Your userid has not been validated - if you are tired of waiting contact your school rep</span>
+		<div style="padding-bottom:8px" *ngIf= "!isAdmin() && !isValidatedUser ()">
+			<span class="text-danger">Your userid has not been validated - if you are tired of waiting contact your school rep
+			</span>
 		</div>
 		<button 
 			class="btn btn-primary" 

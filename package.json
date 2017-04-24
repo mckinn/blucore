@@ -40,6 +40,7 @@
     "rxjs": "5.0.0-beta.12",
     "sendgrid": "^4.8.2",
     "serve-favicon": "~2.3.0",
+    "xoauth2": "^1.2.0",
     "zone.js": "^0.6.23"
   },
   "devDependencies": {

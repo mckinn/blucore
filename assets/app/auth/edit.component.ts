@@ -173,7 +173,7 @@ export class EditComponent implements OnInit {
 					Validators.required, 
 					Validators.pattern("[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?")
 					]),
-			password: new FormControl(null, Validators.required),
+			password: new FormControl(null, [Validators.required, Validators.minLength(5)]),
 			dupPassword: new FormControl(null, Validators.required),
 			wcpssId: new FormControl(null, Validators.required),
 			school: new FormControl(null, Validators.required),
@@ -202,7 +202,7 @@ export class EditComponent implements OnInit {
 		if (!(Object.keys(this.route.snapshot.params).length === 0 && this.route.snapshot.params.constructor === Object)) {
 			console.log("* * * * parsing parameters * * * *");
 			userParm = this.route.snapshot.params['userId'];
-			if (userParm != "teacher" && userParm != "student" && userParm != "administrator") { // assume it is a user
+			if (userParm != "teacher" && userParm != "student" && userParm != "admin") { // assume it is a user
 				console.log("* * * * found a "+userParm + " * * * *");
 				this.userId = userParm;
 				userParm = null;

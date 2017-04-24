@@ -87,7 +87,8 @@ router.post('/', function (req, res, next) { // create a new user
 			function(result) // result should be the secret value.
 					{ 
 					// console.log("secret creation success!",result, secretNeeded);
-
+					// ToDo - I could send an email to users that join that don't have a link
+					// with the note 'wait around to be approved'
 					if (secretNeeded) {
 						// console.log("getting the school");
 						School.findOne({'name':user.school},function(err,school){
