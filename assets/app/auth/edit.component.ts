@@ -90,7 +90,7 @@ export class EditComponent implements OnInit {
 		}
 		// console.log(this.myForm);
 		// console.log(this.user);
-		// this.location.back();
+		this.location.back();
 	
 	}
 
@@ -112,7 +112,6 @@ export class EditComponent implements OnInit {
 	}
 	
 	isValidatedUser () {
-
 		// console.log("logged in user: ",this.authService.whoIsLoggedIn());
 		if (this.authService.isLoggedIn()) {
 			// console.log("valid user: ",this.authService.whoIsLoggedIn().userName,this.authService.whoIsLoggedIn().valid);
@@ -137,15 +136,6 @@ export class EditComponent implements OnInit {
 		• Nobody is logged in, so it is a signup
 		Otherwise there is just no button. */
 
-		// console.log("* * * * checking submit button * * * *")
-		// console.log("logged in: ",this.authService.isLoggedIn());
-		// if (this.authService.isLoggedIn()) {
-			// console.log(
-			//		this.authService.whoIsLoggedIn().userId,
-			//		this.userId,this.authService.whoIsLoggedIn().kind);
-		// }
-		
-		// return early to avoid NPE
 		if	( !this.authService.isLoggedIn()) return true; // nobody is logged in
 		return (( this.authService.whoIsLoggedIn().userId == this.userId ) || // it is me
 				( this.authService.whoIsLoggedIn().kind == "admin") // or I'm an admin
@@ -153,10 +143,6 @@ export class EditComponent implements OnInit {
 
 	}
 
-	/*kindIsLocked() {
-		if (this.myForm.controls['kind'].value) return true;
-		return false;
-	}*/
 
 	ngOnInit() {
 
@@ -256,13 +242,15 @@ export class EditComponent implements OnInit {
 							kind: user.kind, // Admin, Student, Teacher, Parent
 							valid: user.valid  // approved, rejected, unknown
 						});
-						// Why ???
+						// If a user is logged and if they are approved their email should not be editable
+						if ( this.isMe() && (user.valid == 'approved') ) this.myForm.get('email').disable();
+						
 						this.myForm.setControl('password', new FormControl("", 
 							(c:FormControl) => { return Validators.required}
 							)
 						);
 						this.myForm.setControl('dupPassword', new FormControl("", 
-							(c:FormControl) => { return Validators.required}
+							(c:FormControl) => { return Validators.required }
 							)
 						);
 						

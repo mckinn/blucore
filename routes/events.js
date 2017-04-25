@@ -149,14 +149,14 @@ router.patch('/:evtId', function (req, res, next) {
 	Event.findById(req.params.evtId, function( err , evt ){
 		if (err) {
 			return res.status(500).json({
-			title: 'an error occurred in findById',
-			error: err
+				title: 'an error occurred in findById',
+				error: err
 			});
 		}
 		if (!evt) { //no event returned
 			return res.status(404).json({
-			title: 'cannot find the event',
-			error: { message: 'NOT FOUND'}
+				title: 'cannot find the event',
+				error: { 'message': 'Event not found: ' + req.params.evtId}
 			});
 		}
 		// console.log("------------------ in patch ------------------");

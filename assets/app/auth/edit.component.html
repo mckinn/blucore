@@ -18,14 +18,14 @@
 		</div>	
 		<div class="form-group" >
 			<label for="email">email address</label>
-			<input 
+			<input  
 				type="email" 
 				id="email" 
 				class="form-control"
 				formControlName = "email"
 				aria-describedby="emailHelpBlock"
 				placeholder="<you>@student.wcpss.net">
-			<p id="emailHelpBlock" class="form-text text-muted">
+			<p id="emailHelpBlock" class="form-text text-muted" *ngIf= "buttonIsPresent() && !isLoggedIn()" >
 			     If you use your wcpss email address (you@students.wcpss.net) you will be validated much faster
 			</p>
 		</div>
