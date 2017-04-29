@@ -18,6 +18,8 @@ var schema = new Schema({
 	school: {type: String, required: false},
 	roomNumber: {type: String, required: false},
 	participantCount: {type: Number, required: false},
+	// no longer available for modification, except for marking attendance 
+	closed: {type: Boolean, required: false, default: false},
 	ownerName: {type: String, required: false},
 	ownerId: {type: Schema.Types.ObjectId, ref: 'User'},
 	participants: [ {type: Schema.Types.ObjectId, ref: 'User'} ],

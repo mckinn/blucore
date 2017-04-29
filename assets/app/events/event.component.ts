@@ -63,7 +63,8 @@ export class EventComponent implements OnInit {
 	iHaveNotSelectedThis() {
 		// the eventId is not in my list.
 		// replicated in the list and in edit component - need to refactor ToDo
-		return this.authService.notInMyList(this.rowevent.eventId);
+		return 	this.authService.notInMyPlannedList(this.rowevent.eventId) && 
+				this.authService.notInMyAttendedList(this.rowevent.eventId) ;
 	}
 
 

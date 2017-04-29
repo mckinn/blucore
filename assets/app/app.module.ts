@@ -22,6 +22,7 @@ import { EventService } from "./events/event.service";
 import { AuthLandingComponent } from "./auth/auth.landing.component";
 import { EventLandingComponent } from "./events/event-landing.component";
 import { EventParticipant } from "./events/event.participant.component";
+import { EventFooterComponent } from "./events/eventfooter/footer.component";
 import { ErrorService } from "./errors/error.service";
 import { SchoolService } from "./schools/school.service";
 

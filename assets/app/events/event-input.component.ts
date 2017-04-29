@@ -59,7 +59,8 @@ export class EventInputComponent implements OnInit {
 			this.event.duration = this.myForm.value.eventDuration;
 			this.event.school = this.myForm.value.eventSchool;
 			this.event.roomNumber = this.myForm.value.eventRoomNumber;
-			this.event.participantCount = this.myForm.value.eventParticipantCount;
+			this.event.participantCount = this.myForm.value.eventParticipantCount   // ToDo - make sure that the Form is good
+			this.event.closed = this.myForm.value.eventClosed;
 			console.log("updated event: ", this.event);
 
 			this.eventService.updateEvent(this.event)
@@ -85,7 +86,8 @@ export class EventInputComponent implements OnInit {
 				this.myForm.value.eventDuration,
 				this.myForm.value.eventSchool,
 				this.myForm.value.eventRoomNumber,
-				this.myForm.value.eventParticipantCount
+				this.myForm.value.eventParticipantCount,
+				this.myForm.value.closed
 				// need to find the user that is creating this
 			);
 			// console.log("* * * * before addEvent * * * *");
@@ -161,7 +163,8 @@ export class EventInputComponent implements OnInit {
 		// // console.log("in iHaveNotSelectedThis ")
 		if (this.event) { 
 			// // console.log("this.event exists",this.event.eventId); 
-			return this.authService.notInMyList(this.event.eventId);
+			return ( this.authService.notInMyPlannedList(this.event.eventId) && 
+					 this.authService.notInMyAttendedList(this.event.eventId)  );
 			}
 		// // console.log("bailing because eventId is not stable");
 		return false;
@@ -223,7 +226,8 @@ export class EventInputComponent implements OnInit {
 				eventDuration: new FormControl(null, Validators.required),
 				eventSchool: new FormControl(null, Validators.required),
 				eventRoomNumber: new FormControl(null, Validators.required),
-				eventParticipantCount: new FormControl(null, Validators.required)
+				eventParticipantCount: new FormControl(null, Validators.required),
+				eventClosed: new FormControl (null)
 			});
 		};
 
@@ -261,7 +265,8 @@ export class EventInputComponent implements OnInit {
 							eventDuration: event.duration,
 							eventSchool: event.school,
 							eventRoomNumber: (event.roomNumber || "no room specified"),
-							eventParticipantCount: (event.participantCount || 0 )
+							eventParticipantCount: (event.participantCount || 0 ),
+							eventClosed: (event.closed || false)
 						});
 						this.populateParticipants();
 					}

@@ -157,8 +157,8 @@ export class AuthService {
 		this.getUser( this.loggedInUser.userId)
 			.subscribe(
 				data => {
-					// console.log("data from getUser");
-					// console.log(data);
+					// console.log("data from getUser: ",data);
+					// console.log("current loggedinuser: ",this.loggedInUser);
 					if (!this.loggedInUser.firstName) this.loggedInUser.firstName = data.firstName;
 					if (!this.loggedInUser.lastName) this.loggedInUser.lastName = data.lastName;
 					if (!this.loggedInUser.email) this.loggedInUser.email = data.email;
@@ -168,6 +168,7 @@ export class AuthService {
 					if (!this.loggedInUser.userName) this.loggedInUser.userName = data.UserName;
 					if (!this.loggedInUser.userId) this.loggedInUser.userId = data.UserId;
 					if (!this.loggedInUser.myEvents) this.loggedInUser.myEvents = data.myEvents;
+					if (!this.loggedInUser.attendedEvents) this.loggedInUser.attendedEvents = data.attendedEvents;
 					if (!this.loggedInUser.valid) this.loggedInUser.valid = data.valid;
 					// console.log (this.loggedInUser);
 					
@@ -184,20 +185,29 @@ export class AuthService {
 		return this.editingUser;
 	}
 
-	notInMyList(eventId: string) {
+	notInMyPlannedList(eventId: string) {
 		// the eventId is not in my list.
 		// replicated in the list and in edit component - need to refactor ToDo
-		// console.log("this event... ",eventId);
 		const myEvents = this.whoIsLoggedIn().myEvents;
-		// console.log("my events... ",myEvents);
 		for (let evt of myEvents) {
-			// console.log("looking for a previously selected event ", evt);
 			if (evt == eventId) {  // one of the events in my list is this event - I have already selected It
-				// console.log("should not select",false);
 				return false;
 			}
 		}
-		// console.log(true);
+		return true;
+	}
+
+	notInMyAttendedList(eventId: string) {
+		// the eventId is not in my list.
+		// replicated in the list and in edit component - need to refactor ToDo
+		console.log("WHO:  ",this.whoIsLoggedIn());
+		const doneEvents = this.whoIsLoggedIn().attendedEvents;
+		console.log("doneEvents: ",doneEvents);
+		for (let evt of doneEvents) {
+			if (evt == eventId) {  // one of the events in my list is this event - I have already selected It
+				return false;
+			}
+		}
 		return true;
 	}
 

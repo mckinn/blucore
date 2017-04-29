@@ -13,6 +13,7 @@ export class Event {
 	school?: string;
 	roomNumber?: string;
 	participantCount?: number;
+	closed?: boolean;
 	ownerName?: string;
 	ownerId?: string;
 	participants?: string[];
@@ -22,7 +23,7 @@ export class Event {
 
 	constructor(name:string, description: string, date:string, eventNumber: number, eventId: string,
 				time?:string, duration?:number, school?: string, roomNumber?: string, participantCount?: number,
-				ownerName?:string, ownerId?:string,  participants?: string[], attendedList?: string[]) 
+				closed?: boolean, ownerName?:string, ownerId?:string, participants?: string[], attendedList?: string[]) 
 	{
 		this.name = name;
 		this.description = description;
@@ -34,9 +35,18 @@ export class Event {
 		this.school = school;
 		this.roomNumber = roomNumber;
 		this.participantCount = participantCount;
+		this.closed = closed;
 		this.ownerName = ownerName;
 		this.ownerId = ownerId;
 		this.participants = participants;
 		this.attendedList = attendedList;
 	} ;
+
+	setClosed() {
+		this.closed = true;
+	}
+
+	getClosed() {
+		return this.closed;
+	}
 }

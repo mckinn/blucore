@@ -26,21 +26,36 @@ import { User } from "../auth/user.model";
 					</tr>
 			    </thead>
 			    <tbody>
-					<tr><td><span>Planned</span></td></tr>
+					<tr><td colspan="8"><span><strong>Planned</strong></span></td></tr>
 					<tr *ngFor="let evt of plannedEvents" app-event [rowevent]="evt" [attended]=false></tr>
-					<tr><td><span>Completed</span></td></tr>
+					<tr><td colspan="8"><span><strong>Completed</strong></span></td></tr>
 					<tr *ngFor="let evt of attendedEvents" app-event [rowevent]="evt" [attended]=true></tr>
 				</tbody>
 			</table>
 		</div>
-
+		<div class = "col-md-8 col-md-offset-2">
+            <div>
+				<table class="table">
+					<tr><td>Activities Completed</td><td>{{activitiesCompleted}}</td></tr>
+					<tr><td>Hours Completed:</td><td>{{hoursCompleted}}</td></tr>
+					<tr><td>Activities Planned:</td><td>{{activitiesPlanned}}</td></tr>
+					<tr><td>Hours Planned:</td><td>{{hoursPlanned}}</td></tr>
+				</table>
+            </div>  
+        </div>
 	`
 })
 
 export class MyEventListComponent implements OnInit {
 
-	plannedEvents: Event[];
-	attendedEvents: Event[];
+	public plannedEvents: Event[];
+	public attendedEvents: Event[];
+
+	public activitiesCompleted: number;
+    public hoursCompleted: number;
+    public activitiesPlanned: number;
+    public hoursPlanned: number;
+
     constructor( private eventService: EventService, 
 				 private authService: AuthService,
 				 private errorService: ErrorService,
@@ -57,40 +72,43 @@ export class MyEventListComponent implements OnInit {
 			return;
 		}
 
+		this.activitiesCompleted = this.hoursCompleted = this.activitiesPlanned = this.hoursPlanned = 0;
+
         const user: User = this.authService.whoIsLoggedIn();
-        if (user) {  // somebody is logged in...
-            // console.log("somebody is logged in");
-            // console.log( user );
+        if (user) {  
         
 			this.plannedEvents = [];
 			this.attendedEvents = [];
+			
 			this.authService.getUser(user.userId)   // get the user data
 				.subscribe(
 					(user: User) => {
-						console.log('* * * * building user event list * * * *');
-						console.log(user);
 						for (let evt of user.myEvents) {
-							console.log(evt);
 							this.eventService.getEvent(evt).subscribe (
 								event => {
 									this.plannedEvents.push(event);
-									console.log("current planned events");
-									console.log(this.plannedEvents);
+									this.activitiesPlanned = this.activitiesPlanned + 1;
+									this.hoursPlanned = this.hoursPlanned + (parseInt(event.duration)/60);
 								}
 							)
 						}
+						this.hoursPlanned = Math.round(this.hoursPlanned/60);
+
 						for (let evt of user.attendedEvents) {
-							console.log(evt);
 							this.eventService.getEvent(evt).subscribe (
 								event => {
 									this.attendedEvents.push(event);
-									console.log("current attended events");
-									console.log(this.attendedEvents);
-								}
+									this.activitiesCompleted = this.activitiesCompleted + 1;
+									this.hoursCompleted = this.hoursCompleted + (parseInt(event.duration)/60);
+
+								}	
+								
 							)
 						}
 					}
+					
 				);
+				
 		}
     }
 }

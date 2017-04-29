@@ -94,6 +94,7 @@ router.post('/', function (req, res, next) {
 			school: req.body.school,
 			roomNumber: req.body.roomNumber,
 			participantCount: req.body.participantCount,
+			closed: req.body.closed,
 			ownerName: user.firstName + " " + user.lastName,  // only set once
 			ownerId: user._id  // only set once
 			// _id is auto-populated.
@@ -171,6 +172,7 @@ router.patch('/:evtId', function (req, res, next) {
 		if( req.body.duration ) evt.duration = req.body.duration;
 		if( req.body.school ) evt.school = req.body.school;
 		if( req.body.participantCount ) evt.participantCount = req.body.participantCount;
+		if( req.body.closed ) evt.closed = req.body.closed;
 		if( req.body.roomNumber ) evt.roomNumber = req.body.roomNumber;
 		if( req.body.ownerId ) evt.ownerId = req.body.ownerId;    // never changes
 		if( req.body.participants ) evt.participants = req.body.participants;
