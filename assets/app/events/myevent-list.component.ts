@@ -75,6 +75,7 @@ export class MyEventListComponent implements OnInit {
 		this.activitiesCompleted = this.hoursCompleted = this.activitiesPlanned = this.hoursPlanned = 0;
 
         const user: User = this.authService.whoIsLoggedIn();
+		console.log("the logged in user: ",user);
         if (user) {  
         
 			this.plannedEvents = [];
@@ -83,6 +84,7 @@ export class MyEventListComponent implements OnInit {
 			this.authService.getUser(user.userId)   // get the user data
 				.subscribe(
 					(user: User) => {
+						console.log("the user fetched from the database: ",user);
 						for (let evt of user.myEvents) {
 							this.eventService.getEvent(evt).subscribe (
 								event => {

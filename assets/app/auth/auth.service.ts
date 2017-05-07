@@ -44,10 +44,12 @@ export class AuthService {
 		}
 
 	updateUser(user: User) {
+		console.log("Updating user: ", user);
 		const body = JSON.stringify(user);
+		console.log("message body: ", body);
 		// const headers = new Headers({'Content-Type': 'application/json'});
 		const headers = this.commonHttp.setHeaders();
-		// console.log("* * * * Update User * * * *",user,body);
+		console.log("* * * * Update User * * * *",user,body);
 		return this.http.patch(
 				AppSettings.API_ENDPOINT + 'user/users/'+user.userId,
 				body,
@@ -297,14 +299,14 @@ export class AuthService {
 
 					// taking away the event from the user's list of events
 					// console.log("User Events before removal", this.loggedInUser.myEvents);
-					this.loggedInUser.myEvents.splice(this.loggedInUser.myEvents.indexOf(event.eventId,1));
+					this.loggedInUser.myEvents.splice(this.loggedInUser.myEvents.indexOf(event.eventId),1);
 					// console.log("User Events after removal", this.loggedInUser.myEvents);
 
 					// taking away the user from the event's list of participants
 					// console.log("Event before User removal",event);
 
-					let participantIndex: number = event.participants.indexOf(this.loggedInUser.userId,1);
-					event.participants.splice(participantIndex);
+					let participantIndex: number = event.participants.indexOf(this.loggedInUser.userId);
+					event.participants.splice(participantIndex,1);
 
 					// console.log("Event after User removal",event);
 					// console.log("event and user should not be linked: ", event, this.loggedInUser);
@@ -326,5 +328,52 @@ export class AuthService {
 			this.errorService.handleError(error);
 			return Observable.throw(error);
 		};
-	
+
+	toggleEventOpenClosed ( event: Event, closeIt: boolean ) { 
+		// move the event to the user's attended list from the myEvents list (pretending to close it)
+		// or visa-versa based on the closeIt value
+
+		console.log ("* * * * toggleEvent * * * *",this.loggedInUser ,closeIt, event);
+
+		let error: Object;
+		
+		if ((this.loggedInUser) && (event) && (event.eventId)) {
+				if (closeIt) {
+					// take from myEvents and put into attendedEvents
+					let where = this.loggedInUser.myEvents.indexOf(event.eventId);
+					console.log("from myEvents to attended: ", this.loggedInUser,where);
+					if ( this.loggedInUser.myEvents.includes(event.eventId)) {
+						console.log("Removing ", event.eventId, " from ", this.loggedInUser.myEvents, " at ", where );
+						this.loggedInUser.myEvents.splice(where,1);
+					}
+					if (!this.loggedInUser.attendedEvents.includes(event.eventId)) this.loggedInUser.attendedEvents.push(event.eventId);
+				} else {
+					// take from attendedEvents and put into myEvents
+					let where = this.loggedInUser.attendedEvents.indexOf(event.eventId);
+					console.log("from attented to myEvents: ", this.loggedInUser,where);
+					if ( this.loggedInUser.attendedEvents.includes(event.eventId)) {
+						console.log("Removing ", event.eventId, " from ", this.loggedInUser.attendedEvents, " at ", where );
+						this.loggedInUser.attendedEvents.splice(where,1);
+					}
+					if (!this.loggedInUser.myEvents.includes(event.eventId)) this.loggedInUser.myEvents.push(event.eventId);
+				}
+				console.log("after the swap ", this.loggedInUser);
+				this.updateUser(this.loggedInUser)
+					.subscribe(results => {
+						console.log("User update results are...",results);
+						// whatever this.loggedInUser is like should get written to that user, and they should be in sync again.
+					});
+				return;
+			} else {
+				error = {
+					title:"Error in switching closed status",
+					error: {
+						errors: [{message:"please log a bug to the right.  Please include your email address so that I can get details."}]
+					}
+				};
+			}
+			this.errorService.handleError(error);
+			return Observable.throw(error);
+		};
+
 }

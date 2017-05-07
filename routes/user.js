@@ -266,6 +266,7 @@ router.patch('/users/:uid', function( req, res, next) {  // update a user - must
 		if( req.body.school ) user.school = req.body.school;
 		if( req.body.kind ) user.kind = req.body.kind;
 		if( req.body.myEvents ) user.events = req.body.myEvents;
+		if( req.body.attendedEvents ) user.attendedEvents = req.body.attendedEvents;
 	 	user.valid = req.body.valid;
 		
 		// don't touch the _id

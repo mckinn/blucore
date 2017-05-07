@@ -179,7 +179,7 @@ export class EventService {
 	updateEvent (evt: Event) {
 		// update the server.
 		const tempEventId: string = evt.eventId;
-		// console.log("Updating Event: ",evt);
+		console.log("Updating Event: ",evt);
 		// delete evt.ownerName;
 		delete evt.eventId;
 		// console.log(evt);
@@ -192,7 +192,7 @@ export class EventService {
 		// creates an observable and returns it
 		// console.log("* * * * in updateEvent - sending patch * * * *",tempEventId,body);
 		const url = AppSettings.API_ENDPOINT + 'event/'+ tempEventId;
-		// console.log(url);
+		console.log("patch: ",url, body);
 		return this.http.patch( url, body, {headers: headers})
 			// this is an anonymous function that takes a Response and yields a response.json ????
 			.map((response: Response) => {

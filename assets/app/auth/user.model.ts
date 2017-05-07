@@ -18,4 +18,6 @@ export class User {
 		public attendedEvents?: string[],
 		public valid?: string // approved, rejected, unknown
 		) {}
+
+
 }
