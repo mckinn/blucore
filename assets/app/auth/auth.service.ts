@@ -71,7 +71,7 @@ export class AuthService {
 				let transformedUsers: User[] = [];
 				for (let user of users) {
 					transformedUsers.push(new User( user.email, '', user.firstName, user.lastName, user.wcpssId, user.school,
-													user.kind, user._id, user.userName, user.events, user.attendedEvents, user.valid ));
+													user.kind, user._id, user.userName, user.events, user.attendedEvents, user.valid, user.phone ));
 				}
 				this.users = transformedUsers;
 				return transformedUsers;
@@ -98,7 +98,7 @@ export class AuthService {
 				// console.log(user);
 				const userObj = new User(user.email, '', user.firstName, user.lastName, user.wcpssId, 
 										user.school, user.kind, user._id, user.userName, user.events, user.attendedEvents,
-										user.valid );
+										user.valid, user.phone );
 				// console.log("* * * * userObj * * * *");
 				// console.log(userObj);
 				// fix broken user validation values
@@ -172,6 +172,7 @@ export class AuthService {
 					if (!this.loggedInUser.myEvents) this.loggedInUser.myEvents = data.myEvents;
 					if (!this.loggedInUser.attendedEvents) this.loggedInUser.attendedEvents = data.attendedEvents;
 					if (!this.loggedInUser.valid) this.loggedInUser.valid = data.valid;
+					if (!this.loggedInUser.phone) this.loggedInUser.phone = data.phone;
 					// console.log (this.loggedInUser);
 					
 				}

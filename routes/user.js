@@ -20,6 +20,7 @@ router.post('/', function (req, res, next) { // create a new user
 		kind: req.body.kind
 	});
 	user.valid = "unknown";
+	user.phone = req.body.phone;
 	// Todo later.  
 	// when we are adding a user, make sure that we
 	// email them to tell them that they are being verifed,
@@ -62,11 +63,11 @@ router.post('/', function (req, res, next) { // create a new user
 	createSecret is a promise	
 */
 	var secretNeeded;
-	// console.log("user save: ",user);
+	console.log("user save: ",user);
 	user.save()
 		.then( 
 			function(result){
-				// console.log("save OK: ",result);
+				console.log("save OK: ",result);
 				// creation of the email will not impact the success or failure of 
 				// API call, so we just continue on from here.
 				var emailRE = new RegExp('[a-z,A-Z,0-9,\+\.\-\_]+@.*wcpss\.net');
@@ -74,11 +75,11 @@ router.post('/', function (req, res, next) { // create a new user
 					// this will send an email address with a special link, and 
 					// once they return the link they will be automatically validated.
 					secretNeeded = true;
-					// console.log("in user.js routes creating a secret: ", result._id);
+					console.log("in user.js routes creating a secret: ", result._id);
 					return Promise.resolve(Secret.createSecret(result._id)) ;
 				} else {
-					// console.log("did not try to create secret, but that is OK",user.email);
-					// console.log("can go home now ?");
+					console.log("did not try to create secret, but that is OK",user.email);
+					console.log("can go home now ?");
 					secretNeeded = false;
 					return Promise.resolve("no secret needed");
 				}
@@ -86,21 +87,21 @@ router.post('/', function (req, res, next) { // create a new user
 		.then(
 			function(result) // result should be the secret value.
 					{ 
-					// console.log("secret creation success!",result, secretNeeded);
+					console.log("secret creation success!",result, secretNeeded);
 					// ToDo - I could send an email to users that join that don't have a link
 					// with the note 'wait around to be approved'
 					if (secretNeeded) {
-						// console.log("getting the school");
+						console.log("getting the school");
 						School.findOne({'name':user.school},function(err,school){
 							if (!err && school) { // no error and there are schools
 								adminEmail = school.adminEmail;
 							} else {
 								adminEmail = "mckinn@yahoo.com";
 							}
-							// console.log("in findschool callback: ", adminEmail);
+							console.log("in findschool callback: ", adminEmail);
 							var urlString = process.env.API_ENDPOINT+"email/validate/"+ result._id +
 											"?userId=" + result.userId + "&uniqueString=" +result.uniqueString;
-							// console.log("admin email",adminEmail);
+							console.log("admin email",adminEmail);
 							BluCoreEmail ( 
 								user.email, // "mckinn@gmail.com", // , 
 								adminEmail, 
@@ -123,7 +124,7 @@ router.post('/', function (req, res, next) { // create a new user
 		})
 		.catch(
 			function(error) {
-				// console.log("failure :-(", error);
+				console.log("failure :-(", error);
 				// console.log("res ",res);
 				return res.status(500).json({
 					title:'An Error Occurred in saving a user',
@@ -265,6 +266,7 @@ router.patch('/users/:uid', function( req, res, next) {  // update a user - must
 		if( req.body.wcpssId ) user.wcpssId = req.body.wcpssId;
 		if( req.body.school ) user.school = req.body.school;
 		if( req.body.kind ) user.kind = req.body.kind;
+		if( req.body.phone ) user.phone = req.body.phone;
 		if( req.body.myEvents ) user.events = req.body.myEvents;
 		if( req.body.attendedEvents ) user.attendedEvents = req.body.attendedEvents;
 	 	user.valid = req.body.valid;

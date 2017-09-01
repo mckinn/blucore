@@ -54,6 +54,7 @@ export class EditComponent implements OnInit {
 			this.user.school = this.myForm.value.school;
 			this.user.kind = this.myForm.value.kind;
 			this.user.valid = this.myForm.value.valid;
+			this.user.phone = this.myForm.value.phone;
 			// this should preserve the user.valid value (hopefully)
 
 			this.authService.updateUser( this.user )
@@ -81,6 +82,7 @@ export class EditComponent implements OnInit {
 					error => console.error(error)
 				);
 			this.user.valid = "unknown";
+			this.user.phone = this.myForm.value.phone;
 			// force a form reset, because in spite of the fact that we
 			// have values in this.user and the form, we don't have a userId
 			// ToDo - see if we can retrieve one from the payload
@@ -88,9 +90,9 @@ export class EditComponent implements OnInit {
 			this.myForm.reset(); 
 			this.user = null;
 		}
-		// console.log(this.myForm);
-		// console.log(this.user);
-		this.location.back();
+		console.log(this.myForm);
+		console.log(this.user);
+		// this.location.back();
 	
 	}
 
@@ -164,7 +166,11 @@ export class EditComponent implements OnInit {
 			wcpssId: new FormControl(null, Validators.required),
 			school: new FormControl(null, Validators.required),
 			kind: new FormControl(null, Validators.required),
-			valid: new FormControl(null, Validators.required)
+			valid: new FormControl(null, Validators.required),
+			phone: new FormControl( null, [
+				// Validators.required,
+				Validators.pattern("(?:\\+1)?[.(]?(\\d\\d\\d)[.)-]?(\\d\\d\\d)[.,-]?(\\d\\d\\d\\d)|^$")  // standard telephone number pattern
+			])
 		});
 		if ((!this.schoolList) || (this.schoolList.length == 0)) {
 			this.schoolService.getSchools()
@@ -240,7 +246,8 @@ export class EditComponent implements OnInit {
 							wcpssId: user.wcpssId, 
 							school: user.school,  // wcpss student or teacher ID
 							kind: user.kind, // Admin, Student, Teacher, Parent
-							valid: user.valid  // approved, rejected, unknown
+							valid: user.valid,  // approved, rejected, unknown
+							phone: (user.phone || "000.000.0000")
 						});
 						// If a user is logged and if they are approved their email should not be editable
 						if ( this.isMe() && (user.valid == 'approved') ) this.myForm.get('email').disable();

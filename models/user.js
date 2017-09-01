@@ -12,6 +12,7 @@ var schema = new Schema({
 	school: {type: String, required: true},  // wcpss student or teacher ID
 	kind: {type: String}, // A, S, T, P, null
 	valid: {type: String, default: "unknown"},
+	phone: {type: String, required: false, unique: true},
 	events: [ {type: Schema.Types.ObjectId, ref: 'Event'} ],
 	attendedEvents: [ {type: Schema.Types.ObjectId, ref: 'Event'} ] // ObjectID is an internal GUID	
 });
