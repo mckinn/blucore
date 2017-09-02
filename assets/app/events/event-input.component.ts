@@ -27,6 +27,7 @@ export class EventInputComponent implements OnInit {
 	event: Event;
 	myForm: FormGroup;
 	isLocked: boolean;
+	closed: boolean;
 	private initComplete: boolean;
 	eventParticipants: User[];
 	eventAttendees: User[];
@@ -41,13 +42,20 @@ export class EventInputComponent implements OnInit {
 		private schoolService: SchoolService) { }
 
 	onSubmit() {
-		// console.log("* * * * onSubmit * * * *");
-		// console.log(this.myForm);
-		// console.log("* * * * onSubmit * * * *");
+		console.log("* * * * onSubmit * * * *");
+		console.log(this.myForm.value, this.authService.whoIsLoggedIn());
+		console.log("* * * * onSubmit * * * *");
 		if (this.event) {
 			//edit
 			// updates the event pointed to by the this.event
-			// console.log(this.event);
+			console.log("Before filling",this.event, this.authService.whoIsLoggedIn());
+
+			if ((this.event.closed != this.myForm.value.eventClosed) && (this.authService.whoIsLoggedIn().kind == 'teacher')) {
+				this.authService.toggleEventOpenClosed ( this.event, this.myForm.value.eventClosed );
+			}
+
+			console.log("updated event: ", this.event);
+
 			this.event.name = this.myForm.value.eventName;
 			// reset the reference, now that the content has changed
 			// update the event in the event service
@@ -61,7 +69,8 @@ export class EventInputComponent implements OnInit {
 			this.event.roomNumber = this.myForm.value.eventRoomNumber;
 			this.event.participantCount = this.myForm.value.eventParticipantCount   // ToDo - make sure that the Form is good
 			this.event.closed = this.myForm.value.eventClosed;
-			console.log("updated event: ", this.event);
+			
+			console.log("After filling",this.event);
 
 			this.eventService.updateEvent(this.event)
 				.subscribe(
@@ -90,8 +99,7 @@ export class EventInputComponent implements OnInit {
 				this.myForm.value.closed
 				// need to find the user that is creating this
 			);
-			// console.log("* * * * before addEvent * * * *");
-			// console.log(event);
+			console.log("* * * * before addEvent * * * *",event);
 			this.eventService.addEvent(event)
 				.subscribe(
 				data => // console.log(data),
@@ -134,6 +142,12 @@ export class EventInputComponent implements OnInit {
 				return false;
 		}
 		return true;
+	}
+
+	logIt() {
+		console.log("in logit");
+		console.log("logit form:",this.myForm.value);
+		console.log("logit user:",this.authService.whoIsLoggedIn());
 	}
 
 	isNotMine(event: Event) {

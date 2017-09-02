@@ -1,0 +1,3 @@
+Note that there is a bug in the most recent version of "@types/core-js": "0.9.3x", that screws up a number of type manipulations.   The work-around was to limit the version to "@types/core-js": "0.9.34", (notice the lack of the '^')
+
+At some time this should be fixed.

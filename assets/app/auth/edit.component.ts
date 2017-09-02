@@ -3,7 +3,7 @@
 import { Component, OnInit } from "@angular/core";
 import { Location } from "@angular/common";
 import { FormGroup, FormControl, Validators } from "@angular/forms";
-import { Router, ActivatedRoute, Params } from "@angular/router";
+import { Router, ActivatedRoute } from "@angular/router";
 
 import { ErrorService } from "../errors/error.service";
 import { AuthService } from "./auth.service";
@@ -22,6 +22,7 @@ export class EditComponent implements OnInit {
 	user: User;
 	userId: string;
 	schoolList: School[] = [];
+	urlKind: string;
 
 	// my failed attempt at radio buttons
 	// radioItems = 'valid invalid unknown'.split(' ');
@@ -54,6 +55,7 @@ export class EditComponent implements OnInit {
 			this.user.school = this.myForm.value.school;
 			this.user.kind = this.myForm.value.kind;
 			this.user.valid = this.myForm.value.valid;
+			this.user.phone = this.myForm.value.phone;
 			// this should preserve the user.valid value (hopefully)
 
 			this.authService.updateUser( this.user )
@@ -64,6 +66,10 @@ export class EditComponent implements OnInit {
 			this.location.back();
 			// allow the form to be re-submitted with updates so leave it populated
 		} else { // create a new user
+			if (this.urlKind) { // then the kind was pre-ordained
+				this.myForm.value.kind = this.urlKind ;
+			}
+			console.log("just before we create a user",this.myForm.value.kind,this.myForm.value.school);
 			this.user = new User(
 				this.myForm.value.email, 
 				this.myForm.value.password, 
@@ -71,16 +77,17 @@ export class EditComponent implements OnInit {
 				this.myForm.value.lastName,
 				this.myForm.value.wcpssId,
 				this.myForm.value.school,
-				this.myForm.value.kind,
+				this.myForm.value.kind
 				);
 			this.user.userName = this.myForm.value.firstName + " " + this.myForm.value.lastName;
 			console.log("in submit", this.myForm, this.user);
+			this.user.valid = "unknown";
+			this.user.phone = this.myForm.value.phone;
 			this.authService.addUser( this.user )
 				.subscribe(
 					data => console.log(data),
 					error => console.error(error)
 				);
-			this.user.valid = "unknown";
 			// force a form reset, because in spite of the fact that we
 			// have values in this.user and the form, we don't have a userId
 			// ToDo - see if we can retrieve one from the payload
@@ -88,9 +95,9 @@ export class EditComponent implements OnInit {
 			this.myForm.reset(); 
 			this.user = null;
 		}
-		// console.log(this.myForm);
-		// console.log(this.user);
-		this.location.back();
+		console.log(this.myForm);
+		console.log(this.user);
+		// this.location.back();
 	
 	}
 
@@ -161,10 +168,14 @@ export class EditComponent implements OnInit {
 					]),
 			password: new FormControl(null, [Validators.required, Validators.minLength(5)]),
 			dupPassword: new FormControl(null, Validators.required),
-			wcpssId: new FormControl(null, Validators.required),
+			wcpssId: new FormControl(null),
 			school: new FormControl(null, Validators.required),
 			kind: new FormControl(null, Validators.required),
-			valid: new FormControl(null, Validators.required)
+			valid: new FormControl(null, Validators.required),
+			phone: new FormControl( null, [
+				// Validators.required,
+				Validators.pattern("(?:\\+1)?[.(]?(\\d\\d\\d)[.)-]?(\\d\\d\\d)[.,-]?(\\d\\d\\d\\d)|^$")  // standard telephone number pattern
+			])
 		});
 		if ((!this.schoolList) || (this.schoolList.length == 0)) {
 			this.schoolService.getSchools()
@@ -181,17 +192,19 @@ export class EditComponent implements OnInit {
 
 
 		console.log(this.myForm);
-		console.log(this.route.params);
+		console.log(this.route.snapshot.params);
 		console.log(this.route.url);
 		console.log("* * * * in edit component (2) * * * *");
 
 		if (!(Object.keys(this.route.snapshot.params).length === 0 && this.route.snapshot.params.constructor === Object)) {
-			console.log("* * * * parsing parameters * * * *");
 			userParm = this.route.snapshot.params['userId'];
-			if (userParm != "teacher" && userParm != "student" && userParm != "admin") { // assume it is a user
+			console.log("* * * * parsing parameters * * * *", userParm);
+			if (userParm != "teacher" && userParm != "student" && userParm != "admin") { // assume it is an existing user
 				console.log("* * * * found a "+userParm + " * * * *");
 				this.userId = userParm;
 				userParm = null;
+			} else {
+				this.urlKind = userParm;
 			}
 		} else {
 			if (this.authService.isLoggedIn()) {
@@ -199,6 +212,7 @@ export class EditComponent implements OnInit {
 				this.userId = this.authService.whoIsLoggedIn().userId;
 			} 
 		}
+		console.log("URLKind",this.urlKind);
         // userParm
 		if (userParm || !this.isAdmin()) {  // if the user-type was passed in, or the current logged in user is not an Admin..
 			// note that the value will get set below if this is an existing user.
@@ -240,7 +254,8 @@ export class EditComponent implements OnInit {
 							wcpssId: user.wcpssId, 
 							school: user.school,  // wcpss student or teacher ID
 							kind: user.kind, // Admin, Student, Teacher, Parent
-							valid: user.valid  // approved, rejected, unknown
+							valid: user.valid,  // approved, rejected, unknown
+							phone: (user.phone || "000.000.0000")
 						});
 						// If a user is logged and if they are approved their email should not be editable
 						if ( this.isMe() && (user.valid == 'approved') ) this.myForm.get('email').disable();

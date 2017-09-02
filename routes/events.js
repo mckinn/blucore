@@ -172,7 +172,7 @@ router.patch('/:evtId', function (req, res, next) {
 		if( req.body.duration ) evt.duration = req.body.duration;
 		if( req.body.school ) evt.school = req.body.school;
 		if( req.body.participantCount ) evt.participantCount = req.body.participantCount;
-		if( req.body.closed ) evt.closed = req.body.closed;
+		if( req.body.closed != null ) evt.closed = req.body.closed;
 		if( req.body.roomNumber ) evt.roomNumber = req.body.roomNumber;
 		if( req.body.ownerId ) evt.ownerId = req.body.ownerId;    // never changes
 		if( req.body.participants ) evt.participants = req.body.participants;

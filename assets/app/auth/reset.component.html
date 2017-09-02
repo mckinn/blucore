@@ -1,0 +1,32 @@
+
+<div class="col-md-8 col-md-offset-2">
+	<div class="well text-primary">
+		<span>
+			<p>
+				Welcome to the password reset request page.
+			</p>
+			<p>
+				Please enter your email address, and if we find that email address on file we will send a password reset link to you, and you can do the rest.
+			</p>
+			<p>
+				Happy resetting !!!
+			</p>
+		</span>
+	</div>
+	<form [formGroup]="myForm" (ngSubmit)="onSubmit()">	
+		<div class="form-group">
+			<label for="email">email address</label>
+			<input 
+				type="email" 
+				id="email" 
+				class="form-control"
+				formControlName = "email">
+		</div>
+		<button 
+			class="btn btn-primary" 
+			type="submit"
+			[disabled]="!myForm.valid"
+			>
+			Submit</button>
+	</form>
+</div>

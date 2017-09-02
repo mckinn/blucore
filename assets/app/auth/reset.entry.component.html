@@ -1,0 +1,44 @@
+
+<div class="col-md-8 col-md-offset-2">
+	<div class="well text-primary">
+		<span>
+			<p>
+				Welcome to the password reset new password entry page.
+			</p>
+			<p>
+				Please enter your email address, and if we find that email address on file we will send a password reset link to you, and you can do the rest.
+			</p>
+			<p>
+				Happy resetting !!!
+			</p>
+		</span>
+	</div>
+	<form [formGroup]="myForm" (ngSubmit)="onSubmit()">	
+		<div class="form-group">
+			<label for="password">password</label>
+			<input 
+				type="password" 
+				id="password" 
+				class="form-control"
+				formControlName = "password">
+		</div>
+		<div class="form-group">
+			<label for="dupPassword">re-type password</label>
+			<input 
+				type="password" 
+				id="dupPassword" 
+				class="form-control"
+				formControlName = "dupPassword">
+		</div>
+		<div *ngIf="(myForm.value.password && !myForm.value.dupPassword) || (!myForm.value.password && myForm.value.dupPassword) || (myForm.value.password && myForm.value.dupPassword && (myForm.value.password != myForm.value.dupPassword))"
+			class="alert">
+			<span class="text-danger"> Passwords must match and be at least 5 characters long</span>
+		</div>
+		<button 
+			class="btn btn-primary" 
+			type="submit"
+			[disabled]="!myForm.valid"
+			>
+			Submit</button>
+	</form>
+</div>

@@ -40,8 +40,8 @@ var sendBluCoreEmail = function (  to, from, toFriendly, fromFriendly,
             return transporter.sendMail(mailOptions);       // as a Promise.
         }; 
 
-        // console.log ("the arguments", "\nto:",to, "\nfrom: ",from, "\nTo Name: ", toFriendly, "\nFrom Name: ", fromFriendly, "\nSubject: ",
-        //                               subject, "\nTemplate: ", templateName, "\nBody: ", bodyText, "\nFillins", fillins);
+        console.log ("the arguments", "\nto:",to, "\nfrom: ",from, "\nTo Name: ", toFriendly, "\nFrom Name: ", fromFriendly, "\nSubject: ",
+                                      subject, "\nTemplate: ", templateName, "\nBody: ", bodyText, "\nFillins", fillins);
         // find the template
         var templateDir = path.resolve(__dirname, '../templates', templateName);
         // console.log("template: ", templateDir);

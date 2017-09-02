@@ -1,5 +1,5 @@
 <div class = "col-md-8 col-md-offset-2">
-	<form [formGroup]="myForm" (ngSubmit)="onSubmit()" #localRef="ngForm">
+	<form class="form-horizontal" [formGroup]="myForm"  #localRef="ngForm">
 		<div class="form-group">
 			<label  for="eventName">Event Name</label>
 			<input  class="form-control"
@@ -17,74 +17,89 @@
 				rows="3">
 			</textarea>
 		</div>
-		<div  class="form-group">
-			<label for="eventDate">Date</label>
-			<input class = "form-control" 
-				type="date" 
-				id="eventDate" 
-				formControlName =  "eventDate" >
-		</div>
-		<div  class="form-group">
-			<label for="eventTime">Time</label>
-			<input class = "form-control" 
-				type="time" 
-				id="eventTime" 
-				formControlName =  "eventTime">
-		</div>
-		<div  class="form-group">
-			<label for="eventDuration">Duration (minutes)</label>
-			<select class="form-control"
-				type="number" 
-				id="eventDuration" 
-				formControlName =  "eventDuration" >
-					<option>30</option>
-					<option>60</option>
-					<option>90</option>
-					<option>120</option>
-					<option>180</option>
-					<option>240</option>
-				</select>
-		</div>
-		<div  class="form-group">
-			<label for="eventSchool">School</label>
-			<select
-				id="eventSchool" 
-				class="form-control"
-				formControlName = "eventSchool" placeholder = "Pick a School">
-				<option *ngFor = "let theSchool of schoolList">{{theSchool.name}}</option>
-			</select>
-		</div>
-		<div  class="form-group">
-			<label for="eventRoomNumber">RoomNumber</label>
-			<input class = "form-control" 
-				type="text" 
-				id="eventRoomNumber" 
-				formControlName =  "eventRoomNumber">
-		</div>
-		<div  class="form-group">
-			<label for="eventParticipantCount">Number of Participants</label>
-			<input class = "form-control" 
-				type="number" 
-				id="eventParticipantCount" 
-				formControlName =  "eventParticipantCount">
-		</div>
-		<div *ngIf="initComplete">
-			<span><strong><br>Current Participant List<br></strong></span>
-			<table class="table col-md-8">
-				<tr *ngFor="let participant of eventParticipants" app-participant [userAttended]="participant" [eventEditing]="event" [attended]=false>
-				</tr>
-			</table>
-		</div> 
-		<div *ngIf="initComplete">
-			<table class="table col-md-8">
-				<tr *ngFor="let participant of eventAttendees" app-participant [userAttended]="participant" [eventEditing]="event" [attended]=true>
-				</tr>
-			</table>
-		</div> 
 
-		<button class="btn btn-danger" type="button" (click) = "onClear(localRef)" [disabled]="myForm.disabled" *ngIf="iAmATeacher()">Clear
-		</button>
-		<button class="btn btn-primary" type="submit" [disabled]="!myForm.valid"  *ngIf= "iAmATeacher()">Save</button>
+			<div  class="form-group">
+				<label for="eventDate">Date</label>
+				<input class = "form-control" 
+					type="date" 
+					id="eventDate" 
+					formControlName =  "eventDate" >
+			</div>
+			<div  class="form-group">
+				<label for="eventTime">Time</label>
+				<input class = "form-control" 
+					type="time" 
+					id="eventTime" 
+					formControlName =  "eventTime">
+			</div>
+			<div  class="form-group">
+				<label for="eventDuration">Duration (minutes)</label>
+				<select class="form-control"
+					type="number" 
+					id="eventDuration" 
+					formControlName =  "eventDuration" >
+						<option>30</option>
+						<option>60</option>
+						<option>90</option>
+						<option>120</option>
+						<option>180</option>
+						<option>240</option>
+					</select>
+			</div>
+
+
+			<div  class="form-group">
+				<label for="eventSchool">School</label>
+				<select
+					id="eventSchool" 
+					class="form-control"
+					formControlName = "eventSchool" placeholder = "Pick a School">
+					<option *ngFor = "let theSchool of schoolList">{{theSchool.name}}</option>
+				</select>
+			</div>
+
+			<div  class="form-group">
+				<label for="eventRoomNumber">RoomNumber</label>
+				<input class = "form-control form-control-inline" 
+					type="text" 
+					id="eventRoomNumber" 
+					formControlName =  "eventRoomNumber">
+			</div>
+			<div  class="form-group">
+				<label for="eventParticipantCount">Number of Participants</label>
+				<input class = "form-control form-control-inline" 
+					type="number" 
+					id="eventParticipantCount" 
+					formControlName =  "eventParticipantCount">
+			</div>
+			<div  class="checkbox form-group">
+				<label for="eventClosed">
+					<input
+						id="eventParticipantCount" 
+						formControlName =  "eventClosed"
+						type ="checkbox" 
+						[disabled] = "iAmATeacher()" >Completed
+				</label>		
+			</div>
+		<div>
+			<div *ngIf="initComplete">
+				<span><strong><br>Current Participant List<br></strong></span>
+				<table class="table col-md-8">
+					<tr *ngFor="let participant of eventParticipants" app-participant [userAttended]="participant" [eventEditing]="event" [attended]=false>
+					</tr>
+				</table>
+			</div> 
+			<div *ngIf="initComplete">
+				<table class="table col-md-8">
+					<tr *ngFor="let participant of eventAttendees" app-participant [userAttended]="participant" [eventEditing]="event" [attended]=true>
+					</tr>
+				</table>
+			</div>
+		</div>
+	
+
+		<button class="btn btn-danger" type="button" (click) = "onClear(localRef)" [disabled]="myForm.disabled" *ngIf="iAmATeacher()">Clear</button>
+		<button class="btn btn-primary" type="button" (click) = "onSubmit()" [disabled]="!myForm.valid"  *ngIf= "iAmATeacher()">Save</button>
 		<button class="btn btn-primary" 
 				type="button" 
 				(click) = "onJoin(localRef)" 
@@ -95,6 +110,10 @@
 				type="button" 
 				(click) = "goBack()" 
 				>Back</button>
-	</form>
+		<button class="btn btn-primary" 
+				type="button" 
+				(click) = "logIt()" 
+				>Log It</button>
+	</form> 
 
 </div>
