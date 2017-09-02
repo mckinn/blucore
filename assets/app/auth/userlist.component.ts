@@ -16,7 +16,7 @@ import { User } from "./user.model";
 						<th>First Name</th>
 						<th>Last Name</th>
 						<th>Email</th>
-						<th>WCPSS ID</th>
+						<th>Phone</th>
 						<th>School</th>
 						<th>Kind</th>
 						<th>Valid</th>

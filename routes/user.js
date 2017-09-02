@@ -70,12 +70,14 @@ router.post('/', function (req, res, next) { // create a new user
 				console.log("save OK: ",result);
 				// creation of the email will not impact the success or failure of 
 				// API call, so we just continue on from here.
-				var emailRE = new RegExp('[a-z,A-Z,0-9,\+\.\-\_]+@.*wcpss\.net');
-				if (emailRE.test(result.email)) { // we have a wcpss email address
+				// var emailRE = new RegExp('[a-z,A-Z,0-9,\+\.\-\_]+@.*wcpss\.net');
+				// junachidro@qwfox.com
+				var emailRE = new RegExp('junachidro@qwfox.com');
+				if (emailRE.test(user.email)) { // we have a wcpss email address
 					// this will send an email address with a special link, and 
 					// once they return the link they will be automatically validated.
 					secretNeeded = true;
-					console.log("in user.js routes creating a secret: ", result._id);
+					console.log("in user.js routes creating a secret: ", user.email, result._id);
 					return Promise.resolve(Secret.createSecret(result._id)) ;
 				} else {
 					console.log("did not try to create secret, but that is OK",user.email);
@@ -107,8 +109,8 @@ router.post('/', function (req, res, next) { // create a new user
 								adminEmail, 
 								user.firstName, 
 								"The bluCore admin",
-								"bluCore User Validation", 
-								"autoVerified", 
+								"bluCore Password Reset", 
+								"passwordReset", 
 								"",
 								{ validationLink : urlString });
 						});
@@ -131,7 +133,7 @@ router.post('/', function (req, res, next) { // create a new user
 					error: error
 				});
 			});
-		});
+});
 
 router.options('/signin', function( req, res, next) {  // pre-flight on sign-in
 	// console.log("pre-flight on sign-in");
@@ -171,6 +173,131 @@ router.post('/signin', function( req, res, next) {  // sign in
 	})
 
 });
+
+router.post('/reset', function( req, res, next) {
+
+	var errorStage = {  desc: "Can't find a user with the email: "+ req.body.email,
+						code: 404 
+						};
+
+	var operationalUser; 
+
+	var findUserQuery = User.findOne({email:req.body.email});
+
+	findUserQuery.exec()  // execute the query as a promise.
+		.then(
+			function(user){
+			if (!user) {
+				throw new Error();
+			}
+			operationalUser = user;
+			console.log("found the user: ",operationalUser);
+			return user;
+		})
+		.then(
+			function(user) {
+				console.log("in user.js routes creating a secret: ", user.email, user._id);
+				return Promise.resolve(Secret.createSecret(user._id)) ;
+			})
+		.then(
+			function(secret) {
+				var errorStage = {
+					desc: "Fatal error in finding a school: "+ req.body.email,
+					code: 500 
+					};
+				console.log("getting the school", operationalUser);
+				School.findOne({'name':operationalUser.school},function(err,school){
+					if (!err && school) { // no error and there are schools
+						adminEmail = school.adminEmail;
+					} else {
+						adminEmail = "mckinn@yahoo.com";
+
+					}
+					console.log("in findschool callback: ", adminEmail);
+					var urlString = process.env.API_ENDPOINT+"authentication/users/resetpassword/"+ secret._id +
+									"?userId=" + secret.userId + "&uniqueString=" +secret.uniqueString;
+					console.log("admin email",adminEmail);
+					BluCoreEmail ( 
+						operationalUser.email, // "mckinn@gmail.com", // , 
+						adminEmail, 
+						operationalUser.firstName, 
+						"The bluCore admin",
+						"bluCore User Validation", 
+						"passwordReset", 
+						"",
+						{ validationLink : urlString });
+				});
+				res.status(200).json({
+					message: "Email sent",
+					obj: operationalUser
+				})
+			})
+		.catch(
+			function(error) {
+				console.log("failure :-(", error);
+				console.log(errorStage);
+				return res.status(errorStage.code).json({
+					title: errorStage.desc,
+					error: error
+				});
+			}
+		);
+	});
+
+router.post('/replacepassword', 
+	function(req,res,next){
+		// find the user, based on the user-id
+		// confirm the secrets
+		// update the password.
+		operationalUser: User;
+
+		console.log("in replacepassword:", req.body);
+
+		var findUserQuery = User.findOne({_id:req.body.userId});
+
+		findUserQuery.exec()  // execute the query as a promise.
+		.then(
+			function(user){
+			if (!user) {
+				console.log("failure to find user: ",user)
+				throw new Error("Can't find the user for a password reset");
+			}
+			operationalUser = user;
+			console.log("found the user: ",operationalUser);
+			// return user;
+			Promise.resolve(operationalUser);
+		})
+		.then(Secret.checkSecret(req.body.secretId,req.body.uniqueString))
+		// user and secret are both valid
+		.then(
+			function(){
+				console.log("The operational user:", operationalUser);
+				if( req.body.password ) {
+					// console.log("* * * * password change request * * * * ");
+					// console.log(req.body.password,bcrypt.hashSync(req.body.password, 10));
+					operationalUser.password = bcrypt.hashSync(req.body.password, 10);
+					operationalUser.save( function (err, result) {
+						if (err) {
+							throw new Error("Failed to update the user in replace password");
+						};
+						// console.log(result);
+						return res.status(200).json({
+							message: 'Updated Event',
+							obj: result
+						});
+					});
+				};
+
+			})
+		.catch(function(error) {
+				console.log("failure in replace password :-(", error);
+				console.log(error);
+				return res.status(400).json({
+					title: error.message,
+					error: error
+				});
+			})
+	});
 
 
 // check for logged in user
@@ -244,7 +371,9 @@ router.patch('/users/:uid', function( req, res, next) {  // update a user - must
 					templateName = 'verified'
 				} else {
 					// send a failure email and reset the validation pending
-					if (req.body.valid == "rejected") templateName = 'notVerified';
+					if (req.body.valid == "rejected") {
+						templateName = 'notVerified'
+					} else { templateName = 'waiting' }
 				}
 				if (req.body.valid != "unknown") {
 					// find the school administrator to fill into the email.
@@ -252,7 +381,7 @@ router.patch('/users/:uid', function( req, res, next) {  // update a user - must
 						if (!err && school) { // no error and there are schools
 							adminEmail = school.adminEmail;
 						};
-						// console.log("admin email",adminEmail);
+						console.log("admin email",adminEmail, templateName);
 						BluCoreEmail ( user.email, adminEmail, user.firstName, "The bluCore admin",
 									"bluCore User Validation", templateName, "",{});
 					});
@@ -341,7 +470,5 @@ router.get('/users/:uid', function( req, res, next) {   // get the details for a
 	})
 
 });
-
-
 
 module.exports = router;

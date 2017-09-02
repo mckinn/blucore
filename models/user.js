@@ -8,11 +8,11 @@ var schema = new Schema({
 	password: {type: String, required: true},
 	firstName: {type: String, required: true},
 	lastName: {type: String, required: true},
-	wcpssId: {type: String, required: false, unique: true},
+	wcpssId: {type: String, required: false, unique: false},
 	school: {type: String, required: true},  // wcpss student or teacher ID
 	kind: {type: String}, // A, S, T, P, null
 	valid: {type: String, default: "unknown"},
-	phone: {type: String, required: false, unique: true},
+	phone: {type: String, required: false, unique: false, default: ""},
 	events: [ {type: Schema.Types.ObjectId, ref: 'Event'} ],
 	attendedEvents: [ {type: Schema.Types.ObjectId, ref: 'Event'} ] // ObjectID is an internal GUID	
 });

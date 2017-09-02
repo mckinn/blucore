@@ -145,6 +145,7 @@ export class EventInputComponent implements OnInit {
 	}
 
 	logIt() {
+		console.log("in logit");
 		console.log("logit form:",this.myForm.value);
 		console.log("logit user:",this.authService.whoIsLoggedIn());
 	}

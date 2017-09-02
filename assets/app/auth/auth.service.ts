@@ -130,6 +130,45 @@ export class AuthService {
 			});
 		}
 
+	passwordReset(user: User) {
+		const body = JSON.stringify(user);
+		const headers = new Headers({'Content-Type': 'application/json'});
+		// console.log(user);
+		// console.log(body);
+		return this.http.post(AppSettings.API_ENDPOINT + 'user/reset',body,{headers: headers})
+			.map((response: Response) => response.json())
+			.catch((error: Response) => {
+				console.log("* * * * password reset error handler * * * *", error);
+				console.error(error);
+				this.errorService.handleError(error.json())
+				return Observable.throw(error.json());
+			});
+		}
+
+	passwordReplacement(userId: string, secret: string, uniqueString: string, password: string) {
+		// hit the password replacement url
+
+		const body = JSON.stringify(
+			{
+				"userId": userId,
+				"secret": secret,
+				"uniqueString" : uniqueString,
+				"password": password
+			}
+		);
+		const headers = new Headers({'Content-Type': 'application/json'});
+		console.log(body);
+		return this.http.post(AppSettings.API_ENDPOINT + 'user/replacepassword',body,{headers: headers})
+			.map((response: Response) => response.json())
+			.catch((error: Response) => {
+				console.log("* * * * password replacement error handler * * * *", error);
+				console.error(error);
+				this.errorService.handleError(error.json())
+				return Observable.throw(error.json());
+			});
+		
+	}
+
 	logout() {
 		localStorage.clear();
 		}

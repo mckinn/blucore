@@ -15,7 +15,8 @@ import { LogoutComponent } from "./auth/logout.component";
 import { EditComponent } from "./auth/edit.component";
 import { SignInComponent } from "./auth/signin.component";
 import { UserListComponent } from "./auth/userlist.component";
-
+import { PasswordResetComponent } from "./auth/reset.component";
+import { PasswordResetEntryComponent } from "./auth/reset.entry.component";
 
 import { AuthService } from "./auth/auth.service";
 import { EventService } from "./events/event.service";
@@ -49,6 +50,8 @@ import { CommonHttp } from "./common/common.http";
         LogoutComponent,
         EditComponent, 
         SignInComponent,
+        PasswordResetComponent,
+        PasswordResetEntryComponent,
         UserListComponent,
         ErrorComponent,
         AuthLandingComponent,
