@@ -15,7 +15,7 @@ router.post('/', function (req, res, next) { // create a new user
 		lastName: req.body.lastName,
 		password: bcrypt.hashSync(req.body.password, 10),
 		email: req.body.email,
-		wcpssId: req.body.wcpssId,
+		emailValid: req.body.emailValid,
 		school: req.body.school,
 		kind: req.body.kind
 	});
@@ -64,35 +64,35 @@ router.post('/', function (req, res, next) { // create a new user
 */
 	var secretNeeded;
 	console.log("user save: ",user);
-	user.save()
-		.then( 
+	user.save() // save the user
+		.then( // create the secret
 			function(result){
 				console.log("save OK: ",result);
 				// creation of the email will not impact the success or failure of 
 				// API call, so we just continue on from here.
 				// var emailRE = new RegExp('[a-z,A-Z,0-9,\+\.\-\_]+@.*wcpss\.net');
 				// junachidro@qwfox.com
-				var emailRE = new RegExp('junachidro@qwfox.com');
-				if (emailRE.test(user.email)) { // we have a wcpss email address
+				// var emailRE = new RegExp('junachidro@qwfox.com');
+				// if (emailRE.test(user.email)) { // we have a wcpss email address
 					// this will send an email address with a special link, and 
 					// once they return the link they will be automatically validated.
-					secretNeeded = true;
+				//	secretNeeded = true;
 					console.log("in user.js routes creating a secret: ", user.email, result._id);
 					return Promise.resolve(Secret.createSecret(result._id)) ;
-				} else {
-					console.log("did not try to create secret, but that is OK",user.email);
-					console.log("can go home now ?");
-					secretNeeded = false;
-					return Promise.resolve("no secret needed");
-				}
+				//} else {
+				//	console.log("did not try to create secret, but that is OK",user.email);
+				//	console.log("can go home now ?");
+				//	secretNeeded = false;
+				//	return Promise.resolve("no secret needed");
+				// }
 			})
-		.then(
+		.then( // send the email
 			function(result) // result should be the secret value.
 					{ 
 					console.log("secret creation success!",result, secretNeeded);
 					// ToDo - I could send an email to users that join that don't have a link
 					// with the note 'wait around to be approved'
-					if (secretNeeded) {
+					// if (secretNeeded) {
 						console.log("getting the school");
 						School.findOne({'name':user.school},function(err,school){
 							if (!err && school) { // no error and there are schools
@@ -109,12 +109,12 @@ router.post('/', function (req, res, next) { // create a new user
 								adminEmail, 
 								user.firstName, 
 								"The bluCore admin",
-								"bluCore Password Reset", 
-								"passwordReset", 
+								"bluCore Email Validation", 
+								"autoVerified", 
 								"",
 								{ validationLink : urlString });
 						});
-					}
+					// }
 
 			})
 		.then(function(result){
@@ -392,13 +392,13 @@ router.patch('/users/:uid', function( req, res, next) {  // update a user - must
 		if( req.body.email ) user.email = req.body.email;
 		if( req.body.firstName ) user.firstName = req.body.firstName;
 		if( req.body.lastName ) user.lastName = req.body.lastName;
-		if( req.body.wcpssId ) user.wcpssId = req.body.wcpssId;
 		if( req.body.school ) user.school = req.body.school;
 		if( req.body.kind ) user.kind = req.body.kind;
 		if( req.body.phone ) user.phone = req.body.phone;
 		if( req.body.myEvents ) user.events = req.body.myEvents;
 		if( req.body.attendedEvents ) user.attendedEvents = req.body.attendedEvents;
-	 	user.valid = req.body.valid;
+		if( req.body.valid ) user.valid = req.body.valid;
+		// we don't touch user.emailValid because the form will never have it.
 		
 		// don't touch the _id
 		// only touch the password if it is not null

@@ -23,6 +23,7 @@ export class EditComponent implements OnInit {
 	userId: string;
 	schoolList: School[] = [];
 	urlKind: string;
+	urlQparm: string;
 
 	// my failed attempt at radio buttons
 	// radioItems = 'valid invalid unknown'.split(' ');
@@ -45,13 +46,15 @@ export class EditComponent implements OnInit {
 		// replacement entry with one has to generate a new one.
 
 		if (this.user) { // submit an updated user
+			console.log(" in editcomponents - onsubmit - form:", this.myForm.value);
+			console.log(" in editcomponents - onsubmit - user:", this.user);
 			this.user.email = this.myForm.value.email; 
 			this.user.password = this.myForm.value.password;
 			this.user.firstName = this.myForm.value.firstName; 
 			this.user.lastName = this.myForm.value.lastName;
 			this.user.userName = this.myForm.value.firstName + " " +
 								 this.myForm.value.lastName;
-			this.user.wcpssId = this.myForm.value.wcpssId;
+			this.user.emailValid = this.myForm.value.emailValid;
 			this.user.school = this.myForm.value.school;
 			this.user.kind = this.myForm.value.kind;
 			this.user.valid = this.myForm.value.valid;
@@ -75,7 +78,7 @@ export class EditComponent implements OnInit {
 				this.myForm.value.password, 
 				this.myForm.value.firstName, 
 				this.myForm.value.lastName,
-				this.myForm.value.wcpssId,
+				false,
 				this.myForm.value.school,
 				this.myForm.value.kind
 				);
@@ -92,12 +95,17 @@ export class EditComponent implements OnInit {
 			// have values in this.user and the form, we don't have a userId
 			// ToDo - see if we can retrieve one from the payload
 			// ToDo - catch errors.
+			this.errorService.handleError(
+				this.errorService.newUserDoneNotice
+				);
+			this.router.navigate(['/']);
+
 			this.myForm.reset(); 
 			this.user = null;
 		}
 		console.log(this.myForm);
 		console.log(this.user);
-		// this.location.back();
+		
 	
 	}
 
@@ -128,6 +136,7 @@ export class EditComponent implements OnInit {
 	}
 	
 	isAdmin () { // determine if the current logged in user is an admin
+		// console.log("checking admin: ",this.authService.isLoggedIn(),this.authService.whoIsLoggedIn().kind);
 		return (this.authService.isLoggedIn() && this.authService.whoIsLoggedIn().kind == "admin");
 	}
 
@@ -155,20 +164,37 @@ export class EditComponent implements OnInit {
 
 		console.log("* * * * in edit component * * * *");
 		this.userId = null;
-		let userParm:string;
-		
+		let userParm: string;
+		let userLoginType: string;
 
 		console.log("* * * * user edit form * * * * ");
+	/* 		this.myForm = new FormGroup({
+				firstName: new FormControl(null, Validators.required),
+				lastName: new FormControl(null, Validators.required),
+				email: new FormControl(null, [
+						Validators.required, 
+						// generic email pattern
+						Validators.pattern("[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?")
+						]),
+				password: new FormControl(null, [Validators.required, Validators.minLength(5)]),
+				dupPassword: new FormControl(null, Validators.required),
+				school: new FormControl(null, Validators.required),
+				kind: new FormControl(null, Validators.required),
+				valid: new FormControl(null, Validators.required),
+				phone: new FormControl( null, [
+					// Validators.required,
+					Validators.pattern("(?:\\+1)?[.(]?(\\d\\d\\d)[.)-]?(\\d\\d\\d)[.,-]?(\\d\\d\\d\\d)|^$")  // standard telephone number pattern
+				])
+			}); */
 		this.myForm = new FormGroup({
 			firstName: new FormControl(null, Validators.required),
 			lastName: new FormControl(null, Validators.required),
 			email: new FormControl(null, [
 					Validators.required, 
-					Validators.pattern("[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?")
+					Validators.pattern("[a-z,A-Z,0-9,\+\.\-\_]+@student\.wcpss\.net|[a-z,A-Z,0-9,\+\.\-\_]+@wcpss\.net")
 					]),
 			password: new FormControl(null, [Validators.required, Validators.minLength(5)]),
 			dupPassword: new FormControl(null, Validators.required),
-			wcpssId: new FormControl(null),
 			school: new FormControl(null, Validators.required),
 			kind: new FormControl(null, Validators.required),
 			valid: new FormControl(null, Validators.required),
@@ -190,11 +216,13 @@ export class EditComponent implements OnInit {
 
 		// console.log(this.schoolList);
 
-
-		console.log(this.myForm);
-		console.log(this.route.snapshot.params);
-		console.log(this.route.url);
+		console.log("Form:", this.myForm);
+		console.log("p:",this.route.snapshot.params);
+		console.log("qp:",this.route.snapshot.queryParams);
+		console.log("Url:",this.route.url);
 		console.log("* * * * in edit component (2) * * * *");
+
+		this.urlQparm = this.route.snapshot.queryParams['emailFormat'];
 
 		if (!(Object.keys(this.route.snapshot.params).length === 0 && this.route.snapshot.params.constructor === Object)) {
 			userParm = this.route.snapshot.params['userId'];
@@ -203,24 +231,44 @@ export class EditComponent implements OnInit {
 				console.log("* * * * found a "+userParm + " * * * *");
 				this.userId = userParm;
 				userParm = null;
+				userLoginType = "userid";
 			} else {
-				this.urlKind = userParm;
+				this.urlKind = userParm;  // urlKind contains one of the official kinds, and we are adding a new user of that kind
+				userLoginType = "usertype";
 			}
 		} else {
 			if (this.authService.isLoggedIn()) {
 				console.log("passed the logged in test");
 				this.userId = this.authService.whoIsLoggedIn().userId;
-			} 
+				userLoginType = "self";
+				userParm = this.authService.whoIsLoggedIn().kind;
+			} else {
+				console.log("this is the addition of a user using the default url");
+				userLoginType = "new";
+			}
 		}
 		console.log("URLKind",this.urlKind);
-        // userParm
-		if (userParm || !this.isAdmin()) {  // if the user-type was passed in, or the current logged in user is not an Admin..
+		// set up the limitations on the form
+		console.log("userLoginType: ", userLoginType );
+		console.log("this.admin:", this.isAdmin());
+
+		if ( !( (userLoginType == "new") || (userLoginType == "userid" && this.isAdmin() ) ) ) {  // if it is a new user, or an existing user with an admin, don't lock down the kind.
 			// note that the value will get set below if this is an existing user.
+			console.log("disabling kind: (userlogintype, isAdmin)", userLoginType, this.isAdmin() );
 			this.myForm.controls['kind'] = new FormControl({value: userParm, disabled: true}, Validators.required);
 		}
-		// lock the validation down unless it is an admin.
-		if (!this.isAdmin()) this.myForm.controls['valid'] = new FormControl({value: "unknown", disabled: true}, Validators.required);
+		// lock the validation down unless it is admin for an existing user.
+		if (!(this.isAdmin() && (userLoginType == "userid"))) {
+			console.log("disabling valid: (userlogintype, isAdmin)", userLoginType, this.isAdmin()  );
+			this.myForm.controls['valid'] = new FormControl({value: null, disabled: true}, Validators.required);
+		}
 
+		if ((this.urlQparm == "generic") || (process.env.EMAIL_RESTRICTIONS = 'off' )) {   // reset the pattern to be a generic 
+			console.log ("resetting the email pattern to be generic");
+			this.myForm.controls['email'] = 
+				 new FormControl(null, 
+					Validators.pattern("[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?")
+		); }
 
 		console.log("before checking this.userId");
 		if (this.userId) { // the userid of the logged in user, or of the user specified in the URL
@@ -237,7 +285,7 @@ export class EditComponent implements OnInit {
 			return this.authService.getUser(this.userId)
 				.subscribe( (user: User) => { 
 
-					console.log("* * * * User Edit - subscription activation * * * *");
+					console.log("* * * * User Edit * * * *");
 					console.log(this.myForm);
 					console.log(user);
 					if (user) {   // if there actually was a parameter...
@@ -247,12 +295,11 @@ export class EditComponent implements OnInit {
 						console.log(this.user);
 						this.myForm.setValue({
 							email: user.email,
-							password: null, // if they change the password we need to 
-							dupPassword: null, // re-register it
-							firstName: user.firstName,   // the ? makes the fields optional
+							password: user.password,  
+							dupPassword: user.password, 
+							firstName: user.firstName,  
 							lastName: user.lastName,
-							wcpssId: user.wcpssId, 
-							school: user.school,  // wcpss student or teacher ID
+							school: user.school,  
 							kind: user.kind, // Admin, Student, Teacher, Parent
 							valid: user.valid,  // approved, rejected, unknown
 							phone: (user.phone || "000.000.0000")
@@ -261,15 +308,20 @@ export class EditComponent implements OnInit {
 						if ( this.isMe() && (user.valid == 'approved') ) this.myForm.get('email').disable();
 						
 						this.myForm.setControl('password', new FormControl("", 
-							(c:FormControl) => { return Validators.required}
+							(c:FormControl) => { return Validators.minLength(5)}
 							)
 						);
 						this.myForm.setControl('dupPassword', new FormControl("", 
-							(c:FormControl) => { return Validators.required }
+							(c:FormControl) => { return Validators.minLength(5) }
 							)
-						);
+						); 
+						this.myForm.setControl('email', new FormControl(user.email, 
+							(c:FormControl) => 
+								{ return Validators.pattern("[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?")
+								})
+							);
 						
-					}
+					} 
 
 					// the form is diabled if it is filled with data and not owned by me
 					// unless an admin has opened it.
@@ -283,8 +335,13 @@ export class EditComponent implements OnInit {
 					console.log(this.user);
 					console.log("* * * * edit user subscribe - end * * * *");
 				});
+		} else {
+			this.myForm.patchValue({school:"Athens Drive High School"});
+			console.log("Setting the school to athens ",this.myForm);
 		}
 		console.log("the kind form value", this.myForm.controls['kind'].value);
 	}
+
+	get email() { return this.myForm.get('email'); }
 
 }

@@ -17,6 +17,16 @@ export class ErrorService {
 								message: "You have been logged out due to inactivity", 
 					}	}	}	
 				};
+	public newUserDoneNotice = { 
+		type: "notice",	
+		title: "New user creation started.",
+		error: { 
+			errors: { 
+				loginTimeout: {
+					name: "watch your email",
+					message: "Please watch for an email to complete the process", 
+		}	}	}	
+	};
 
 	handleError(oops: any, status?: Number ){
 
@@ -29,18 +39,18 @@ export class ErrorService {
 			"title": "An Error Occurred",
 			"error": {
 				"errors": {
-					"wcpssId": {
-						"message": "Error, expected `wcpssId` to be unique. Value: `11111`",
+					"email": {
+						"message": "Error, expected `email` to be unique. Value: `joe@joesgarage.com`",
 						"name": "ValidatorError",
 						"properties": {
 							"type": "unique",
 							"message": "Error, expected `{PATH}` to be unique. Value: `{VALUE}`",
-							"path": "wcpssId",
-							"value": "11111"
+							"path": "email",
+							"value": "joe@joesgarage.com"
 							},
 						"kind": "unique",
-						"path": "wcpssId",
-						"value": "11111"
+						"path": "email",
+						"value": "joe@joesgarage.com"
 						}
 					},
 					"message": "User validation failed",

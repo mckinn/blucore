@@ -36,47 +36,59 @@ router.get('/validate/:secretId',
         var foundUser;
         
         Secret.findById(URLValues.secretId)
-            .then((result) => {
-                // console.log("trying result 1:",result);
+            .then((result) => { // find the secret
+                console.log("trying result 1:",result);
                 foundSecret = result;
-                // console.log("trying result 1:",foundSecret);
-//              Promise.resolve(User.findById( URLValues.userId))
+                console.log("trying result 1:",foundSecret);
+                // Promise.resolve(User.findById( URLValues.userId))
                 var query = User.findById( URLValues.userId );
                 return query.exec();    // should this return a promise, and will that work ?
-            })
-            .then((result) => {
-                // console.log("trying result 2:",result);
+            }) // get the userid from the secret
+            .then((result) => { 
+                console.log("trying result 2:",result);
                 foundUser = result;
-                // console.log("trying result 2:",foundUser);
+                console.log("trying result 2:",foundUser);
                 return Promise.resolve(foundUser);
             })
-            .then((result)=> {
-                // console.log("checking validity: ",result);
-                // console.log("1",String(foundUser._id));
-                // console.log("2",String(foundSecret.userId));
-                // console.log("3",String(foundSecret.uniqueString));
-                // console.log("4",String(URLValues.uniqueString));
+            .then((result)=> { // approve the user
+                console.log("checking validity: ",result);
+                console.log("1",String(foundUser._id));
+                console.log("2",String(foundSecret.userId));
+                console.log("3",String(foundSecret.uniqueString));
+                console.log("4",String(URLValues.uniqueString));
 
                 if ((( String(foundUser._id) == String(foundSecret.userId)) &&
                     ( String(foundSecret.uniqueString) == String(URLValues.uniqueString))) ||
-                    ( String(foundUser.valid) == "approved")
+                    ( String(foundUser.valid) == "approved") // if they were manually approved already
                     ){
+                        // ToDo - if the user is a teacher or an administrator, withhold the approval,
+                        // and send an email to them, cc the blucore manager to get them manually approved.
+                        
                         // it all matches
                         // patch the user with validation
 
                         // dump an html file saying congratulations
-                        // console.log("hurray", foundUser);
-                        foundUser.valid="approved";
+                        console.log("hurray", foundUser);
+                        if (foundUser.kind == "student") foundUser.valid="approved";
+                        foundUser.emailValid = true;
+                        console.log ("after email verification handling: ", foundUser);
                         foundUser.save();
-                        res.render("verified",
+                        if (foundUser.kind == "student") { 
+                            res.render("verified",
                                     {toFriendly: foundUser.firstName,
                                     signinURL: process.env.API_ENDPOINT + 'authentication/signin'});
+                        } else {
+                            res.render("waiting",
+                                    {toFriendly: foundUser.firstName,
+                                    signinURL: process.env.API_ENDPOINT + '/'});
+                        }
                     } else {
                         // it does not match
                         // report validation failed
                         // potentially mark failed.
                         // console.log("boo");
                         foundUser.valid="rejected";
+                        foundUser.emailValid = true;
                         foundUser.save();
                         res.render("notVerified",{toFriendly:foundUser.firstName});
                     }

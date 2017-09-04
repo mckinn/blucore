@@ -70,7 +70,7 @@ export class AuthService {
 				const users = response.json().obj;
 				let transformedUsers: User[] = [];
 				for (let user of users) {
-					transformedUsers.push(new User( user.email, '', user.firstName, user.lastName, user.wcpssId, user.school,
+					transformedUsers.push(new User( user.email, '', user.firstName, user.lastName, user.emailValid, user.school,
 													user.kind, user._id, user.userName, user.events, user.attendedEvents, user.valid, user.phone ));
 				}
 				this.users = transformedUsers;
@@ -96,7 +96,7 @@ export class AuthService {
 				// console.log(response);
 				const user = response.json().obj;
 				// console.log(user);
-				const userObj = new User(user.email, '', user.firstName, user.lastName, user.wcpssId, 
+				const userObj = new User(user.email, '', user.firstName, user.lastName, user.emailValid, 
 										user.school, user.kind, user._id, user.userName, user.events, user.attendedEvents,
 										user.valid, user.phone );
 				// console.log("* * * * userObj * * * *");
@@ -204,7 +204,7 @@ export class AuthService {
 					if (!this.loggedInUser.lastName) this.loggedInUser.lastName = data.lastName;
 					if (!this.loggedInUser.email) this.loggedInUser.email = data.email;
 					if (!this.loggedInUser.school) this.loggedInUser.school = data.school;
-					if (!this.loggedInUser.wcpssId) this.loggedInUser.wcpssId = data.wcpssId;
+					this.loggedInUser.emailValid = data.emailValid;
 					if (!this.loggedInUser.kind) this.loggedInUser.kind = data.kind;
 					if (!this.loggedInUser.userName) this.loggedInUser.userName = data.UserName;
 					if (!this.loggedInUser.userId) this.loggedInUser.userId = data.UserId;

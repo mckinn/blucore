@@ -9,7 +9,7 @@ export class User {
 		public password: string,
 		public firstName?: string,   // the ? makes the fields optional
 		public lastName?: string,
-		public wcpssId?: string,
+		public emailValid?: Boolean,
 		public school?: string,  // wcpss student or teacher ID
 		public kind?: string, // Admin, Student, Teacher, Parent
 		public userId?: string,
