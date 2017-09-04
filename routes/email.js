@@ -69,11 +69,16 @@ router.get('/validate/:secretId',
 
                         // dump an html file saying congratulations
                         console.log("hurray", foundUser);
-                        if (foundUser.kind == "student") foundUser.valid="approved";
+                        var emailRE = new RegExp('[a-z,A-Z,0-9,\+\.\-\_]+@student\.wcpss\.net|[a-z,A-Z,0-9,\+\.\-\_]+@wcpss\.net');
+                        console.log("regex: ",emailRE.test(foundUser.email))
+                        var wcpssEmail = (emailRE.test(foundUser.email)); // we have a wcpss email address
+                        console.log ("after regex: ", wcpssEmail);
+                        // var wcpssEmail = true; // fake it
                         foundUser.emailValid = true;
+                        foundUser.valid = (wcpssEmail?"approved":"unknown");
                         console.log ("after email verification handling: ", foundUser);
                         foundUser.save();
-                        if (foundUser.kind == "student") { 
+                        if (wcpssEmail) { 
                             res.render("verified",
                                     {toFriendly: foundUser.firstName,
                                     signinURL: process.env.API_ENDPOINT + 'authentication/signin'});

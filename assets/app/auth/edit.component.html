@@ -70,7 +70,7 @@
 				<!-- remove the 'selected' below once we have more than one school -->
 				<option *ngFor = "let theSchool of schoolList" aria-placeholder="select a school">{{theSchool.name}}</option>
 			</select>
-		<div *ngIf="(!myForm.value.school)"
+		<div *ngIf="(!myForm.controls.school.value)"
 			class="alert">
 			<span class="text-danger">pick a school</span>
 		</div>

@@ -70,21 +70,8 @@ router.post('/', function (req, res, next) { // create a new user
 				console.log("save OK: ",result);
 				// creation of the email will not impact the success or failure of 
 				// API call, so we just continue on from here.
-				// var emailRE = new RegExp('[a-z,A-Z,0-9,\+\.\-\_]+@.*wcpss\.net');
-				// junachidro@qwfox.com
-				// var emailRE = new RegExp('junachidro@qwfox.com');
-				// if (emailRE.test(user.email)) { // we have a wcpss email address
-					// this will send an email address with a special link, and 
-					// once they return the link they will be automatically validated.
-				//	secretNeeded = true;
-					console.log("in user.js routes creating a secret: ", user.email, result._id);
-					return Promise.resolve(Secret.createSecret(result._id)) ;
-				//} else {
-				//	console.log("did not try to create secret, but that is OK",user.email);
-				//	console.log("can go home now ?");
-				//	secretNeeded = false;
-				//	return Promise.resolve("no secret needed");
-				// }
+				console.log("in user.js routes creating a secret: ", user.email, result._id);
+				return Promise.resolve(Secret.createSecret(result._id)) ;
 			})
 		.then( // send the email
 			function(result) // result should be the secret value.

@@ -159,6 +159,27 @@ export class EditComponent implements OnInit {
 
 	}
 
+	derivedEmailPattern ( 	userType: string, // student, teacher, admin
+							formUse:  string,  // new (no prespecified type} , usertype, self, new)
+							overRide: boolean ) {
+
+		// start with student as the most restrictive..
+		console.log("checking the email pattern", userType, formUse, overRide);
+		let pattern: string = "[a-z,A-Z,0-9,\+\.\-\_]+@student\.wcpss\.net";
+
+		if (!overRide) {
+			if ( (userType == "teacher") || (userType == "admin")) {
+				console.log("setting things to teacher/admin");
+				pattern = "[a-z,A-Z,0-9,\+\.\-\_]+@wcpss\.net";  // admin or teacher
+			}
+		} else { // the override case - any valid email.
+			console.log("setting things to override");
+			pattern = "[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?";
+		}
+		// note that the default for missing parameters, etc is 'student'
+		// we need to set the form up with dynamic validation to help improve the experience
+		return pattern; 
+	}
 
 	ngOnInit() {
 
@@ -203,6 +224,8 @@ export class EditComponent implements OnInit {
 				Validators.pattern("(?:\\+1)?[.(]?(\\d\\d\\d)[.)-]?(\\d\\d\\d)[.,-]?(\\d\\d\\d\\d)|^$")  // standard telephone number pattern
 			])
 		});
+		console.log("* * * * after formgroup 111 * * * * ");
+
 		if ((!this.schoolList) || (this.schoolList.length == 0)) {
 			this.schoolService.getSchools()
 				.subscribe(
@@ -214,7 +237,7 @@ export class EditComponent implements OnInit {
 				);
 		}
 
-		// console.log(this.schoolList);
+		console.log("schools: ",this.schoolList);
 
 		console.log("Form:", this.myForm);
 		console.log("p:",this.route.snapshot.params);
@@ -263,14 +286,18 @@ export class EditComponent implements OnInit {
 			this.myForm.controls['valid'] = new FormControl({value: null, disabled: true}, Validators.required);
 		}
 
-		if ((this.urlQparm == "generic") || (process.env.EMAIL_RESTRICTIONS = 'off' )) {   // reset the pattern to be a generic 
-			console.log ("resetting the email pattern to be generic");
-			this.myForm.controls['email'] = 
-				 new FormControl(null, 
-					Validators.pattern("[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?")
-		); }
+		console.log("checking for the type of email pattern: (urlQparm, restrictions)",this.urlQparm,process.env.EMAIL_RESTRICTIONS );
 
-		console.log("before checking this.userId");
+		this.myForm.controls['email'] = 
+			new FormControl(null,
+				Validators.pattern(
+					this.derivedEmailPattern ( 	
+						this.urlKind, // student, teacher, admin
+						userLoginType,  // new (no prespecified type} , usertype, self, new)
+						( this.urlQparm && (this.urlQparm == "generic")) ) ) )
+
+		console.log("before checking this.userId", this.myForm);
+
 		if (this.userId) { // the userid of the logged in user, or of the user specified in the URL
 			// ToDo - determine how to do this by throwing an exception.
 			if (!this.authService.isLoggedIn()) {
@@ -337,6 +364,7 @@ export class EditComponent implements OnInit {
 				});
 		} else {
 			this.myForm.patchValue({school:"Athens Drive High School"});
+			this.myForm.patchValue({valid:"unknown"});
 			console.log("Setting the school to athens ",this.myForm);
 		}
 		console.log("the kind form value", this.myForm.controls['kind'].value);
