@@ -243,9 +243,9 @@ export class AuthService {
 	notInMyAttendedList(eventId: string) {
 		// the eventId is not in my list.
 		// replicated in the list and in edit component - need to refactor ToDo
-		console.log("WHO:  ",this.whoIsLoggedIn());
+		// console.log("WHO:  ",this.whoIsLoggedIn());
 		const doneEvents = this.whoIsLoggedIn().attendedEvents;
-		console.log("doneEvents: ",doneEvents);
+		// console.log("doneEvents: ",doneEvents);
 		for (let evt of doneEvents) {
 			if (evt == eventId) {  // one of the events in my list is this event - I have already selected It
 				return false;

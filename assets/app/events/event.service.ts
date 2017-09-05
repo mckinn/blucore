@@ -138,7 +138,7 @@ export class EventService {
 				const events = response.json().obj;
 				let transformedEvents: Event[] = [];
 				for (let evt of events) {
-					console.log("Received Event: ",evt);
+					// console.log("Received Event: ",evt);
 					const newEvt = new Event (
 						evt.name, 
 						evt.description,
@@ -156,7 +156,7 @@ export class EventService {
 						evt.participants,
 						evt.attendedList  // creates attendedList
 					);
-					console.log("New Event: ",newEvt);
+					// console.log("New Event: ",newEvt);
 					transformedEvents.push(newEvt);
 				};
 				this.events = transformedEvents;
