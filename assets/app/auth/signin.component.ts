@@ -18,23 +18,23 @@ export class SignInComponent {
 	constructor (private authService: AuthService, private router: Router) {}
 
 	onSubmit() {
-		// console.log(this.myForm);
+		console.log(this.myForm);
 		const user = new User(this.myForm.value.email, this.myForm.value.password);
-		// console.log(user);
-		this.authService.signin(user)
-			.subscribe(
-				data => {
-					localStorage.setItem('token',data.token);
-					localStorage.setItem('userId',data.userId);
-					this.authService.setWhoIsLoggedIn(user, data.userId);
-					this.router.navigateByUrl('/events');
-					// this.router.navigate(['/events']);
-				},
-				error => {
-					// console.log("* * * * bad password error * * * ");
-					console.error(error);
-				}
-			);
+		console.log(user);
+		// this.authService.signin(user)
+		// 	.subscribe(
+		// 		data => {
+		// 			localStorage.setItem('token',data.token);
+		// 			localStorage.setItem('userId',data.userId);
+		// 			this.authService.setWhoIsLoggedIn(user, data.userId);
+		// 			this.router.navigateByUrl('/events');
+		// 			// this.router.navigate(['/events']);
+		// 		},
+		// 		error => {
+		// 			// console.log("* * * * bad password error * * * ");
+		// 			console.error(error);
+		// 		}
+		// 	);
 
 		this.myForm.reset();
 	}
