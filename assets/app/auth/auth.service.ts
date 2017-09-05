@@ -121,14 +121,14 @@ export class AuthService {
 		console.log(user);
 		console.log(body);
 		console.log(AppSettings.API_ENDPOINT);
-		// return this.http.post(AppSettings.API_ENDPOINT + 'user/signin',body,{headers: headers})
-		// 	.map((response: Response) => response.json())
-		// 	.catch((error: Response) => {
-		// 		// console.log("* * * * signin error handler * * * *");
-		// 		console.error("failure to post",error);
-		// 		this.errorService.handleError(error.json())
-		// 		return Observable.throw(error.json());
-		// 	});
+		return this.http.post(AppSettings.API_ENDPOINT + 'user/signin',body,{headers: headers})
+			.map((response: Response) => response.json())
+			.catch((error: Response) => {
+				// console.log("* * * * signin error handler * * * *");
+				console.error("failure to post",error);
+				this.errorService.handleError(error.json())
+				return Observable.throw(error.json());
+			});
 		}
 
 	passwordReset(user: User) {

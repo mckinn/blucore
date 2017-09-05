@@ -19,8 +19,8 @@ export class SignInComponent {
 
 	onSubmit() {
 		console.log(this.myForm);
-		const user = new User(this.myForm.value.email, this.myForm.value.password);
-		console.log(user);
+		// const user = new User(this.myForm.value.email, this.myForm.value.password);
+		// console.log(user);
 		// this.authService.signin(user)
 		// 	.subscribe(
 		// 		data => {
