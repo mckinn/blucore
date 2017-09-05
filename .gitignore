@@ -51,4 +51,3 @@ templates/interpersonal/archive
 templates/interpersonal/resources
 npm-debug.log
 .env
-public/js/app/bundle.js
