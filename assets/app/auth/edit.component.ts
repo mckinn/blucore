@@ -165,7 +165,7 @@ export class EditComponent implements OnInit {
 
 		// start with student as the most restrictive..
 		console.log("checking the email pattern", userType, formUse, overRide);
-		let pattern: string = "[a-z,A-Z,0-9,\+\.\-\_]+@student\.wcpss\.net";
+		let pattern: string = "[a-z,A-Z,0-9,\+\.\-\_]+@students\.wcpss\.net";
 
 		if (!overRide) {
 			if ( (userType == "teacher") || (userType == "admin")) {
@@ -212,7 +212,7 @@ export class EditComponent implements OnInit {
 			lastName: new FormControl(null, Validators.required),
 			email: new FormControl(null, [
 					Validators.required, 
-					Validators.pattern("[a-z,A-Z,0-9,\+\.\-\_]+@student\.wcpss\.net|[a-z,A-Z,0-9,\+\.\-\_]+@wcpss\.net")
+					Validators.pattern("[a-z,A-Z,0-9,\+\.\-\_]+@students\.wcpss\.net|[a-z,A-Z,0-9,\+\.\-\_]+@wcpss\.net")
 					]),
 			password: new FormControl(null, [Validators.required, Validators.minLength(5)]),
 			dupPassword: new FormControl(null, Validators.required),

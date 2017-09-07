@@ -69,7 +69,7 @@ router.get('/validate/:secretId',
 
                         // dump an html file saying congratulations
                         console.log("hurray", foundUser);
-                        var emailRE = new RegExp('[a-z,A-Z,0-9,\+\.\-\_]+@student\.wcpss\.net|[a-z,A-Z,0-9,\+\.\-\_]+@wcpss\.net');
+                        var emailRE = new RegExp('[a-z,A-Z,0-9,\+\.\-\_]+@students\.wcpss\.net|[a-z,A-Z,0-9,\+\.\-\_]+@wcpss\.net');
                         console.log("regex: ",emailRE.test(foundUser.email))
                         var wcpssEmail = (emailRE.test(foundUser.email)); // we have a wcpss email address
                         console.log ("after regex: ", wcpssEmail);
