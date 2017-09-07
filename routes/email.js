@@ -78,7 +78,7 @@ router.get('/validate/:secretId',
                         foundUser.valid = (wcpssEmail?"approved":"unknown");
                         console.log ("after email verification handling: ", foundUser);
                         foundUser.save();
-                        if (wcpssEmail) { 
+                        if (wcpssEmail || foundUser.kind != "admin") { 
                             res.render("verified",
                                     {toFriendly: foundUser.firstName,
                                     signinURL: process.env.API_ENDPOINT + 'authentication/signin'});

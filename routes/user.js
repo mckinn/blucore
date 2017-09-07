@@ -85,7 +85,7 @@ router.post('/', function (req, res, next) { // create a new user
 							if (!err && school) { // no error and there are schools
 								adminEmail = school.adminEmail;
 							} else {
-								adminEmail = "mckinn@yahoo.com";
+								adminEmail = "blucore.manager@gmail.com";
 							}
 							console.log("in findschool callback: ", adminEmail);
 							var urlString = process.env.API_ENDPOINT+"email/validate/"+ result._id +
@@ -197,7 +197,7 @@ router.post('/reset', function( req, res, next) {
 					if (!err && school) { // no error and there are schools
 						adminEmail = school.adminEmail;
 					} else {
-						adminEmail = "mckinn@yahoo.com";
+						adminEmail = "blucore.manager@gmail.com";
 
 					}
 					console.log("in findschool callback: ", adminEmail);
