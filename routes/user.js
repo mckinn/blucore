@@ -21,47 +21,7 @@ router.post('/', function (req, res, next) { // create a new user
 	});
 	user.valid = "unknown";
 	user.phone = req.body.phone;
-	// Todo later.  
-	// when we are adding a user, make sure that we
-	// email them to tell them that they are being verifed,
-	// and to welcome them.
-	//
-	// also email the coordinator to tell that coordinator to validate them
-    //
-	// For now we will assume that the important emails are the 
-	// 'approved' and 'rejected' to the user when the record is updated (patched).
 
-
-
-	/*	user.save(function(err, result) {
-			if (err) {
-				return res.status(500).json({
-					title:'An Error Occurred in saving a user',
-					error: err
-				});
-			};
-			createdUser = result;
-			****************************************BUG HERE***********************  Need to nest callbacks or use promises.
-			res.status(201).json({
-				message: 'Saved User definition',
-				obj: result
-			});
-		});*/
-	
-/*	var promise = new Promise(function(resolve, reject) {
-		// do a thing, possibly async, then…
-
-		if ( everything turned out fine ) {
-			resolve("Stuff worked!");
-		}
-		else {
-			reject(Error("It broke"));
-		}
-	});
-	then returns a promise
-	save is a promise.
-	createSecret is a promise	
-*/
 	var secretNeeded;
 	console.log("user save: ",user);
 	user.save() // save the user
@@ -122,7 +82,7 @@ router.post('/', function (req, res, next) { // create a new user
 			});
 });
 
-router.options('/signin', function( req, res, next) {  // pre-flight on sign-in
+router.options('/', function( req, res, next) {  // pre-flight on sign-in
 	// console.log("pre-flight on sign-in");
 	return res.status(200).json({
 		title:'options response'

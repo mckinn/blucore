@@ -126,31 +126,38 @@ router.post('/validate',
             );
     });
 
-// check for logged in user
-router.use('/',function(req,res,next){
-    // console.log("checking in email.js: ",req.query.token," or ", req.headers['x-token'] );
-    var token = req.body.token || req.query.token || req.headers['x-token'];
-	jwt.verify(token, 'secretkey', function (err, decoded) {
-		if (err) {
-			return res.status(401).json({
-				title:'user no longer logged in',
-				error: err
-			});
-		};
-		next();
-	})
-});
-
-router.post('/', function (req, res, next) {
-
-    // console.log("inside post ",req.body);
-    BluCoreEmail ( req.body.to, req.body.from, req.body.toCommon, req.body.fromCommon,
-                                    req.body.subject, req.body.templateName, req.body.body,{})
-        .then(function(resolve,reject){
-            // console.log("resolved: ", resolve());
-            // console.log("reject: ", reject());
-            res.status(200).json(resolve);
+    router.options('/', function( req, res, next) {  // pre-flight on sign-in
+        // console.log("pre-flight on sign-in");
+        return res.status(200).json({
+            title:'options response'
         });
     });
+
+    // check for logged in user
+    router.use('/',function(req,res,next){
+        // console.log("checking in email.js: ",req.query.token," or ", req.headers['x-token'] );
+        var token = req.body.token || req.query.token || req.headers['x-token'];
+        jwt.verify(token, 'secretkey', function (err, decoded) {
+            if (err) {
+                return res.status(401).json({
+                    title:'user no longer logged in',
+                    error: err
+                });
+            };
+            next();
+        })
+    });
+
+    router.post('/', function (req, res, next) {
+
+        // console.log("inside post ",req.body);
+        BluCoreEmail ( req.body.to, req.body.from, req.body.toCommon, req.body.fromCommon,
+                                        req.body.subject, req.body.templateName, req.body.body,{})
+            .then(function(resolve,reject){
+                // console.log("resolved: ", resolve());
+                // console.log("reject: ", reject());
+                res.status(200).json(resolve);
+            });
+        });
 
 module.exports = router;
