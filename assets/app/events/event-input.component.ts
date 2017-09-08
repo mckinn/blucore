@@ -224,6 +224,10 @@ export class EventInputComponent implements OnInit {
 		
 	}
 
+	getFirstSchool() {
+		return this.schoolList[0];
+	}
+
 	ngOnInit() {
 		this.initComplete = false;
 		this.eventParticipants = [];
@@ -238,7 +242,7 @@ export class EventInputComponent implements OnInit {
 				eventDate: new FormControl(null, Validators.required),
 				eventTime: new FormControl(null, Validators.required),
 				eventDuration: new FormControl(null, Validators.required),
-				eventSchool: new FormControl(null, Validators.required),
+				eventSchool: new FormControl(null),
 				eventRoomNumber: new FormControl(null, Validators.required),
 				eventParticipantCount: new FormControl(null, Validators.required),
 				eventClosed: new FormControl (null)
@@ -294,6 +298,9 @@ export class EventInputComponent implements OnInit {
 					// console.log("* * * * ngOnInit - end * * * *");
 					// console.log(this.myForm);
 				});
+		} else {
+			this.myForm.patchValue({school:this.schoolList[0]});
+			console.log("new form:", this.myForm);
 		};	
 
 	}

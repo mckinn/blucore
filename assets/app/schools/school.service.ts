@@ -23,24 +23,38 @@ export class SchoolService {
 				private errorService: ErrorService
 				) {}
 
+	// this is frustrating because we want...
+	// a database-driven approach
+	// the ability to synchronously retrieve the school list
+	// - which means pre-loading.
+	// this means checking to see if we have the list, and fetching it if we don't (perhaps?)
+
 	getSchools (parms?:string[]) {
 		//
 		// in a second iteration we will trust the schools array
 		//
 		// console.log("in getSchools: ", parms);
-		let parmString: string = "";
+		// let parmString: string = "";
 		// Note - no parameters supported at this time.
-		if (parms) {
-			for (let parmIdx = 0; parmIdx < parms.length; parmIdx++) {
-				// console.log("in loop: ", parmIdx, parms[parmIdx]);
-				if (parmIdx == 0) parmString = '?' + parms[parmIdx];
-				else parmString = '&' + parms[parmIdx];
-			}
+		// if (parms) {
+		// 	for (let parmIdx = 0; parmIdx < parms.length; parmIdx++) {
+		// 		// console.log("in loop: ", parmIdx, parms[parmIdx]);
+		// 		if (parmIdx == 0) parmString = '?' + parms[parmIdx];
+		// 		else parmString = '&' + parms[parmIdx];
+		// 	}
+		// }
+
+		if ( this.schoolList.length != 0) {
+			let oSchoolList: Observable<School[]>;
+			oSchoolList = Observable.of(this.schoolList);
+			console.log("* * * * returning local schools copy: ",oSchoolList);
+			return oSchoolList;
 		}
 
 		// console.log("parmString: ",parmString);
 		const headers = this.commonHttp.setHeaders();
-		return this.http.get(AppSettings.API_ENDPOINT + 'schools'+ parmString,{headers:headers})
+		return this.http.get(AppSettings.API_ENDPOINT + 'schools' // + parmString
+							,{headers:headers})
 			.map((response:Response) => {
 				const schools = response.json().obj;
 				// console.log("above school loop" , schools);
@@ -60,7 +74,7 @@ export class SchoolService {
 				return transformedSchools; // delivered to the subscribe.
 			})
 			.catch((error: Response) => {
-				// console.log(error);
+				console.log("error in getSchools:",error);
 				this.errorService.handleError(error.json());
 				return Observable.throw(error.json());
 			});

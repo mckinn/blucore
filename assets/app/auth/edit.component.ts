@@ -363,7 +363,7 @@ export class EditComponent implements OnInit {
 					console.log("* * * * edit user subscribe - end * * * *");
 				});
 		} else {
-			this.myForm.patchValue({school:"Athens Drive High School"});
+			this.myForm.patchValue({school:this.schoolList[0]});
 			this.myForm.patchValue({valid:"unknown"});
 			console.log("Setting the school to athens ",this.myForm);
 		}
