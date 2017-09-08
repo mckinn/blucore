@@ -25,10 +25,6 @@ export class EditComponent implements OnInit {
 	urlKind: string;
 	urlQparm: string;
 
-	// my failed attempt at radio buttons
-	// radioItems = 'valid invalid unknown'.split(' ');
-	// radioModel = { options: 'unknown' };
-
 	constructor( private authService: AuthService,
 				private router: Router,
 				private route: ActivatedRoute,
