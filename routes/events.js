@@ -5,8 +5,8 @@ var jwt = require('jsonwebtoken');
 var Event = require('../models/event');
 var User = require('../models/user');
 
-router.options('/', function( req, res, next) {  // pre-flight on sign-in
-	// console.log("pre-flight on sign-in");
+router.options('/', function( req, res, next) { 
+	// console.log("pre-flight on event");
 	return res.status(200).json({
 		title:'options response'
 	});
