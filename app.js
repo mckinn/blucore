@@ -19,9 +19,12 @@ mongoose.connect('mongodb://blucoreUser:subbylou@ds153689.mlab.com:53689/blucore
 
 function requireHTTPS(req, res, next) {
     // The 'x-forwarded-proto' check is for Heroku
+    console.log("in requireHTTPS",process.env.NODE_ENV,req.secure,req.get('x-forwarded-proto') );
     if (!req.secure && req.get('x-forwarded-proto') !== 'https' && process.env.NODE_ENV !== "development") {
-      return res.redirect('https://' + req.get('host') + req.url);
+        console.log("doing requireHTTPS");
+        return res.redirect('https://' + req.get('host') + req.url);
     }
+    console.log("beyond requireHTTPS");
     next();
   }
 
@@ -44,7 +47,7 @@ app.use(function (req, res, next) {
     next();
 });
 
-app.use(requireHTTPS(req, res, next));
+app.use(requireHTTPS);
 
 // // insist on https
 // app.use(function(req, res, next) {
@@ -62,7 +65,7 @@ app.use(requireHTTPS(req, res, next));
 //   });
 
 // handle pre-flight requests
-router.options('/*', function( req, res, next) { 
+app.options('/*', function( req, res, next) { 
 	return res.status(200).json({
 		title:'options pre-flight response'
 	});
