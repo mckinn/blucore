@@ -17,6 +17,16 @@ var User = require("../models/user");
 // var transporter = require('../models/emailmodel');
 // var htmlemail = require('../models/emailhtml');
 
+router.use(function(req, res, next) {
+	res.setHeader('Access-Control-Allow-Headers', 'Content-Type,Accept,x-token');
+	next();
+});
+
+router.options('/*', function( req, res, next) {
+    return res.status(200).json({
+        title:'options pre-flight response in email'
+    });
+});
 
 router.get('/validate/:secretId', 
     function (req,res,next){
@@ -125,13 +135,6 @@ router.post('/validate',
                                      return res.status(400).json(result);}
             );
     });
-
-router.options('/', function( req, res, next) {  // pre-flight on sign-in
-    // console.log("pre-flight on sign-in");
-    return res.status(200).json({
-        title:'options response'
-    });
-});
 
 // check for logged in user
 router.use('/',function(req,res,next){

@@ -14,6 +14,12 @@ router.use(function(req, res, next) {
 	next();
 });
 
+router.options('/*', function( req, res, next) {
+	return res.status(200).json({
+		title:'options pre-flight response in users'
+	});
+});
+
 router.post('/', function (req, res, next) { // create a new user
 	var createdUser;
 	var user = new User({
@@ -88,12 +94,6 @@ router.post('/', function (req, res, next) { // create a new user
 			});
 });
 
-router.options('/*', function( req, res, next) {  // pre-flight on sign-in
-	console.log("pre-flight in users: ", req); 
-	return res.status(200).json({
-		title:'options response on sign-in'
-	});
-});
 
 
 router.post('/signin', function( req, res, next) {  // sign in 
