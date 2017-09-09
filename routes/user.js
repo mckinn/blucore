@@ -8,6 +8,12 @@ var School = require('../models/school.model');
 var BluCoreEmail = require('../models/email.model');
 var Secret = require('../models/secret.model');
 
+// trying to get a handle on the cors / security model - it was complaining about x-token.
+xServer.use(function(req, res, next) {
+	res.setHeader('Access-Control-Allow-Headers', 'Content-Type,Accept,x-token');
+	next();
+  });
+
 router.post('/', function (req, res, next) { // create a new user
 	var createdUser;
 	var user = new User({
