@@ -17,6 +17,14 @@ var app = express();
 mongoose.Promise = global.Promise;
 mongoose.connect('mongodb://blucoreUser:subbylou@ds153689.mlab.com:53689/blucore');
 
+function requireHTTPS(req, res, next) {
+    // The 'x-forwarded-proto' check is for Heroku
+    if (!req.secure && req.get('x-forwarded-proto') !== 'https' && process.env.NODE_ENV !== "development") {
+      return res.redirect('https://' + req.get('host') + req.url);
+    }
+    next();
+  }
+
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'hbs');
@@ -36,20 +44,22 @@ app.use(function (req, res, next) {
     next();
 });
 
-// insist on https
-app.use(function(req, res, next) {
-    // x-forwarded-pronto is apparently a heroku artifact - we will see
-    var schema = req.headers['x-forwarded-proto'];
+app.use(requireHTTPS(req, res, next));
+
+// // insist on https
+// app.use(function(req, res, next) {
+//     // x-forwarded-pronto is apparently a heroku artifact - we will see
+//     var schema = req.headers['x-forwarded-proto'];
   
-    if (schema === 'https') {
-      // Already https; don't do anything special.
-      next();
-    }
-    else {
-      // Redirect to https.
-      res.redirect('https://' + req.headers.host + req.url);
-    }
-  });
+//     if (schema === 'https') {
+//       // Already https; don't do anything special.
+//       next();
+//     }
+//     else {
+//       // Redirect to https.
+//       res.redirect('https://' + req.headers.host + req.url);
+//     }
+//   });
 
 // handle pre-flight requests
 router.options('/*', function( req, res, next) { 
