@@ -17,17 +17,6 @@ var User = require("../models/user");
 // var transporter = require('../models/emailmodel');
 // var htmlemail = require('../models/emailhtml');
 
-router.use(function(req, res, next) {
-	res.setHeader('Access-Control-Allow-Headers', 'Content-Type,Accept,x-token');
-	next();
-});
-
-router.options('/*', function( req, res, next) {
-    return res.status(200).json({
-        title:'options pre-flight response in email'
-    });
-});
-
 router.get('/validate/:secretId', 
     function (req,res,next){
         // console.log("req.query",req.query);

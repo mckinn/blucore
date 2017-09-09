@@ -31,9 +31,31 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 app.use(function (req, res, next) {
     res.setHeader('Access-Control-Allow-Origin', '*');
-    res.setHeader('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
+    res.setHeader('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, x-token');
     res.setHeader('Access-Control-Allow-Methods', 'POST, GET, PATCH, DELETE, OPTIONS');
     next();
+});
+
+// insist on https
+app.use(function(req, res, next) {
+    // x-forwarded-pronto is apparently a heroku artifact - we will see
+    var schema = req.headers['x-forwarded-proto'];
+  
+    if (schema === 'https') {
+      // Already https; don't do anything special.
+      next();
+    }
+    else {
+      // Redirect to https.
+      res.redirect('https://' + req.headers.host + req.url);
+    }
+  });
+
+// handle pre-flight requests
+router.options('/*', function( req, res, next) { 
+	return res.status(200).json({
+		title:'options pre-flight response'
+	});
 });
 
 app.use('/event', eventRoutes);

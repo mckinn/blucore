@@ -5,17 +5,7 @@ var jwt = require('jsonwebtoken');
 var Event = require('../models/event');
 var User = require('../models/user');
 
-// trying to get a handle on the cors / security model - it was complaining about x-token.
-router.use(function(req, res, next) {
-	res.setHeader('Access-Control-Allow-Headers', 'Content-Type,Accept,x-token');
-	next();
-});
 
-router.options('/*', function( req, res, next) { 
-	return res.status(200).json({
-		title:'options response in event'
-	});
-});
 
 // check for logged in user
 router.use('/',function(req,res,next){

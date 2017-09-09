@@ -8,18 +8,6 @@ var School = require('../models/school.model');
 // no requirement to check for logged in user, because
 // we need the list of schools to add a user
 
-router.use(function(req, res, next) {
-	res.setHeader('Access-Control-Allow-Headers', 'Content-Type,Accept,x-token');
-	next();
-});
-
-router.options('/', function( req, res, next) {  // pre-flight on sign-in
-	// console.log("pre-flight on sign-in");
-	return res.status(200).json({
-		title:'options response'
-	});
-});
-
 router.get('/', function( req, res, next) {  // get a list of schools
     // console.log("in school");
 	School.find({},function(err,schools){
