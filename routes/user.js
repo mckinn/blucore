@@ -82,19 +82,13 @@ router.post('/', function (req, res, next) { // create a new user
 			});
 });
 
-router.options('/signin', function( req, res, next) {  // pre-flight on sign-in
-	console.log("pre-flight on sign-in"); 
+router.options('/*', function( req, res, next) {  // pre-flight on sign-in
+	console.log("pre-flight in users: ", req); 
 	return res.status(200).json({
 		title:'options response on sign-in'
 	});
 });
 
-router.options('/users', function( req, res, next) {  // pre-flight on sign-in
-	console.log("pre-flight on user fetch"); 
-	return res.status(200).json({
-		title:'options response on user fetch'
-	});
-});
 
 router.post('/signin', function( req, res, next) {  // sign in 
 	User.findOne({email:req.body.email},function(err,user){
