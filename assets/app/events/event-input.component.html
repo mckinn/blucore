@@ -85,13 +85,13 @@
 			<div *ngIf="initComplete">
 				<span><strong><br>Current Participant List<br></strong></span>
 				<table class="table col-md-8">
-					<tr *ngFor="let participant of eventParticipants" app-participant [userAttended]="participant" [eventEditing]="event" [attended]=false>
+					<tr *ngFor="let participant of eventParticipants" app-participant [userAttended]="participant" [teacher]="iAmATeacher()" [eventEditing]="event" [attended]=false>
 					</tr>
 				</table>
 			</div> 
 			<div *ngIf="initComplete">
 				<table class="table col-md-8">
-					<tr *ngFor="let participant of eventAttendees" app-participant [userAttended]="participant" [eventEditing]="event" [attended]=true>
+					<tr *ngFor="let participant of eventAttendees" app-participant [userAttended]="participant" [teacher]="iAmATeacher()" [eventEditing]="event" [attended]=true>
 					</tr>
 				</table>
 			</div>

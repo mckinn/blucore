@@ -8,7 +8,8 @@ import { AuthService } from "./auth.service";
 	selector: 'app-authentication',
 	template: `
 		<header class="row spacing">
-			<nav class="col-md-8 col-md-offset-2 ">
+			
+			<nav class="col-md-7 col-md-offset-2">
 				<ul class="nav nav-tabs"> 
 					<li routerLinkActive="active"><a [routerLink]="['signin']">Sign In</a></li>
 					<li routerLinkActive="active"><a [routerLink]="['edit']">Sign Up</a></li>
@@ -19,6 +20,7 @@ import { AuthService } from "./auth.service";
 					<li routerLinkActive="active" *ngIf= "isLoggedIn()"><a [routerLink]="['eventsMenu']">Events</a></li> -->
 				</ul>
 			</nav>
+			<a href="/events"><img src="/images/apple-small.png" class="col-md-1 center-block img-responsive" style="height:42px;border:0;"></a>
 			<!-- <nav class= "col-md-2" *ngIf="isLoggedIn()">
 				<ul class="nav nav-tabs">
 					<li role="presentation" class="dropdown">

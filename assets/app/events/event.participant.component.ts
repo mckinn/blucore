@@ -34,12 +34,12 @@ export class EventParticipant implements OnInit {
 	@Input() eventEditing: Event;
 	@Input() attended: boolean;
 	participantName: string;
-
+	@Input() teacher: boolean;
 
    constructor( 
    				private eventService: EventService
 				){}
-
+			
 	onSelect(event) {
 		// console.log("in Select: ",this.userAttended);
 		// console.log("in Select - event: ",event.srcElement.checked, event);
@@ -54,7 +54,7 @@ export class EventParticipant implements OnInit {
     }
 
 	disableBoxes() {
-		return false; // ToDo - determine this based on whether the teacher is executing the change
+		return !this.teacher; // ToDo - determine this based on whether the teacher is executing the change
 	}
 
 	ngOnInit () {

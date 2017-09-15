@@ -8,7 +8,7 @@ import {AuthService} from "../auth/auth.service";
 	selector: 'app-events', 
 	template: `
 		<header class="row spacing">
-			<nav class="col-md-8 col-md-offset-2">
+			<nav class="col-md-7 col-md-offset-2">
 				<ul class="nav nav-tabs"> 
 					<li routerLinkActive="active" *ngIf= "activeForTeachers() && isLoggedIn() && isValidatedUser()"><a [routerLink]="['input']">New Event</a></li>
 					<li routerLinkActive="active" class="disabled" *ngIf= "!activeForTeachers() && isLoggedIn() && isValidatedUser()"><a>Event Details</a></li>
@@ -20,6 +20,7 @@ import {AuthService} from "../auth/auth.service";
 					<li routerLinkActive="active" *ngIf= "isLoggedInAdmin() && isValidatedUser()"><a [routerLink]="['users' ]">User List</a></li>
 				</ul>
 			</nav>
+			<a href="/events"><img src="/images/apple-small.png" class="col-md-1 center-block img-responsive" style="height:42px;border:0;"></a>
 			<nav class= "col-md-2" *ngIf="isLoggedIn()">
 				<ul class="nav nav-tabs">
 					<li role="presentation" class="dropdown">
